@@ -1,0 +1,11 @@
+version: "3"
+services:
+  vue-client:
+    image: node:latest
+    working_dir: /app
+    volumes:
+      - ./client/:/app
+    command: npm install
+    command: npm run dev
+    ports:
+      - "8080:8080"
