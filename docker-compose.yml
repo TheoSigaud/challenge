@@ -5,7 +5,7 @@ services:
     working_dir: /app
     volumes:
       - ./client/:/app
-    command: npm install
+    #command: npm install
     command: npm run dev
     ports:
       - "8081:8080"
