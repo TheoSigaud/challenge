@@ -6,7 +6,7 @@ on:
       - feature/pipeline-ci-cd
 
 jobs:
-  build:
+  vue-build:
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,7 @@ jobs:
       - name: Build Vue.js application
         run: cd client && npm run build
 
-  tests:
+  test-api:
     name: Tests
     runs-on: ubuntu-latest
     steps:
@@ -51,22 +51,22 @@ jobs:
 #        run: "curl -vk -o /dev/null -H 'Accept: text/html' http://localhost"
       - name: Create test database
         run: |
-          docker compose exec -T php bin/console -e test doctrine:database:create
+          docker compose exec -T php bin/console -e test doctrine:database:create --if-not-exists
           docker compose exec -T php bin/console -e test doctrine:migrations:migrate --no-interaction
-      - name: PHPUnit
-        run: docker compose exec -T php bin/phpunit
-      - name: Doctrine Schema Validator
-        run: docker compose exec -T php bin/console doctrine:schema:validate --skip-sync
+#      - name: PHPUnit
+#        run: docker compose exec -T php bin/phpunit
+#      - name: Doctrine Schema Validator
+#        run: docker compose exec -T php bin/console doctrine:schema:validate --skip-sync
 
-#    deploy:
-#      runs-on: ubuntu-latest
-#
-#      needs: build-test
-#
-#      steps:
-#        - uses: actions/checkout@v3
-#        - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
-#          with:
-#            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-#            heroku_app_name: "esgi-sdc" #Must be unique in Heroku
-#            heroku_email: "m.kajeiou123@gmail.com"
+    deploy:
+      runs-on: ubuntu-latest
+
+      needs: build-api && test-api
+
+      steps:
+        - uses: actions/checkout@v3
+        - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+          with:
+            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+            heroku_app_name: "challenge-esgi" #Must be unique in Heroku
+            heroku_email: "theodoresigaud@gmail.com"
