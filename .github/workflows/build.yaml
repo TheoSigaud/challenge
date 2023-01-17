@@ -44,11 +44,11 @@ jobs:
           done
           exit 1
       - name: Check HTTP reachability
-        run: curl -v -o /dev/null http://localhost
+        run: curl -v -o /dev/null 127.0.0.1
       - name: Check API reachability
-        run: curl -vk -o /dev/null http://localhost
+        run: curl -vk -o /dev/null 127.0.0.1
       - name: Check PWA reachability
-        run: "curl -vk -o /dev/null -H 'Accept: text/html' http://localhost"
+        run: "curl -vk -o /dev/null -H 'Accept: text/html' 127.0.0.1"
       - name: Create test database
         run: |
           docker compose exec -T php bin/console -e test doctrine:database:create
