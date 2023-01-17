@@ -48,16 +48,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: self::class)]
     private Collection $users;
 
-    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Joke::class)]
-    private Collection $jokes;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $token = null;
 
     public function __construct()
     {
         $this->users = new ArrayCollection();
-        $this->jokes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -166,36 +162,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($user->getAuthor() === $this) {
                 $user->setAuthor(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Joke>
-     */
-    public function getJokes(): Collection
-    {
-        return $this->jokes;
-    }
-
-    public function addJoke(Joke $joke): self
-    {
-        if (!$this->jokes->contains($joke)) {
-            $this->jokes[] = $joke;
-            $joke->setAuthor($this);
-        }
-
-        return $this;
-    }
-
-    public function removeJoke(Joke $joke): self
-    {
-        if ($this->jokes->removeElement($joke)) {
-            // set the owning side to null (unless already changed)
-            if ($joke->getAuthor() === $this) {
-                $joke->setAuthor(null);
             }
         }
 
