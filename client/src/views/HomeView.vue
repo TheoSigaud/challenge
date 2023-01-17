@@ -1,11 +1,13 @@
 <script setup>
   import { ref } from 'vue'
-  const isRegister = ref(false)
 
+  const isRegister = ref(false)
   const registerData = ref({
     firstname: null,
     lastname: null,
     email: null,
+    birthday: null,
+    address: null,
     password: null,
     confirmPassword: null,
     error: null
@@ -18,6 +20,7 @@
       || registerData.value.password == null
       || registerData.value.confirmPassword == null) {
       registerData.value.error = 'Tous les champs sont obligatoires'
+
       return
     }
 
@@ -26,18 +29,25 @@
       return
     }
     console.log('register')
-    const resultRegister = new Request(
+    const requestRegister = new Request(
         "http://localhost/users/register",
         {
           method: "POST",
           body: JSON.stringify({
+            firstname: registerData.value.firstname,
+            lastname: registerData.value.lastname,
             email: registerData.value.email,
-            password: registerData.value.password
+            birthday: registerData.value.birthday,
+            password: registerData.value.password,
+            role: 0
           }),
           headers: {
             "Content-Type": "application/json"
           }
         });
+
+    fetch(requestRegister)
+        .then((response) => console.log(response))
   }
 </script>
 
@@ -94,6 +104,18 @@
                 <label class="label" for="emailRegister">Email</label>
                 <div class="control">
                   <input v-model="registerData.email" class="input" id="emailRegister" type="email" placeholder="alexsmith@gmail.com">
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Date de naissance</label>
+                <Datepicker v-model="registerData.birthday" :enable-time-picker="false"></Datepicker>
+              </div>
+
+              <div class="field">
+                <label class="label" for="address">Adresse</label>
+                <div class="control">
+                  <input v-model="registerData.address" class="input" id="address" type="text" placeholder="111 Rue de la Fontainer 75018 Paris">
                 </div>
               </div>
 
