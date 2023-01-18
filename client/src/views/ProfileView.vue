@@ -11,7 +11,8 @@
     confirmPassword: null,
     error: null
   })
-
+  const displaySuccess = ref(false)
+  const displayChangePwd = ref(false)
   const changePwd = ref({
     oldPwd: null,
     pwd: null,
@@ -19,26 +20,6 @@
     error: null
   })
   const isActive = ref('profil')
-  console.log("Profile");
-
-  // const requestRegister = new Request(
-  //       "http://localhost/users/",
-  //       {
-  //         method: "PATCH",
-  //         body: JSON.stringify({
-  //           firstname: registerData.value.firstname,
-  //           lastname: registerData.value.lastname,
-  //           email: registerData.value.email,
-  //           birthday: registerData.value.birthday,
-  //           password: registerData.value.password,
-  //           role: 0
-  //         }),
-  //         headers: {
-  //           "Content-Type": "application/json"
-  //         }
-  //       });
-  // fetch(requestRegister)
-  //       .then((response) => console.log(response))
 
   const requestUser = new Request(
     "https://localhost/users/1",
@@ -58,8 +39,21 @@
       registerData.value.address = data.address
     })
     .catch((error) => console.log(error))
-    
-    //save profil data to /users/1
+    const resetPwd = () => {
+      const requestRegister = new Request(
+        "https://localhost/reset/password",
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            email: registerData.value.email,
+          }),
+          headers: {
+            "Content-Type": "application/merge-patch+json"
+          }
+        });
+      fetch(requestRegister)
+            .then((response) => displayChangePwd.value = true)
+    }
     const saveProfil = () => {
       const requestRegister = new Request(
         "https://localhost/users/1",
@@ -76,15 +70,8 @@
           }
         });
       fetch(requestRegister)
-            .then((response) => console.log(response))
+            .then((response) => displaySuccess.value = true)
     }
-
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log(registerData.value)
-    console.log(changePwd.value)
-  }
 </script>
 <template>
   <div class="container">
@@ -94,8 +81,19 @@
           <div class="tabs is-centered">
             <ul>
                 <li v-bind:class="{ 'is-active': isActive == 'profil' }"><a v-on:click="isActive = 'profil'">Profil</a></li>
-                <li v-bind:class="{ 'is-active': isActive == 'password' }"><a v-on:click="isActive = 'password'">Mot de passe</a></li>
             </ul>
+          </div>
+          <div v-if="displaySuccess">
+            <div class="notification is-primary is-light">
+              <!-- <button class="delete"></button> -->
+              <p>La modification de vos données personnelle c'est déroulé avec succès !</p>
+            </div>
+          </div>
+          <div v-if="displayChangePwd">
+            <div class="notification is-primary is-light">
+              <!-- <button class="delete"></button> -->
+              <p>Un Email viens de vous être envoyé afin de modifier votre mot de passe.</p>
+            </div>
           </div>
           <div class="tab-contents">
             <div v-if="isActive == 'profil' ">
@@ -151,21 +149,16 @@
                     <button class="button is-primary"  type="submit">Sauvegarder</button>
                   </div>
                 </form>
+                <form @submit.prevent="resetPwd">
+                  <div class="is-flex is-justify-content-center">
+                    <button class="button is-primary"  type="submit">Modifier mon mot de passe</button>
+                  </div>
+                </form>
               </div>
             </div>
-            <div v-if="isActive == 'password'">
+            <!-- <div v-if="isActive == 'password'">
               <div class="content" v-bind:class="{ 'is-active': isActive == 'password' }">
                 <form>
-                  <div class="columns">
-                    <div class="column">
-                      <div class="field">
-                        <label class="label">Ancien mot de passe</label>
-                        <div class="control">
-                          <input class="input" v-model="changePwd.oldPwd"  type="password" placeholder="Your old password" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                   <div class="columns">
                     <div class="column">
                       <div class="field">
@@ -189,7 +182,7 @@
                   </div>
                 </form>
               </div>
-            </div>
+            </div> -->
           </div>          
           <hr>
         </div>
