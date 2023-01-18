@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
@@ -20,18 +21,23 @@ class Advertisement
     #[ORM\Column()]
     private ?int $id = null;
 
+    #[Groups('booking')]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
+    #[Groups('booking')]
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $type = null;
 
+    #[Groups('booking')]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[Groups('booking')]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $photo = null;
 
+    #[Groups('booking')]
     #[ORM\Column(nullable: true)]
     private array $properties = [];
 

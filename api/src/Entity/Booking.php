@@ -6,26 +6,33 @@ use App\Repository\BookingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
+
 #[ORM\Table(name: '`booking`')]
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
+#[ApiResource(normalizationContext: ['groups' => ['booking']])]
 class Booking
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups('booking')]
     private ?int $id = null;
 
+    #[Groups('booking')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
+    #[Groups('booking')]
     #[ORM\Column]
     private ?int $status = null;
 
+    #[Groups('booking')]
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?Advertisement $advertisement = null;
 
+    #[Groups('booking')]
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?User $client = null;
 

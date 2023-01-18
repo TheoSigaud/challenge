@@ -30,6 +30,15 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?Advertisement $advertisement = null;
 
+    #[ORM\Column(length: 50)]
+    private ?string $title = null;
+
+    #[ORM\Column]
+    private ?int $status = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,6 +88,42 @@ class Comment
     public function setAdvertisement(?Advertisement $advertisement): self
     {
         $this->advertisement = $advertisement;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }
