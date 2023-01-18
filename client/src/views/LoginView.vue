@@ -12,6 +12,11 @@
     confirmPassword: null,
     error: null
   })
+  const loginData = ref({
+    email: null,
+    password: null,
+    error: null
+  })
 
   function register() {
     registerData.value.error = null
@@ -30,16 +35,17 @@
     }
     console.log('register')
     const requestRegister = new Request(
-        "http://localhost/users/register",
+        "https://localhost/users",
         {
           method: "POST",
           body: JSON.stringify({
             firstname: registerData.value.firstname,
             lastname: registerData.value.lastname,
             email: registerData.value.email,
+            address: registerData.value.address,
             birthday: registerData.value.birthday,
             password: registerData.value.password,
-            role: 0
+            roles: ["ROLE_USER"]
           }),
           headers: {
             "Content-Type": "application/json"
@@ -48,6 +54,32 @@
 
     fetch(requestRegister)
         .then((response) => console.log(response))
+  }
+
+  function login() {
+    loginData.value.error = null
+
+    if (loginData.value.email == null || loginData.value.password == null) {
+      loginData.value.error = 'Tous les champs sont obligatoires'
+
+      return
+    }
+
+    // const requestLogin = new Request(
+    //     "http://localhost/users/login",
+    //     {
+    //       method: "POST",
+    //       body: JSON.stringify({
+    //         email: loginData.value.email,
+    //         password: loginData.value.password
+    //       }),
+    //       headers: {
+    //         "Content-Type": "application/json"
+    //       }
+    //     });
+    //
+    // fetch(requestLogin)
+    //     .then((response) => console.log(response))
   }
 </script>
 
@@ -73,6 +105,8 @@
                   <input class="input" type="password" placeholder="*****">
                 </div>
               </div>
+
+              <p v-if="loginData.error" class="has-text-centered has-text-danger">{{loginData.error}}</p>
 
               <div class="is-flex is-justify-content-center">
                 <button class="button is-primary" type="submit">Se connecter</button>
@@ -139,8 +173,8 @@
                 <button class="button is-primary" type="submit">S'inscrire</button>
               </div>
             </form>
-            <p v-if="!isRegister" class="is-size-6 has-text-centered	mt-5 is-underlined" @click="isRegister = !isRegister">Pas de compte</p>
-            <p v-else class="is-size-6 has-text-centered	mt-5 is-underlined" @click="isRegister = !isRegister">Se connecter</p>
+            <p v-if="!isRegister" class="is-size-6 has-text-centered mt-5 is-underlined is-clickable" @click="isRegister = !isRegister">Pas de compte</p>
+            <p v-else class="is-size-6 has-text-centered	mt-5 is-underlined is-clickable" @click="isRegister = !isRegister">Se connecter</p>
           </div>
         </div>
       </div>
