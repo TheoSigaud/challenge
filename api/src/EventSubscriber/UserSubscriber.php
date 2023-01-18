@@ -1,20 +1,25 @@
 <?php
 namespace App\EventSubscriber;
 
+use AllowDynamicProperties;
 use ApiPlatform\Symfony\EventListener\EventPriorities;
+use App\Service\ApiMailerService;
+use App\Service\GenerateTokenService;
 use App\Entity\User;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
-final class UserSubscriber implements EventSubscriberInterface
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\HttpFoundation\Request;
+#[AllowDynamicProperties] final class UserSubscriber implements EventSubscriberInterface
 {
 
 
-    public function __construct(UserPasswordHasherInterface $hasher){
+    public function __construct(UserPasswordHasherInterface $hasher, MailerInterface $mailer, GenerateTokenService $generateTokenService){
+        $this->generateTokenService = $generateTokenService;
         $this->hasher = $hasher;
+        $this->mailer = $mailer;
     }
 
     public static function getSubscribedEvents()
@@ -33,6 +38,17 @@ final class UserSubscriber implements EventSubscriberInterface
         {
             $hash = $this->hasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hash);
+
+            $token = $this->generateTokenService->generateToken($user->getEmail(), '2021-06-01');
+            $user->setToken($token);
+
+            $email = ApiMailerService::send_email(
+                                "theodoresigaud@gmail.com",
+                                "Création de votre compte",
+                                'Bonjour, voici le lien pour valider votre compte : http://'. $_SERVER['SERVER_NAME'] . '/confirm-account/' . $token,
+                            );
+
+            $this->mailer->send($email);
         }
     }
 }
