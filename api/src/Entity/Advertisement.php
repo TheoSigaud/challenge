@@ -9,8 +9,17 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Get;
 
 #[ApiResource]
+//create a route to find an advertisement by its city
+#[ApiResource(
+    new Get(
+        name: 'search-advertisement',
+        uriTemplate: '/advertisements/city/{city}',
+        controller: AdvertisementRepository::class,    
+    )
+)]
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]
 class Advertisement
@@ -43,6 +52,9 @@ class Advertisement
 
     #[ORM\OneToMany(mappedBy: 'advertisement', targetEntity: Booking::class)]
     private Collection $bookings;
+
+    #[ORM\Column(length: 255)]
+    private ?string $city = null;
 
     public function __construct()
     {
@@ -184,6 +196,18 @@ class Advertisement
             }
         }
 
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+        
         return $this;
     }
 }
