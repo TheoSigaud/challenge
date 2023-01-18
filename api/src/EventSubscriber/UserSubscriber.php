@@ -11,16 +11,16 @@ use Symfony\Component\HttpKernel\Event\ViewEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\HttpFoundation\Request;
 #[AllowDynamicProperties] final class UserSubscriber implements EventSubscriberInterface
 {
 
 
-    public function __construct(UserPasswordHasherInterface $hasher, MailerInterface $mailer, GenerateTokenService $generateTokenService){
-        $this->generateTokenService = $generateTokenService;
-        $this->hasher = $hasher;
-        $this->mailer = $mailer;
-    }
+    public function __construct(
+        private UserPasswordHasherInterface $hasher,
+        private MailerInterface $mailer,
+        private GenerateTokenService $generateTokenService
+    )
+    {}
 
     public static function getSubscribedEvents()
     {
@@ -45,7 +45,7 @@ use Symfony\Component\HttpFoundation\Request;
             $email = ApiMailerService::send_email(
                                 "theodoresigaud@gmail.com",
                                 "Création de votre compte",
-                                'Bonjour, voici le lien pour valider votre compte : http://'. $_SERVER['SERVER_NAME'] . '/confirm-account/' . $token,
+                                'Bonjour, voici le lien pour valider votre compte : http://'. $_SERVER['SERVER_NAME'] . ':8081/confirm-account?token=' . $token,
                             );
 
             $this->mailer->send($email);

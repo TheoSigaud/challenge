@@ -45,7 +45,7 @@
             address: registerData.value.address,
             birthday: registerData.value.birthday,
             password: registerData.value.password,
-            roles: ["ROLE_USER"]
+            roles: []
           }),
           headers: {
             "Content-Type": "application/json"
