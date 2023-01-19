@@ -48,3 +48,12 @@ It means that you can:
 ## Credits
 
 Created by [Kévin Dunglas](https://dunglas.fr). Commercial support available at [Les-Tilleuls.coop](https://les-tilleuls.coop).
+
+
+docker-compose exec php bin/console doctrine:schema:drop --force &&
+docker-compose exec php bin/console make:migration &&
+docker-compose exec php bin/console doctrine:migration:migrate
+
+# Fixtures
+
+docker-compose exec php bin/console doctrine:fixtures:load
