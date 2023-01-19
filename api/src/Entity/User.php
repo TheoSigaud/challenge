@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Controller\ResetPasswordController;
 use App\Controller\ConfirmAccountController;
+use App\Controller\LoginController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -18,7 +20,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ApiResource]
 #[ApiResource(operations: [
-    new Get(),
     new Patch(
         name: 'reset-password',
         uriTemplate: '/reset/password',
@@ -29,6 +30,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
         name: 'confirm-account',
         uriTemplate: '/confirm-account/{token}',
         controller: ConfirmAccountController::class,
+        read: false
+    ),
+
+    new Post(
+        name: 'login',
+        uriTemplate: '/login',
+        controller: LoginController::class,
         read: false
     )
 ])]
