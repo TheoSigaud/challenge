@@ -13,8 +13,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement']])]
 #[ApiResource(operations: [
     new Patch(
         name: 'reset-password',
@@ -29,45 +30,59 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups('advertisement')]
     private ?int $id = null;
 
+    
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups('advertisement')]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups('advertisement')]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups('advertisement')]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('advertisement')]
     private ?string $token = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('advertisement')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups('advertisement')]
     private ?string $lastname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups('advertisement')]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('advertisement')]
     private ?string $address = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Advertisement::class)]
+    #[Groups('advertisement')]
     private Collection $advertisements;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Comment::class)]
+    #[Groups('advertisement')]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Booking::class)]
+    #[Groups('advertisement')]
     private Collection $bookings;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Favorite::class)]
+    #[Groups('advertisement')]
     private Collection $favorites;
 
     public function __construct()

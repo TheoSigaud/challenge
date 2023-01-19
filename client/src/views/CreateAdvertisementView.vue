@@ -1,7 +1,10 @@
 <script setup>
 import { ref } from "vue";
 import FileUpload from "../components/FileUpload.vue";
-import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
+import router from '@/router'
+
+const route = useRoute()
 const adData = ref({
   name: null,
   type: null,
@@ -27,8 +30,6 @@ const dataProperties = ref({
 
 
 const saveAdvertisement = () => {
-  const router = useRouter()
-  console.log(adData.value.date[0] + "-" + adData.value.date[1])
   if(adData.value.zipcode == null
       || adData.value.type == null
       || adData.value.description == null
@@ -60,14 +61,15 @@ const saveAdvertisement = () => {
         address: adData.value.address,
         dateStart: adData.value.date[0],
         dateEnd: adData.value.date[1],
-        properties: dataProperties.value
+        properties: dataProperties.value,
+        owner: "/users/1"
       }),
       headers: {
         "Content-Type": "application/ld+json"
       }
     });
   fetch(requestAdvertisement)
-        .then((response) => console.log('success'))
+        .then((response) => router.push({name: 'my-listings'}))
 }
 
 </script>

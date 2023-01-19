@@ -1,14 +1,38 @@
 <script setup lang="ts">
 import DataTable from 'datatables.net-vue3';
 import DataTablesLib from 'datatables.net';
- 
- DataTable.use(DataTablesLib);
-const data = [
-  [1, 2],
-  [3, 4],
-];
+import { ref } from "vue";
+
+DataTable.use(DataTablesLib);
+const user = ref(null);
+const adData = ref({
+  name: null,
+  type: null,
+  description: null,
+  city: null,
+  zipcode: null,
+  address: null,
+  dateStart: null,
+  dateEnd: null,
+  error: null
+});
+const advertisements = ref([]);
+const requestAd = new Request(
+    "https://localhost/users/1",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/Id+json"
+      }
+    });
+  fetch(requestAd)
+    .then((response) => response.json())
+    .then((data) => {
+      data.advertisements.forEach(add => advertisements.value.push(add));
+    })
+    .catch((error) => console.log(error))
 </script>
- 
+
 <template>
   <div class="container">
     <div class="card">
@@ -20,7 +44,7 @@ const data = [
             <thead>
               <tr>
                 <th><abbr title="Id">id</abbr></th>
-                <th>Titre</th>
+                <th><abbr title="Titre">Titre</abbr></th>
                 <th><abbr title="Date de début">Date début</abbr></th>
                 <th><abbr title="Date de fin">Date fin</abbr></th>
                 <th><abbr title="Ville">Ville</abbr></th>
@@ -29,24 +53,20 @@ const data = [
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <th>1</th>
-                <td><a href="https://en.wikipedia.org/wiki/Leicester_City_F.C." title="Leicester City F.C.">Leicester City</a> <strong>(C)</strong>
+              <tr v-for="ad in advertisements" :key="ad.id">
+                <th>{{ad.id}}</th>
+                <td>{{ ad.name }}</td>
+                <td>{{new Date(ad.date_start).toLocaleDateString()}}</td>
+                <td>{{new Date(ad.date_end).toLocaleDateString()}}</td>
+                <td>{{ad.city}}</td>
+                <td>{{ad.zipcode}}</td>
+                <td>
+                  <a href="#">
+                    <div class="buttons">
+                      <button class="button is-info">Voir plus</button>
+                    </div>
+                  </a>
                 </td>
-                <td>38</td>
-                <td>23</td>
-                <td>12</td>
-                <td>23</td>
-                <td></td>
-              </tr>
-              <tr>
-                <th>2</th>
-                <td><a href="https://en.wikipedia.org/wiki/Arsenal_F.C." title="Arsenal F.C.">Arsenal</a></td>
-                <td>38</td>
-                <td>20</td>
-                <td>11</td>
-                <td>7</td>
-                <td></td>
               </tr>
             </tbody>
           </table>

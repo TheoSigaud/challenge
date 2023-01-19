@@ -10,6 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
@@ -19,22 +22,28 @@ class Advertisement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups('advertisement')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
+    #[Groups('advertisement')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('advertisement')]
     private ?string $type = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('advertisement')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('advertisement')]
     private ?string $photo = null;
 
     #[ORM\Column(nullable: true)]
+    #[Groups('advertisement')]
     private array $properties = [];
 
     #[ORM\ManyToOne(inversedBy: 'advertisements')]
@@ -48,20 +57,25 @@ class Advertisement
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
+    #[Groups('advertisement')]
     private ?string $city = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
+    #[Groups('advertisement')]
     private ?string $address = null;
 
     #[ORM\Column(length: 5, nullable: true)]
     #[Assert\Length(max: 5)]
+    #[Groups('advertisement')]
     private ?string $zipcode = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups('advertisement')]
     private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups('advertisement')]
     private ?\DateTimeInterface $date_end = null;
 
     public function __construct()
