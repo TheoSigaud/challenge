@@ -10,6 +10,7 @@
 
   onMounted(() => {
     const token = route.query.token
+    console.log(token)
 
     if (token === undefined) {
       router.push({name: 'login'})
