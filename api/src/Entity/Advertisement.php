@@ -2,7 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\AdvertisementRepository;
+use App\Controller\SearchAdvertisementController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -13,14 +17,9 @@ use ApiPlatform\Metadata\Get;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource]
-//create a route to find an advertisement by its city
-#[ApiResource(
-    new Get(
-        name: 'search-advertisement',
-        uriTemplate: '/advertisements/city/{city}',
-        controller: AdvertisementRepository::class,    
-    )
-)]
+#[ApiFilter(SearchFilter::class, properties: ['city' => 'exact'])]
+#[ApiFilter(DateFilter::class, properties: ['date_start', 'date_end'])]
+
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]
 class Advertisement

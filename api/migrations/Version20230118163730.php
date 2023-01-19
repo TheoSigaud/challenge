@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230118111716 extends AbstractMigration
+final class Version20230118163730 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -25,7 +25,7 @@ final class Version20230118111716 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE "comments_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "favorites_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE "advertisement" (id INT NOT NULL, owner_id INT DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) DEFAULT NULL, description TEXT DEFAULT NULL, photo TEXT DEFAULT NULL, properties JSON DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "advertisement" (id INT NOT NULL, owner_id INT DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) DEFAULT NULL, description TEXT DEFAULT NULL, photo TEXT DEFAULT NULL, properties JSON DEFAULT NULL, city VARCHAR(255) DEFAULT NULL, address VARCHAR(255) DEFAULT NULL, zipcode VARCHAR(5) DEFAULT NULL, date_start DATE DEFAULT NULL, date_end DATE DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_C95F6AEE7E3C61F9 ON "advertisement" (owner_id)');
         $this->addSql('CREATE TABLE "booking" (id INT NOT NULL, advertisement_id INT DEFAULT NULL, client_id INT DEFAULT NULL, date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, status INT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_E00CEDDEA1FBF71B ON "booking" (advertisement_id)');
