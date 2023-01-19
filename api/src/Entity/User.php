@@ -32,13 +32,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
         uriTemplate: '/confirm-account/{token}',
         controller: ConfirmAccountController::class,
         read: false
-    ),
-
-    new Post(
-        name: 'login',
-        uriTemplate: '/api/login',
-        controller: LoginController::class,
-        read: false
     )
 ])]
 #[ApiResource(routePrefix: '/api')]

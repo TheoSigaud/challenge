@@ -1,5 +1,9 @@
 <script setup>
   import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
+  import jsCookie from 'js-cookie'
+
+  const router = useRouter()
 
   const isRegister = ref(false)
   const registerData = ref({
@@ -92,11 +96,10 @@
     fetch(requestLogin)
         .then((response) => response.json())
         .then((data) => {
-          if (data.message === 'Success') {
-            console.log('Success')
-            // localStorage.setItem('token', data.token)
-            // localStorage.setItem('user', JSON.stringify(data.user))
-            // window.location.href = '/'
+          console.log(data)
+          if (data.token) {
+            jsCookie.set('jwt', data.token, { expires: 1 })
+            router.push({ name: 'Home' })
           } else if (data.message === 'Not confirmed') {
             loginData.value.error = 'Votre compte n\'a pas été confirmé. Vérifiez vos mails.'
           } else {
