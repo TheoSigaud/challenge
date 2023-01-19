@@ -27,7 +27,7 @@ const router = createRouter({
       path: '/my-advertisement',
       name: 'my-advertisement',
       component: MyAdvertisementsView
-    };
+    },
     {
       path: '/confirm-account',
       name: 'confirm-account',
