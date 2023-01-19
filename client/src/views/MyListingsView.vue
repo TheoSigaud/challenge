@@ -2,6 +2,7 @@
 import DataTable from 'datatables.net-vue3';
 import DataTablesLib from 'datatables.net';
 import { ref } from "vue";
+import router from '@/router'
 
 DataTable.use(DataTablesLib);
 const user = ref(null);
@@ -18,6 +19,7 @@ const adData = ref({
 });
 const advertisements = ref([]);
 const requestAd = new Request(
+  //USER ID AMODIFIER
     "https://localhost/users/1",
     {
       method: "GET",
@@ -63,8 +65,8 @@ const requestAd = new Request(
                 <td>
                   <a href="#">
                     <div class="buttons">
-                      <button class="button is-info">Voir plus</button>
-                    </div>
+                      <button class="button is-info" @click="router.push({name: 'my-advertisement', query: {id: ad.id}})"><a href="">Voir plus </a></button>
+                    </div>                    
                   </a>
                 </td>
               </tr>
