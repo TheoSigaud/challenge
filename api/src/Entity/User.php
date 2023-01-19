@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
@@ -35,11 +36,13 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
     new Post(
         name: 'login',
-        uriTemplate: '/login',
+        uriTemplate: '/api/login',
         controller: LoginController::class,
         read: false
     )
 ])]
+#[ApiResource(routePrefix: '/api')]
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

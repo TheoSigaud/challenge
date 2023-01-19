@@ -77,7 +77,7 @@
     }
 
     const requestLogin = new Request(
-        "https://localhost/login",
+        "https://localhost/api/login",
         {
           method: "POST",
           body: JSON.stringify({
