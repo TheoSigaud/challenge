@@ -3,6 +3,7 @@ import LoginView from '../views/LoginView.vue'
 import CreateAdvertisementView from '../views/CreateAdvertisementView.vue'
 import MyListingsView from '../views/MyListingsView.vue'
 import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
+import ConfirmAccount from '../views/ConfirmView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,6 +27,11 @@ const router = createRouter({
       path: '/my-advertisement',
       name: 'my-advertisement',
       component: MyAdvertisementsView
+    };
+    {
+      path: '/confirm-account',
+      name: 'confirm-account',
+      component: ConfirmAccount
     }
   ]
 })
