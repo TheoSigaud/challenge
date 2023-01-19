@@ -88,6 +88,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Favorite::class)]
     private Collection $favorites;
 
+    #[ORM\Column]
+    private ?int $status = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -343,6 +346,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $favorite->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

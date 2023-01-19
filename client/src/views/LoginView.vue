@@ -46,8 +46,7 @@
             email: registerData.value.email,
             address: registerData.value.address,
             birthday: registerData.value.birthday,
-            password: registerData.value.password,
-            roles: []
+            password: registerData.value.password
           }),
           headers: {
             "Content-Type": "application/json"
@@ -56,8 +55,10 @@
 
     fetch(requestRegister)
         .then(response => {
-          console.log(response.status)
           if (response.status === 201) {
+            Object.keys(registerData.value).forEach(key => {
+              registerData.value[key] = null;
+            });
             registerData.value.success = 'Votre compte a bien été créé. Vérifiez vos mails pour confirmer votre compte.'
             registerData.value.error = null
           } else {
@@ -96,6 +97,8 @@
             // localStorage.setItem('token', data.token)
             // localStorage.setItem('user', JSON.stringify(data.user))
             // window.location.href = '/'
+          } else if (data.message === 'Not confirmed') {
+            loginData.value.error = 'Votre compte n\'a pas été confirmé. Vérifiez vos mails.'
           } else {
             loginData.value.error = 'Email ou mot de passe incorrect'
           }

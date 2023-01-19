@@ -31,6 +31,12 @@ class LoginController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
+        if ($user->getStatus() === 0) {
+            return $this->json([
+                'message' => 'Not confirmed'
+            ], 401);
+        }
+
         return $this->json([
             'message' => 'Success'
         ], 200);
