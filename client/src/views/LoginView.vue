@@ -41,7 +41,7 @@
     }
 
     const requestRegister = new Request(
-        "https://localhost/users",
+        "https://localhost/api/users",
         {
           method: "POST",
           body: JSON.stringify({
