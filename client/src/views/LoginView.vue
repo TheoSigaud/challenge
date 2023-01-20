@@ -96,7 +96,6 @@
     fetch(requestLogin)
         .then((response) => response.json())
         .then((data) => {
-          console.log(data)
           if (data.token) {
             jsCookie.set('jwt', data.token, { expires: 1 })
             router.push({ name: 'Home' })
