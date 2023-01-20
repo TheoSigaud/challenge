@@ -6,6 +6,8 @@ import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
 import ConfirmAccount from '../views/ConfirmView.vue'
 import ListingsAdvertisementsView from '../views/admin/ListingsAdvertisementsView.vue'
 import jsCookie from 'js-cookie'
+import ProfileView from '../views/ProfileView.vue'
+import ResetPwdView from '../views/ResetPwdView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +47,15 @@ const router = createRouter({
       path: '/admin/modify-advertisement',
       name: 'admin-my-advertisement',
       component: MyAdvertisementsView
+    },
+      path: '/profile',
+      name: 'profile',
+      component: ProfileView
+    }, 
+    {
+      path: '/resetpwd',
+      name: 'resetpwd',
+      component: ResetPwdView
     }
   ]
 })
