@@ -2,10 +2,13 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Controller\ResetPasswordController;
 use App\Controller\ConfirmAccountController;
+use App\Controller\LoginController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,9 +20,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource(normalizationContext: ['groups' => ['advertisement']])]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement']], routePrefix: '/api')]
 #[ApiResource(operations: [
-    new Get(),
     new Patch(
         name: 'reset-password',
         uriTemplate: '/reset/password',
@@ -33,6 +35,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         read: false
     )
 ])]
+#[ApiResource(routePrefix: '/api')]
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -94,6 +98,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Favorite::class)]
     #[Groups('advertisement')]
     private Collection $favorites;
+
+    #[ORM\Column]
+    private ?int $status = null;
 
     public function __construct()
     {
@@ -350,6 +357,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $favorite->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
