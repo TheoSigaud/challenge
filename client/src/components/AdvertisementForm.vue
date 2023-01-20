@@ -3,6 +3,7 @@ import { ref } from "vue";
 import FileUpload from "../components/FileUpload.vue";
 import router from '@/router'
 import { useRoute } from 'vue-router'
+import jsCookie from 'js-cookie'
 
 const route = useRoute()
 const { method } = defineProps({
@@ -12,6 +13,7 @@ const { method } = defineProps({
   }
 });
 const id = ref("");
+const idAd = route.query.id
 const contentType = ref("application/ld+json");
 if(method == "PATCH"){
   contentType.value = "application/merge-patch+json"
@@ -43,13 +45,15 @@ const dataProperties = ref({
     heating: null
   })
 
+let token = jsCookie.get('jwt')
 if(method == "PATCH"){
   const requestUser = new Request(
-    "https://localhost/advertisements/48",
+    "https://localhost/api/advertisements/"+idAd,
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/Id+json"
+        "Content-Type": "application/Id+json",
+        "Authorization": "Bearer " + token
       }
     });
   fetch(requestUser)
@@ -93,7 +97,7 @@ const saveAdvertisement = () => {
     return
   }
   const requestAdvertisement = new Request(
-    "https://localhost/advertisements"+id.value,
+    "https://localhost/api/advertisements"+id.value,
     {
       method: method,
       body: JSON.stringify({
@@ -109,7 +113,8 @@ const saveAdvertisement = () => {
         //owner: "/users/1",
       }),
       headers: {
-        "Content-Type": contentType.value
+        "Content-Type": contentType.value,
+        "Authorization": "Bearer " + token
       }
     });
   fetch(requestAdvertisement)
