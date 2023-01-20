@@ -48,6 +48,7 @@ const router = createRouter({
       name: 'admin-my-advertisement',
       component: MyAdvertisementsView
     },
+    {
       path: '/profile',
       name: 'profile',
       component: ProfileView

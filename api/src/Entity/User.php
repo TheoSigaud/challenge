@@ -100,6 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $favorites;
 
     #[ORM\Column]
+    #[Groups('advertisement')]
     private ?int $status = null;
 
     public function __construct()
