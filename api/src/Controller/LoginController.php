@@ -31,7 +31,7 @@ class LoginController extends AbstractController
 
         if (!$this->hasher->isPasswordValid($user, $parameters['password'])
         || $user->getStatus() === 0) {
-            throw new AccessDeniedHttpException();
+            return $this->json(['message' => 'Not confirmed'], 401);
         }
 
         return $this->json(['token' => $this->JWTManager->create($user)]);
