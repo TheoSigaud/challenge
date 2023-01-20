@@ -10,7 +10,6 @@
 
   onMounted(() => {
     const token = route.query.token
-    console.log(token)
 
     if (token === undefined) {
       router.push({name: 'login'})
@@ -38,7 +37,7 @@
       </div>
 
       <div v-if="error" class="notification is-warning">
-        <p>Le token n'est pas valide !</p>
+        <p>Le lien n'est pas valide !</p>
       </div>
 
       <div class="is-flex is-justify-content-center">
