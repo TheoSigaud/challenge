@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Controller\ResetPasswordController;
 use App\Controller\ConfirmAccountController;
-use App\Controller\LoginController;
+use App\Controller\ResetEmailController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -26,6 +25,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
         name: 'reset-password',
         uriTemplate: '/reset/password',
         controller: ResetPasswordController::class
+    ),
+
+    new Post(
+        name: 'reset-email',
+        uriTemplate: '/reset/email',
+        controller: ResetEmailController::class
     ),
 
     new Get(
