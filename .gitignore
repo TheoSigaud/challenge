@@ -29,5 +29,10 @@ coverage
 
 client/.vscode
 client/node_modules
+client/package-lock.json
+
+api/migrations
+
+docker-compose.yml
 
 .env
