@@ -1,5 +1,7 @@
 <script setup>
-  import { ref } from 'vue'
+import { ref } from 'vue'
+import jwtDecode from 'jwt-decode'
+import jsCookie from 'js-cookie'
 
   const registerData = ref({
     firstname: null,
@@ -9,6 +11,7 @@
     address: null,
     password: null,
     confirmPassword: null,
+    status: null,
     error: null
   })
   const displaySuccess = ref(false)
@@ -20,13 +23,15 @@
     error: null
   })
   const isActive = ref('profil')
-
+  let token = jsCookie.get('jwt')
+  let idUser = jwtDecode(token).id
   const requestUser = new Request(
-    "https://localhost/users/1",
+    "https://localhost/api/users/"+idUser,
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
       }
     });
   fetch(requestUser)
@@ -36,9 +41,11 @@
       registerData.value.lastname = data.lastname
       registerData.value.email = data.email
       registerData.value.birthday = data.birthday
-      registerData.value.address = data.address
+      registerData.value.address = data.address,
+      registerData.value.status = data.status
     })
     .catch((error) => console.log(error))
+
     const resetPwd = () => {
       const requestRegister = new Request(
         "https://localhost/reset/password",
@@ -56,7 +63,7 @@
     }
     const saveProfil = () => {
       const requestRegister = new Request(
-        "https://localhost/users/1",
+        "https://localhost/api/users/"+idUser,
         {
           method: "PATCH",
           body: JSON.stringify({
@@ -66,7 +73,8 @@
             address: registerData.value.address
           }),
           headers: {
-            "Content-Type": "application/merge-patch+json"
+            "Content-Type": "application/merge-patch+json",
+            "Authorization": "Bearer " + token
           }
         });
       fetch(requestRegister)
@@ -85,13 +93,11 @@
           </div>
           <div v-if="displaySuccess">
             <div class="notification is-primary is-light">
-              <!-- <button class="delete"></button> -->
               <p>La modification de vos données personnelle c'est déroulé avec succès !</p>
             </div>
           </div>
           <div v-if="displayChangePwd">
             <div class="notification is-primary is-light">
-              <!-- <button class="delete"></button> -->
               <p>Un Email viens de vous être envoyé afin de modifier votre mot de passe.</p>
             </div>
           </div>
@@ -99,6 +105,12 @@
             <div v-if="isActive == 'profil' ">
               <div class="content is-active">
                 <form @submit.prevent="saveProfil">
+                  <div class="columns">
+                    <div class="column">
+                      <label class="label">Statut du compte : {{ registerData.status ? "Validé" :"Inactif" }}</label>
+                        
+                    </div>
+                  </div>
                   <div class="columns">
                     <div class="column">
                       <div class="field">
@@ -149,40 +161,8 @@
                     <button class="button is-primary"  type="submit">Sauvegarder</button>
                   </div>
                 </form>
-                <form @submit.prevent="resetPwd">
-                  <div class="is-flex is-justify-content-center">
-                    <button class="button is-primary"  type="submit">Modifier mon mot de passe</button>
-                  </div>
-                </form>
               </div>
             </div>
-            <!-- <div v-if="isActive == 'password'">
-              <div class="content" v-bind:class="{ 'is-active': isActive == 'password' }">
-                <form>
-                  <div class="columns">
-                    <div class="column">
-                      <div class="field">
-                        <label class="label">Nouveau mot de passe</label>
-                        <div class="control">
-                          <input class="input" v-model="changePwd.pwd" type="password" placeholder="Type your new password" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="column">
-                      <div class="field">
-                        <label class="label">nouveau mot de passe</label>
-                        <div class="control">
-                          <input class="input" v-model="changePwd.confirmPwd" type="password" placeholder="Retype your new password" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="is-flex is-justify-content-center">
-                    <button class="button is-primary" type="submit">Modifier le mot de passe</button>
-                  </div>
-                </form>
-              </div>
-            </div> -->
           </div>          
           <hr>
         </div>
