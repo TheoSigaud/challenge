@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import DataTable from 'datatables.net-vue3';
-import DataTablesLib from 'datatables.net';
 import { ref } from "vue";
 import router from '@/router'
 
-DataTable.use(DataTablesLib);
 const user = ref(null);
 const adData = ref({
   name: null,
