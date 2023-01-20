@@ -4,6 +4,7 @@ import FileUpload from "../components/FileUpload.vue";
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import jsCookie from 'js-cookie'
+import jwtDecode from 'jwt-decode'
 
 const route = useRoute()
 const { method } = defineProps({
@@ -46,6 +47,8 @@ const dataProperties = ref({
   })
 
 let token = jsCookie.get('jwt')
+let idUser = jwtDecode(token).id
+
 if(method == "PATCH"){
   const requestUser = new Request(
     "https://localhost/api/advertisements/"+idAd,
@@ -109,8 +112,8 @@ const saveAdvertisement = () => {
         address: adData.value.address,
         dateStart: adData.value.date[0],
         dateEnd: adData.value.date[1],
-        properties: dataProperties.value
-        //owner: "/users/1",
+        properties: dataProperties.value,
+        owner: "/api/users/"+ idUser,
       }),
       headers: {
         "Content-Type": contentType.value,
