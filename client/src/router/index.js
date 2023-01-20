@@ -4,6 +4,7 @@ import CreateAdvertisementView from '../views/CreateAdvertisementView.vue'
 import MyListingsView from '../views/MyListingsView.vue'
 import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
 import ConfirmAccount from '../views/ConfirmView.vue'
+import ListingsAdvertisementsView from '../views/admin/ListingsAdvertisementsView.vue'
 import jsCookie from 'js-cookie'
 
 const router = createRouter({
@@ -34,6 +35,16 @@ const router = createRouter({
       path: '/confirm-account',
       name: 'confirm-account',
       component: ConfirmAccount
+    },
+    {
+      path: '/admin/listings-advertisements',
+      name: 'listings-advertisements',
+      component: ListingsAdvertisementsView
+    },
+    {
+      path: '/admin/modify-advertisement',
+      name: 'admin-my-advertisement',
+      component: MyAdvertisementsView
     }
   ]
 })
