@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import router from '@/router'
+import jsCookie from 'js-cookie'
 
 const user = ref(null);
 const adData = ref({
@@ -15,13 +16,17 @@ const adData = ref({
   error: null
 });
 const advertisements = ref([]);
+let token = jsCookie.get('jwt')
+
 const requestAd = new Request(
+  
   //USER ID AMODIFIER
-    "https://localhost/users/1",
+    "https://localhost/api/users/13",
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/Id+json"
+        "Content-Type": "application/Id+json",
+        "Authorization": "Bearer " + token
       }
     });
   fetch(requestAd)
