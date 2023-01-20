@@ -1,10 +1,8 @@
 <script setup>
-import DataTable from 'datatables.net-vue3';
-import DataTablesLib from 'datatables.net';
 import { ref } from "vue";
 import router from '@/router'
+import jsCookie from 'js-cookie'
 
-DataTable.use(DataTablesLib);
 const user = ref(null);
 const adData = ref({
   name: null,
@@ -18,13 +16,16 @@ const adData = ref({
   error: null
 });
 const advertisements = ref([]);
+let token = jsCookie.get('jwt')
+
 const requestAd = new Request(
   //USER ID AMODIFIER
-    "https://localhost/advertisements",
+    "https://localhost/api/advertisements",
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/Id+json"
+        "Content-Type": "application/Id+json",
+        "Authorization": "Bearer " + token
       }
     });
   fetch(requestAd)

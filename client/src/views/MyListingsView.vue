@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import router from '@/router'
 import jsCookie from 'js-cookie'
+import jwtDecode from 'jwt-decode'
 
 const user = ref(null);
 const adData = ref({
@@ -17,11 +18,12 @@ const adData = ref({
 });
 const advertisements = ref([]);
 let token = jsCookie.get('jwt')
-
+let idUser = jwtDecode(token).id
+console.log(idUser)
 const requestAd = new Request(
   
   //USER ID AMODIFIER
-    "https://localhost/api/users/13",
+    "https://localhost/api/users/"+idUser,
     {
       method: "GET",
       headers: {
@@ -44,6 +46,7 @@ const requestAd = new Request(
         <div class="content">
           <h2>Mes annonces</h2>
           <hr>
+          <button class="button is-info" @click="router.push({name: 'create-advertisement'})">Créer une annonce</button>
           <table class="table">
             <thead>
               <tr>
