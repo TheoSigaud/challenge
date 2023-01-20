@@ -9,7 +9,8 @@ export default {
 
 <template>
   <main>
-    <h1>Mes réservations</h1>
+    <h1 class="title">Mes réservations</h1>
+    <h2 class="subtitle">Gestion des réservations</h2>
     <ListReservations/>
   </main>
 </template>

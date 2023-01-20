@@ -2,6 +2,26 @@
 import {ref, onMounted, watch} from 'vue';
 
 export default {
+  data() {
+    return {
+      selectedOption: '',
+      options: [
+        { value: null, text: 'Rating' },
+        { value: '1', text: '1' },
+        { value: '2', text: '2' },
+        { value: '3', text: '3' },
+        { value: '4', text: '4' },
+        { value: '5', text: '5' }
+      ]
+    }
+  },
+
+  methods: {
+    getSelectedValue() {
+      console.log(this.selectedOption)
+    }
+  },
+
   setup() {
     const loading = ref(false);
     const error = ref(null);
@@ -24,6 +44,7 @@ export default {
         reload.value = true
       }
     }
+
     const fetchData = async () => {
       loading.value = true
       try {
@@ -59,7 +80,9 @@ export default {
 </script>
 
 <template>
-  <button @click="reloadData">Recharger les données</button>
+  <button @click="reloadData" class="button is-info">
+    <ion-icon name="refresh-outline"></ion-icon>
+  </button>
   <div v-if="loading">
     <progress class="progress is-large is-info" max="100">60%</progress>
   </div>
@@ -87,8 +110,14 @@ export default {
       <td>{{ reservation.client.firstname + " " + reservation.client.lastname }}</td>
       <td>{{ reservation.status }}</td>
       <td class="buttons">
-        <button class="button is-primary is-light" @click="showModal = true; ad_id = reservation.advertisement.name " >Add a review</button>
-        <button class="button is-info is-light">Edit</button>
+        <button class="button is-primary is-light" @click="showModal = true; ad_id = reservation.advertisement.name">
+          <ion-icon name="add-outline"></ion-icon>
+          Add a review
+        </button>
+        <button class="button is-info is-light">
+          <ion-icon name="create-outline"></ion-icon>
+          Edit
+        </button>
       </td>
     </tr>
     </tbody>
@@ -99,17 +128,29 @@ export default {
     <div class="modal-card">
 
       <header class="modal-card-head">
-        <p class="modal-card-title">Review for {{ad_id}}</p>
+        <p class="modal-card-title">Review for {{ ad_id }}</p>
         <button class="delete" aria-label="close" v-on:click="showModal = false"></button>
       </header>
 
       <section class="modal-card-body">
         <input class="input is-link" type="text" placeholder="Title">
+
+        <div class="select">
+          <select v-model="selectedOption" @change="getSelectedValue">
+            <option v-for="option in options" :value="option.value">
+              {{ option.text }}
+            </option>
+          </select>
+        </div>
+
         <textarea class="textarea" placeholder="Leave a review here"></textarea>
       </section>
 
       <footer class="modal-card-foot">
-        <button class="button is-success">Send</button>
+        <button class="button is-success">
+          <ion-icon name="send"></ion-icon>
+          Send
+        </button>
         <button class="button" v-on:click="showModal = false">Cancel</button>
       </footer>
     </div>
