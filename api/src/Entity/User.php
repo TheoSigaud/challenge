@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Controller\ResetPasswordController;
 use App\Controller\ConfirmAccountController;
+use App\Controller\CheckTokenController;
 use App\Controller\ResetEmailController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
@@ -31,6 +32,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         name: 'reset-email',
         uriTemplate: '/reset/email',
         controller: ResetEmailController::class
+    ),
+
+    new Get(
+        name: 'check-token',
+        uriTemplate: '/check-token/{token}',
+        controller: CheckTokenController::class,
+        read: false
     ),
 
     new Get(
@@ -166,7 +174,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }

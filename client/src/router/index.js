@@ -8,6 +8,7 @@ import ListingsAdvertisementsView from '../views/admin/ListingsAdvertisementsVie
 import jsCookie from 'js-cookie'
 import ProfileView from '../views/ProfileView.vue'
 import ResetPwdView from '../views/ResetPwdView.vue'
+import ResetPasswordView from "@/views/ResetPasswordView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -57,6 +58,11 @@ const router = createRouter({
       path: '/resetpwd',
       name: 'resetpwd',
       component: ResetPwdView
+    },
+    {
+      path: '/reset-password',
+      name: 'reset-password',
+      component: ResetPasswordView
     }
   ]
 })
