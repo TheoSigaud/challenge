@@ -10,7 +10,7 @@ const research = ref({
 var data = ref({});
 
 function search() {
-  const url = new URL("http://localhost/advertisements");
+  const url = new URL("https://localhost/advertisements");
   if (research.value.city !== null) {
     url.searchParams.set("city", research.value.city);
   }
@@ -28,15 +28,12 @@ function search() {
 
 function getOwnerMail(owner) {
   const url = new URL("https://localhost");
-  var ownerMail = "";
   url.pathname = owner;
-  console.log(url);
-  fetch(url)
+  console.log(url.href);
+  fetch(url.href)
     .then((response) => response.json())
-    .then((_data) => {ownerMail = _data.email})
+    .then((_data) => {console.log(_data); return _data.email})
     .catch((error) => console.error("Error fetching owner:", error));
-
-  return ownerMail;
 }
 </script>
 
@@ -124,8 +121,9 @@ function getOwnerMail(owner) {
       </div>
       <div class="media-content">
         <p class="title is-4">{{ item.name }}</p>
-        <!-- try to display as a subtitle the email of the owner -->
-        <p class="subtitle is-6">sns</p>
+        <!-- <p class="subtitle is-6">@johnsmith</p> -->
+        <p class="subtitle is-6">{{ getOwnerMail(item.owner) }}</p>
+
       </div>
     </div>
           <div class="content">
