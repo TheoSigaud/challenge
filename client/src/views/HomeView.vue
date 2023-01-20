@@ -1,31 +1,43 @@
 <script setup>
-  import { ref } from 'vue'
+import { ref } from "vue";
 
-  const research = ref({
-    city: null,
-    startDate: null,
-    endDate: null
-  })
+const research = ref({
+  city: null,
+  startDate: null,
+  endDate: null,
+});
 
-  function search() {
-    console.log('search')
-    const requestSearch = new Request(
-        "http://localhost/posts/search",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            city: research.value.city,
-            startDate: research.value.startDate,
-            endDate: research.value.endDate
-          }),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
+var data = ref({});
 
-    fetch(requestSearch)
-        .then((response) => console.log(response))
+function search() {
+  const url = new URL("http://localhost/advertisements");
+  if (research.value.city !== null) {
+    url.searchParams.set("city", research.value.city);
   }
+  fetch(url)
+    .then((response) => response.json())
+    .then((_data) => {
+      console.log(_data);
+      if (_data["hydra:member"]) {
+        data = _data["hydra:member"];
+      }
+      console.log(data);
+    })
+    .catch((error) => console.error("Error fetching advertisements:", error));
+}
+
+function getOwnerMail(owner) {
+  const url = new URL("https://localhost");
+  var ownerMail = "";
+  url.pathname = owner;
+  console.log(url);
+  fetch(url)
+    .then((response) => response.json())
+    .then((_data) => {ownerMail = _data.email})
+    .catch((error) => console.error("Error fetching owner:", error));
+
+  return ownerMail;
+}
 </script>
 
 <template>
@@ -61,16 +73,27 @@
         <div class="level-item">
           <div class="field has-addons">
             <p class="control">
-              <input class="input" type="text" placeholder="Find a post" />
+              <input
+                v-model="research.city"
+                class="input"
+                type="text"
+                placeholder="Find a post"
+              />
             </p>
             <p class="control">
-              <Datepicker :enable-time-picker="false"></Datepicker>
+              <Datepicker
+                v-model="research.startDate"
+                :enable-time-picker="false"
+              ></Datepicker>
             </p>
             <p class="control">
-              <Datepicker :enable-time-picker="false"></Datepicker>
+              <Datepicker
+                v-model="research.endDate"
+                :enable-time-picker="false"
+              ></Datepicker>
             </p>
             <p class="control">
-              <button class="button">Search</button>
+              <button class="button" @click="search">Search</button>
             </p>
           </div>
         </div>
@@ -88,36 +111,28 @@
       </div>
     </div>
   </nav>
-  <div class="columns">
-    <!-- <div class="column is-two-fifths"> -->
-    <div class="column is-full">
-      <div class="box">
-        <p class="title">Flexible column</p>
-        <p class="subtitle">
-          This column will take up the remaining space available.
-        </p>
-        <div class="columns">
-          <div class="column is-two-fifths">is-four-fifths</div>
-          <div class="column">Auto</div>
-          <div class="column">Auto</div>
+
+  <div class="columns is-multiline">
+    <div class="column is-two-fifths" v-for="item in data" :key="item.id">
+      <div class="card">
+        <div class="card-content">
+          <div class="media">
+      <div class="media-left">
+        <figure class="image is-48x48">
+          <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+        </figure>
+      </div>
+      <div class="media-content">
+        <p class="title is-4">{{ item.name }}</p>
+        <!-- try to display as a subtitle the email of the owner -->
+        <p class="subtitle is-6">sns</p>
+      </div>
+    </div>
+          <div class="content">
+            {{ item.description }}
+          </div>
         </div>
       </div>
     </div>
-    <!-- <div class="column">
-      <div class="box">
-        <p class="title">Flexible column</p>
-        <p class="subtitle">
-          This column will take up the remaining space available.
-        </p>
-      </div>
-    </div>
-    <div class="column">
-      <div class="box">
-        <p class="title">Flexible column</p>
-        <p class="subtitle">
-          This column will take up the remaining space available.
-        </p>
-      </div>
-    </div> -->
   </div>
 </template>
