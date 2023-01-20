@@ -3,9 +3,10 @@ import {ref, onMounted, watch} from 'vue';
 
 export default {
   setup() {
-    const loading = ref(false)
-    const error = ref(null)
+    const loading = ref(false);
+    const error = ref(null);
     const reservations = ref([]);
+    const reload = ref(false);
 
     const requestReservations = new Request(
         "https://localhost/bookings",
@@ -16,6 +17,12 @@ export default {
           }
         });
 
+    const reloadData = () => {
+      console.log("ok")
+      if (reload.value === false) {
+        reload.value = true
+      }
+    }
     const fetchData = async () => {
       loading.value = true
       try {
@@ -29,21 +36,28 @@ export default {
       }
     }
 
+
     onMounted(() => {
       fetchData()
+    })
+
+    watch(() => reload.value, async () => {
+      await fetchData();
+      reload.value = false;
     })
 
     return {
       reservations,
       loading,
-      error
+      error,
+      reloadData
     }
-
   }
 }
 </script>
 
 <template>
+  <button @click="reloadData">Recharger les données</button>
   <div v-if="loading">
     <progress class="progress is-large is-info" max="100">60%</progress>
   </div>
