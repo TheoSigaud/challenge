@@ -22,7 +22,7 @@ class Comment
     private ?string $message = null;
 
     #[ORM\Column]
-    private ?float $rate = null;
+    private ?int $rate = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?User $client = null;
@@ -36,8 +36,12 @@ class Comment
     #[ORM\Column]
     private ?int $status = null;
 
+
     #[ORM\Column]
-    private ?\DateTimeImmutable $created_at = null;
+    /**
+     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
+     */
+    private ?\DateTimeImmutable $createdAt;
 
     public function getId(): ?int
     {
@@ -56,12 +60,12 @@ class Comment
         return $this;
     }
 
-    public function getRate(): ?float
+    public function getRate(): ?int
     {
         return $this->rate;
     }
 
-    public function setRate(float $rate): self
+    public function setRate(int $rate): self
     {
         $this->rate = $rate;
 
@@ -118,13 +122,15 @@ class Comment
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->created_at;
+        return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    public function setCreatedAt(): self
     {
-        $this->created_at = $created_at;
+        $this->createdAt =  new \DateTimeImmutable();;
 
         return $this;
     }
+
+
 }
