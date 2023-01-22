@@ -150,7 +150,7 @@ function flipCard(status) {
                                     v-if="$index === $index" v-bind:key="$index + 1">{{ n }}</span>
                             </transition-group>
                           </div>
-                          <div class="card-item__name" v-else key="2">Full Name</div>
+                          <div class="card-item__name" v-else key="2">Nom Complet</div>
                         </transition>
                       </label>
                       <div class="card-item__date" ref="cardDate">
