@@ -14,6 +14,7 @@ const cardNumberTemp = ref("")
 const isCardFlipped = ref(false)
 const focusElementStyle = ref(null)
 const $index = ref(0)
+const error = ref(null)
 
 onMounted(() => {
   cardNumberTemp.value = otherCardMask.value;
@@ -62,6 +63,36 @@ watchEffect(() => {
 
 function flipCard(status) {
   isCardFlipped.value = status;
+}
+
+function buy() {
+  error.value = null;
+
+  const requestBuy = new Request(
+      "https://localhost/buy",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          cardNumber: cardNumber.value,
+          cardName: cardName.value,
+          cardMonth: cardMonth.value,
+          cardYear: cardYear.value,
+          cardCvv: cardCvv.value
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
+
+  fetch(requestBuy)
+      .then(response => response.json())
+      .then(data => {
+         if (data.message === "success") {
+           console.log("success");
+         } else {
+           error.value = data.message;
+         }
+      })
 }
 </script>
 
@@ -196,52 +227,56 @@ function flipCard(status) {
                 </div>
               </div>
             </div>
-            <div class="card-form__inner">
-              <div class="card-input">
-                <label for="idCardNumber" class="card-input__label">Numéro de la carte</label>
-                <input type="text" id="idCardNumber" class="card-input__input"
-                       v-model="cardNumber" data-ref="idCardNumber"
-                       autocomplete="off">
-              </div>
-              <div class="card-input">
-                <label for="idCardName" class="card-input__label">Titulaire de la carte</label>
-                <input type="text" id="idCardName" class="card-input__input" v-model="cardName"
-                       data-ref="idCardName" autocomplete="off">
-              </div>
-              <div class="card-form__row">
-                <div class="card-form__col">
-                  <div class="card-form__group">
-                    <label for="cardMonth" class="card-input__label">Date d'expiration</label>
-                    <select class="card-input__input -select" id="cardMonth" v-model="cardMonth"
-                            data-ref="cardDate">
-                      <option value="" disabled selected>Mois</option>
-                      <option v-bind:value="n < 10 ? '0' + n : n" v-for="n in 12" v-bind:disabled="n < minCardMonth"
-                              v-bind:key="n">
-                        {{ n < 10 ? '0' + n : n }}
-                      </option>
-                    </select>
-                    <select class="card-input__input -select" id="cardYear" v-model="cardYear"
-                            data-ref="cardDate">
-                      <option value="" disabled selected>Année</option>
-                      <option v-bind:value="$index + minCardYear" v-for="(n, $index) in 12" v-bind:key="n">
-                        {{ $index + minCardYear }}
-                      </option>
-                    </select>
+            <form @submit.prevent="buy">
+              <div class="card-form__inner">
+                <div class="card-input">
+                  <label for="idCardNumber" class="card-input__label">Numéro de la carte</label>
+                  <input type="text" id="idCardNumber" class="card-input__input"
+                         v-model="cardNumber" data-ref="idCardNumber"
+                         autocomplete="off">
+                </div>
+                <div class="card-input">
+                  <label for="idCardName" class="card-input__label">Titulaire de la carte</label>
+                  <input type="text" id="idCardName" class="card-input__input" v-model="cardName"
+                         data-ref="idCardName" autocomplete="off">
+                </div>
+                <div class="card-form__row">
+                  <div class="card-form__col">
+                    <div class="card-form__group">
+                      <label for="cardMonth" class="card-input__label">Date d'expiration</label>
+                      <select class="card-input__input -select" id="cardMonth" v-model="cardMonth"
+                              data-ref="cardDate">
+                        <option value="" disabled selected>Mois</option>
+                        <option v-bind:value="n < 10 ? '0' + n : n" v-for="n in 12" v-bind:disabled="n < minCardMonth"
+                                v-bind:key="n">
+                          {{ n < 10 ? '0' + n : n }}
+                        </option>
+                      </select>
+                      <select class="card-input__input -select" id="cardYear" v-model="cardYear"
+                              data-ref="cardDate">
+                        <option value="" disabled selected>Année</option>
+                        <option v-bind:value="$index + minCardYear" v-for="(n, $index) in 12" v-bind:key="n">
+                          {{ $index + minCardYear }}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="card-form__col -cvv">
+                    <div class="card-input">
+                      <label for="cardCvv" class="card-input__label">CVC</label>
+                      <input type="text" class="card-input__input" id="cardCvv" maxlength="3"
+                             v-model="cardCvv" v-on:focus="flipCard(true)" v-on:blur="flipCard(false)" autocomplete="off">
+                    </div>
                   </div>
                 </div>
-                <div class="card-form__col -cvv">
-                  <div class="card-input">
-                    <label for="cardCvv" class="card-input__label">CVC</label>
-                    <input type="text" class="card-input__input" id="cardCvv" maxlength="3"
-                           v-model="cardCvv" v-on:focus="flipCard(true)" v-on:blur="flipCard(false)" autocomplete="off">
-                  </div>
-                </div>
-              </div>
 
-              <button class="card-form__button">
-                Payer
-              </button>
-            </div>
+                <p v-if="error" class="has-text-centered has-text-danger">{{error}}</p>
+
+                <button class="card-form__button" type="submit">
+                  Payer
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
