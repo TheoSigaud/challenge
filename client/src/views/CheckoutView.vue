@@ -15,6 +15,7 @@ const isCardFlipped = ref(false)
 const focusElementStyle = ref(null)
 const $index = ref(0)
 const error = ref(null)
+const modeLoading = ref(false)
 
 onMounted(() => {
   cardNumberTemp.value = otherCardMask.value;
@@ -66,6 +67,7 @@ function flipCard(status) {
 }
 
 function buy() {
+  modeLoading.value = true;
   error.value = null;
 
   const requestBuy = new Request(
@@ -87,6 +89,7 @@ function buy() {
   fetch(requestBuy)
       .then(response => response.json())
       .then(data => {
+         modeLoading.value = false;
          if (data.message === "success") {
            console.log("success");
          } else {
@@ -272,7 +275,7 @@ function buy() {
 
                 <p v-if="error" class="has-text-centered has-text-danger">{{error}}</p>
 
-                <button class="card-form__button" type="submit">
+                <button v-bind:class="{'is-loading': modeLoading}" v-bind:disabled="modeLoading" class="card-form__button is-info button" type="submit">
                   Payer
                 </button>
               </div>
@@ -416,7 +419,7 @@ body {
   font-weight: 500;
   font-family: "Source Sans Pro", sans-serif;
   box-shadow: 3px 10px 20px 0px rgba(35, 100, 210, 0.3);
-  color: #fff;
+  color: #fff !important;
   margin-top: 20px;
   cursor: pointer;
 }
