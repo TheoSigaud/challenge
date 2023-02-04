@@ -4,6 +4,7 @@ import {computed, onMounted, ref, watchEffect} from 'vue'
 const currentCardBackground = ref(Math.floor(Math.random() * 25 + 1))
 const cardName = ref("")
 const cardNumber = ref("")
+const displayCardNumber = ref("")
 const cardMonth = ref("")
 const cardYear = ref("")
 const cardCvv = ref("")
@@ -23,6 +24,7 @@ onMounted(() => {
 });
 
 const getCardType = computed(() => {
+  displayCardNumber.value = cardNumber.value.replace(/\s/g, '').replace(/(\d{4})/g, '$1 ').trim();
 
   let number = cardNumber.value;
   let re = new RegExp("^4");
@@ -49,7 +51,7 @@ const minCardMonth = computed(() => {
 });
 
 watchEffect(() => {
-  if (!/^\d*$/.test(cardNumber.value)) {
+  if (!/^\d*$/.test(cardNumber.value) || cardNumber.value.length > 16) {
     cardNumber.value = cardNumber.value.slice(0, -1);
   }
 
@@ -133,21 +135,9 @@ function buy() {
                       <template v-if="getCardType === 'amex'">
                      <span v-for="(n, $index) in amexCardMask" :key="$index">
                       <transition name="slide-fade-up">
-                        <div
-                            class="card-item__numberItem"
-                            v-if="$index > 4 && $index < 14 && cardNumber.length > $index && n.trim() !== ''"
-                        >*</div>
-                        <div class="card-item__numberItem"
-                             :class="{ '-active' : n.trim() === '' }"
-                             :key="$index" v-else-if="cardNumber.length > $index">
-                          {{ cardNumber[$index] }}
+                        <div class="card-item__numberItem">
+                            {{ displayCardNumber[$index] }}
                         </div>
-                        <div
-                            class="card-item__numberItem"
-                            :class="{ '-active' : n.trim() === '' }"
-                            v-else
-                            :key="$index + 1"
-                        >{{ n }}</div>
                       </transition>
                     </span>
                       </template>
@@ -155,21 +145,9 @@ function buy() {
                       <template v-else>
                       <span v-for="(n, $index) in otherCardMask" :key="$index">
                         <transition name="slide-fade-up">
-                          <div
-                              class="card-item__numberItem"
-                              v-if="$index > 4 && $index < 15 && cardNumber.length > $index && n.trim() !== ''"
-                          >*</div>
-                          <div class="card-item__numberItem"
-                               :class="{ '-active' : n.trim() === '' }"
-                               :key="$index" v-else-if="cardNumber.length > $index">
-                            {{ cardNumber[$index] }}
+                          <div class="card-item__numberItem">
+                            {{ displayCardNumber[$index] }}
                           </div>
-                          <div
-                              class="card-item__numberItem"
-                              :class="{ '-active' : n.trim() === '' }"
-                              v-else
-                              :key="$index + 1"
-                          >{{ n }}</div>
                         </transition>
                       </span>
                       </template>
