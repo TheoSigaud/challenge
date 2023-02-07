@@ -1,31 +1,85 @@
 <script setup>
   import { ref } from 'vue'
-  import Register from "@/components/Register.vue";
-  import Login from "@/components/Login.vue";
 
   const isRegister = ref(false)
-  const showModal = ref(false)
-  const resetEmail = ref(null)
-  const resetSuccess = ref(null)
+  const registerData = ref({
+    firstname: null,
+    lastname: null,
+    email: null,
+    birthday: null,
+    address: null,
+    password: null,
+    confirmPassword: null,
+    error: null
+  })
+  const loginData = ref({
+    email: null,
+    password: null,
+    error: null
+  })
 
-  function resetPassword() {
-    const requestReset = new Request(
-        "https://localhost/reset/email",
+  function register() {
+    registerData.value.error = null
+
+    if (registerData.value.email == null
+      || registerData.value.password == null
+      || registerData.value.confirmPassword == null) {
+      registerData.value.error = 'Tous les champs sont obligatoires'
+
+      return
+    }
+
+    if (registerData.value.password !== registerData.value.confirmPassword) {
+      registerData.value.error = 'Les mots de passe ne correspondent pas'
+      return
+    }
+    console.log('register')
+    const requestRegister = new Request(
+        "https://localhost/users",
         {
           method: "POST",
           body: JSON.stringify({
-            email: resetEmail.value,
+            firstname: registerData.value.firstname,
+            lastname: registerData.value.lastname,
+            email: registerData.value.email,
+            address: registerData.value.address,
+            birthday: registerData.value.birthday,
+            password: registerData.value.password,
+            roles: []
           }),
           headers: {
             "Content-Type": "application/json"
           }
         });
 
-    fetch(requestReset)
-        .then((response) => {
-          resetSuccess.value = 'Si votre email est valide, vous allez recevoir un email de réinitialisation de mot de passe.'
-          showModal.value = false
-        })
+    fetch(requestRegister)
+        .then((response) => console.log(response))
+  }
+
+  function login() {
+    loginData.value.error = null
+
+    if (loginData.value.email == null || loginData.value.password == null) {
+      loginData.value.error = 'Tous les champs sont obligatoires'
+
+      return
+    }
+
+    // const requestLogin = new Request(
+    //     "http://localhost/users/login",
+    //     {
+    //       method: "POST",
+    //       body: JSON.stringify({
+    //         email: loginData.value.email,
+    //         password: loginData.value.password
+    //       }),
+    //       headers: {
+    //         "Content-Type": "application/json"
+    //       }
+    //     });
+    //
+    // fetch(requestLogin)
+    //     .then((response) => console.log(response))
   }
 </script>
 
@@ -33,48 +87,96 @@
   <main>
     <div class="container">
       <div class="card">
-        <div class="card-content pb-1">
+        <div class="card-content">
           <div class="content">
-            <h2 class="has-text-centered">Bienvenue</h2>
+            <h2>Bienvenue</h2>
 
-            <Register v-if="isRegister" />
-            <Login v-else />
+            <form v-if="!isRegister">
+              <div class="field">
+                <label class="label">Email</label>
+                <div class="control">
+                  <input class="input" type="email" placeholder="alexsmith@gmail.com">
+                </div>
+              </div>
 
-            <p v-if="resetSuccess" class="has-text-centered has-text-success mt-5">{{resetSuccess}}</p>
-            <div v-if="!isRegister" class="is-flex is-justify-content-space-between">
-              <p class="is-size-6 has-text-centered mt-5 is-underlined is-clickable mr-6" @click="isRegister = !isRegister">Pas de compte</p>
-              <p class="is-size-6 has-text-centered mt-5 is-underlined is-clickable ml-6" @click="showModal = !showModal">Mot de passe oublié</p>
-            </div>
+              <div class="field">
+                <label class="label">Mot de passe</label>
+                <div class="control">
+                  <input class="input" type="password" placeholder="*****">
+                </div>
+              </div>
+
+              <p v-if="loginData.error" class="has-text-centered has-text-danger">{{loginData.error}}</p>
+
+              <div class="is-flex is-justify-content-center">
+                <button class="button is-primary" type="submit">Se connecter</button>
+              </div>
+            </form>
+
+            <form v-else @submit.prevent="register">
+              <div class="columns">
+                <div class="column">
+                  <div class="field">
+                    <label class="label" for="firstname">Prénom</label>
+                    <div class="control">
+                      <input v-model="registerData.firstname" class="input" id="firstname" type="text" placeholder="Alexis">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="column">
+                  <div class="field">
+                    <label class="label" for="lastname">Nom</label>
+                    <div class="control">
+                      <input v-model="registerData.lastname" class="input" id="lastname" type="text" placeholder="Smith">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label" for="emailRegister">Email</label>
+                <div class="control">
+                  <input v-model="registerData.email" class="input" id="emailRegister" type="email" placeholder="alexsmith@gmail.com">
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label">Date de naissance</label>
+                <Datepicker v-model="registerData.birthday" :enable-time-picker="false"></Datepicker>
+              </div>
+
+              <div class="field">
+                <label class="label" for="address">Adresse</label>
+                <div class="control">
+                  <input v-model="registerData.address" class="input" id="address" type="text" placeholder="111 Rue de la Fontainer 75018 Paris">
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label" for="passwordRegister">Mot de passe</label>
+                <div class="control">
+                  <input v-model="registerData.password" class="input" id="passwordRegister" type="password" placeholder="*****">
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="label" for="confirmPasswordRegister">Mot de passe de confirmation</label>
+                <div class="control">
+                  <input v-model="registerData.confirmPassword" class="input" id="confirmPasswordRegister" type="password" placeholder="*****">
+                </div>
+              </div>
+
+              <p v-if="registerData.error" class="has-text-centered has-text-danger">{{registerData.error}}</p>
+
+              <div class="is-flex is-justify-content-center">
+                <button class="button is-primary" type="submit">S'inscrire</button>
+              </div>
+            </form>
+            <p v-if="!isRegister" class="is-size-6 has-text-centered mt-5 is-underlined is-clickable" @click="isRegister = !isRegister">Pas de compte</p>
             <p v-else class="is-size-6 has-text-centered	mt-5 is-underlined is-clickable" @click="isRegister = !isRegister">Se connecter</p>
           </div>
         </div>
-      </div>
-
-      <div class="modal" v-bind:class="{'is-active': showModal}">
-        <div class="modal-background" @click.prevent="showModal = !showModal"></div>
-        <div class="modal-content">
-          <div class="card">
-            <div class="card-content">
-              <div class="content">
-                <h3>Réinitialisation du mot de passe</h3>
-
-                <form @submit.prevent="resetPassword">
-                  <div class="field">
-                    <label class="label">Email</label>
-                    <div class="control">
-                      <input v-model="resetEmail" class="input" type="email" placeholder="alexsmith@gmail.com">
-                    </div>
-                  </div>
-
-                  <div class="is-flex is-justify-content-center mt-6">
-                    <button class="button is-primary" type="submit">Réinitialiser</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <button class="modal-close is-large" aria-label="close" @click="showModal = !showModal"></button>
       </div>
     </div>
   </main>
