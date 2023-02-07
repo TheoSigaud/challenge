@@ -9,6 +9,7 @@ import jsCookie from 'js-cookie'
 import ProfileView from '../views/ProfileView.vue'
 import ResetPwdView from '../views/ResetPwdView.vue'
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
+import CheckoutView from "@/views/CheckoutView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -63,6 +64,11 @@ const router = createRouter({
       path: '/reset-password',
       name: 'reset-password',
       component: ResetPasswordView
+    },
+    {
+      path: '/checkout',
+      name: 'checkout',
+      component: CheckoutView
     }
   ]
 })
