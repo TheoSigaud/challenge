@@ -17,33 +17,35 @@ export default {
     }
   },
 
-  setup(props){
+  setup(props) {
     const titleReview = ref("")
     const descriptionReview = ref("")
     const rateReview = ref("")
+    const statusFetch = ref(null)
 
     const onSubmit = async () => {
       try {
+        console.log(props.ad_id, props.c_id)
         const response = await fetch("https://localhost/comments", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
-            advertisement_id : props.ad_id,
+            advertisement_id: props.ad_id,
             client_id: props.c_id,
             title: titleReview.value,
             message: descriptionReview.value,
             rate: parseFloat(rateReview.value),
-            status : 0,
-            created_at: new Date()
+            status: 0
           })
         });
         if (!response.ok) {
+          const data = await response.json()
+          statusFetch.value = ["Error", data["hydra:description"], "danger"]
           throw new Error("An error occurred while submitting the form");
         }
-        alert("Form submitted successfully!");
+        statusFetch.value = ["Sent", "Review sent", "success"]
       } catch (error) {
-        console.error(error);
-        alert("An error occurred while submitting the form");
+          console.log(error)
       }
     }
 
@@ -51,13 +53,20 @@ export default {
       titleReview,
       descriptionReview,
       rateReview,
-      onSubmit
+      onSubmit,
+      statusFetch
     }
   }
 
 }
 </script>
 <template>
+  <Notification v-if="statusFetch"
+                :title="statusFetch[0]"
+                :message="statusFetch[1]"
+                :type="statusFetch[2]"
+                @hideNotification = "statusFetch = null"
+  />
   <form @submit.prevent="onSubmit()">
     <input v-model="titleReview" class="input is-link" type="text" placeholder="Title">
 
@@ -78,3 +87,4 @@ export default {
     </footer>
   </form>
 </template>
+

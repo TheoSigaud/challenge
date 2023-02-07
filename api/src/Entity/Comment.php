@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\CommentRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -18,9 +20,26 @@ class Comment
     #[ORM\Column()]
     private ?int $id = null;
 
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(min=3, max=255,
+     *     minMessage="The review must be at least {{ limit }} characters long",
+     *     maxMessage="The review cannot be longer than {{ limit }} characters",
+     *     )
+     */
     #[ORM\Column(type: Types::TEXT)]
     private ?string $message = null;
 
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Range(
+     *     min=1, max=5,
+     *     notInRangeMessage="You must rate the location between {{min}} and {{max}}.")
+     * @Assert\Type(
+     *     type="integer",
+     *     message="The rate must be between 1 and 5",
+     *     )
+     */
     #[ORM\Column]
     private ?int $rate = null;
 
@@ -34,14 +53,18 @@ class Comment
     private ?string $title = null;
 
     #[ORM\Column]
-    private ?int $status = null;
-
+    private ?int $status = 0;
 
     #[ORM\Column]
-    /**
-     * @ORM\Column(type="datetime", options={"default"="CURRENT_TIMESTAMP"})
-     */
-    private ?\DateTimeImmutable $createdAt;
+    private ?\DateTimeImmutable $created_at = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $updated_at = null;
+
+    public function __construct() {
+        $this->created_at = new DateTimeImmutable();
+        $this->updated_at = new DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {
@@ -122,13 +145,23 @@ class Comment
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
 
     public function setCreatedAt(): self
     {
-        $this->createdAt =  new \DateTimeImmutable();;
+        $this->created_at = new \DateTimeImmutable();;
+        return $this;
+    }
 
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updated_at;
+    }
+
+    public function setUpdatedAt(\DateTimeImmutable $updated_at): self
+    {
+        $this->updated_at = $updated_at;
         return $this;
     }
 

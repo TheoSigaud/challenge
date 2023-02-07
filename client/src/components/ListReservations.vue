@@ -47,7 +47,7 @@ export default {
         const data = await response.json()
         reservations.value = data["hydra:member"]
       } catch (err) {
-        error.value = err
+        error.value = err.message
       } finally {
         loading.value = false
       }
@@ -142,8 +142,8 @@ export default {
 
       <section class="modal-card-body">
         <reviewForm
-            :ad_id="ad_id.split('/')[2]"
-            :c_id="c_id.split('/')[2]"
+            :ad_id="ad_id"
+            :c_id="c_id"
         />
       </section>
 
