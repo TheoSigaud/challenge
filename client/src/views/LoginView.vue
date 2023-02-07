@@ -35,7 +35,7 @@
       <div class="card">
         <div class="card-content pb-1">
           <div class="content">
-            <h2 class="has-text-centered">Bienvenue</h2>
+            <h2 class="has-text-centered">Connexion</h2>
 
             <Register v-if="isRegister" />
             <Login v-else />
@@ -67,7 +67,7 @@
                   </div>
 
                   <div class="is-flex is-justify-content-center mt-6">
-                    <button class="button is-primary" type="submit">Réinitialiser</button>
+                    <button class="button btn--lavender" type="submit">Réinitialiser</button>
                   </div>
                 </form>
               </div>
