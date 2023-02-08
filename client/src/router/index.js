@@ -3,6 +3,7 @@ import HomeView from "../views/HomeView.vue";
 import LoginView from '../views/LoginView.vue'
 import ConfirmAccount from '../views/ConfirmView.vue'
 import CreateAdvertisementView from "../views/CreateAdvertisementView.vue";
+import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
 import MyListingsView from "../views/MyListingsView.vue";
 import AdvertisementView from "../views/AdvertisementView.vue";
 import ListingsAdvertisementsView from "../views/admin/ListingsAdvertisementsView.vue"
@@ -78,4 +79,30 @@ const router = createRouter({
   ]
 })
 
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    const token = jsCookie.get('jwt')
+
+    const requestToken = new Request(
+        "https://localhost/api/auth",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+    fetch(requestToken)
+        .then((response) => {
+            if (response.status === 200) {
+                next()
+            } else {
+                next('/login')
+            }
+        })
+  }else {
+    next()
+  }
+})
 export default router;
