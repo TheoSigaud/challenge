@@ -5,7 +5,7 @@ import ConfirmAccount from '../views/ConfirmView.vue'
 import CreateAdvertisementView from "../views/CreateAdvertisementView.vue";
 import MyListingsView from "../views/MyListingsView.vue";
 import AdvertisementView from "../views/AdvertisementView.vue";
-import ListingsAdvertisementsView from '../views/admin/ListingsAdvertisementsView.vue'
+import ListingsAdvertisementsView from "../views/admin/ListingsAdvertisementsView.vue"
 import jsCookie from 'js-cookie'
 import ProfileView from '../views/ProfileView.vue'
 import ResetPwdView from '../views/ResetPwdView.vue'
