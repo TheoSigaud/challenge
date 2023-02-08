@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import DataTable from 'datatables.net-vue3';
-import DataTablesLib from 'datatables.net';
- 
- DataTable.use(DataTablesLib);
-const data = [
-  [1, 2],
-  [3, 4],
-];
+
 </script>
  
 <template>
