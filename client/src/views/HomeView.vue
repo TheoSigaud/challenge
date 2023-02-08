@@ -78,12 +78,14 @@ function search() {
               <Datepicker
                 v-model="startDate"
                 :enable-time-picker="false"
+                placeholder="dd/mm/yyyy"
               ></Datepicker>
             </p>
             <p class="control">
               <Datepicker
                 v-model="endDate"
                 :enable-time-picker="false"
+                placeholder="dd/mm/yyyy"
               ></Datepicker>
             </p>
             <p class="control">
