@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import jwtDecode from 'jwt-decode'
 import jsCookie from 'js-cookie'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
 
   const registerData = ref({
     firstname: null,
@@ -12,8 +15,10 @@ import jsCookie from 'js-cookie'
     password: null,
     confirmPassword: null,
     status: null,
+    role: null,
     error: null
   })
+  const isAdmin = ref(false)
   const displaySuccess = ref(false)
   const displayChangePwd = ref(false)
   const changePwd = ref({
@@ -24,7 +29,16 @@ import jsCookie from 'js-cookie'
   })
   const isActive = ref('profil')
   let token = jsCookie.get('jwt')
-  let idUser = jwtDecode(token).id
+
+  let idUser = 0
+  if(route.query.id == null){
+    idUser = jwtDecode(token).id
+    isAdmin.value = false
+  }else{
+    idUser = route.query.id
+    isAdmin.value = true
+  }
+
   const requestUser = new Request(
     "https://localhost/api/users/"+idUser,
     {
@@ -43,6 +57,14 @@ import jsCookie from 'js-cookie'
       registerData.value.birthday = data.birthday
       registerData.value.address = data.address,
       registerData.value.status = data.status
+      // registerData.value.role = data.roles
+      // console.log(data)
+
+      // if(registerData.value.role.includes('ROLE_ADMIN')){
+      //   registerData.value.role = 'Administrateur'
+      // }else{
+      //   registerData.value.role = 'Utilisateur'
+      // }
     })
     .catch((error) => console.log(error))
 
@@ -93,7 +115,7 @@ import jsCookie from 'js-cookie'
           </div>
           <div v-if="displaySuccess">
             <div class="notification is-primary is-light">
-              <p>La modification de vos données personnelle c'est déroulé avec succès !</p>
+              <p>La modification des données personnelle c'est déroulé avec succès !</p>
             </div>
           </div>
           <div v-if="displayChangePwd">
@@ -157,6 +179,36 @@ import jsCookie from 'js-cookie'
                       </div>
                     </div>
                   </div>
+                  <!-- <div v-if="isAdmin">
+                    <div class="columns" v-if="registerData.role == 'Administrateur'">
+                      <div class="column">
+                        <div class="field">
+                          <label class="label" for="isAdmin">Administrateur</label>
+                          <div class="control">
+                            <input v-model="registerData.role" class="input" id="isAdmin">
+                            <label class="checkbox">
+                              <input type="checkbox" id="role" checked>
+                                Administrateur 
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="columns" v-if="registerData.role != 'Administrateur'">
+                      <div class="column">
+                        <div class="field">
+                          <label class="label" for="isAdmin">Administrateur</label>
+                          <div class="control">
+                            <input v-model="registerData.role" class="input" id="isAdmin">
+                            <label class="checkbox">
+                              <input type="checkbox" id="role">
+                                Administrateur 
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>                  
+                  </div> -->
                   <div class="is-flex is-justify-content-center">
                     <button class="button is-primary"  type="submit">Sauvegarder</button>
                   </div>
