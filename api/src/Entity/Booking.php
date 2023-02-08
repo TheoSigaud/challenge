@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Post;
+use App\Controller\BookingController;
 use App\Repository\BookingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -10,6 +12,13 @@ use ApiPlatform\Metadata\ApiResource;
 #[ApiResource]
 #[ORM\Table(name: '`booking`')]
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
+#[ApiResource(operations: [
+    new Post(
+        name: 'buy',
+        uriTemplate: '/buy',
+        controller: BookingController::class
+    )
+])]
 class Booking
 {
     #[ORM\Id]

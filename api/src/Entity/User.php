@@ -4,8 +4,11 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use App\Controller\ResetPasswordController;
 use App\Controller\ConfirmAccountController;
+use App\Controller\CheckTokenController;
+use App\Controller\ResetEmailController;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,6 +27,19 @@ use Symfony\Component\Serializer\Annotation\Groups;
         name: 'reset-password',
         uriTemplate: '/reset/password',
         controller: ResetPasswordController::class
+    ),
+
+    new Post(
+        name: 'reset-email',
+        uriTemplate: '/reset/email',
+        controller: ResetEmailController::class
+    ),
+
+    new Get(
+        name: 'check-token',
+        uriTemplate: '/check-token/{token}',
+        controller: CheckTokenController::class,
+        read: false
     ),
 
     new Get(
@@ -144,7 +160,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @see PasswordAuthenticatedUserInterface
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
