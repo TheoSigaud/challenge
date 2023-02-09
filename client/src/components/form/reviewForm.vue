@@ -30,8 +30,8 @@ export default {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
-            advertisement_id: props.ad_id,
-            client_id: props.c_id,
+            advertisement: props.ad_id,
+            client: props.c_id,
             title: titleReview.value,
             message: descriptionReview.value,
             rate: parseFloat(rateReview.value),

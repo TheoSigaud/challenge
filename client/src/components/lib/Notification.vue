@@ -1,5 +1,5 @@
 <template>
-  <div :class="`notification is-`${type}``">
+  <div :class="`notification is-${type}`">
     <button class="delete" @click="hideNotification"></button>
     <h4 class="title is-4">{{ title }}</h4>
     <p>{{ message }}</p>

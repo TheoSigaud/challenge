@@ -46,6 +46,7 @@ export default {
         const response = await fetch(requestReservations)
         const data = await response.json()
         reservations.value = data["hydra:member"]
+
       } catch (err) {
         error.value = err.message
       } finally {
