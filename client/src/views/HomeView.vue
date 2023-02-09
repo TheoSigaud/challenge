@@ -41,11 +41,11 @@ function search() {
     aria-label="main navigation"
   >
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://bulma.io">
+      <a class="" href="/">
         <img
-          src="https://bulma.io/images/bulma-logo.png"
-          width="112"
-          height="28"
+          src="../assets/logo.png"
+          width="90"
+          height="90"
         />
       </a>
 
@@ -71,23 +71,25 @@ function search() {
                 v-model="city"
                 class="input"
                 type="text"
-                placeholder="Find a post"
+                placeholder="Ville"
               />
             </p>
             <p class="control">
               <Datepicker
                 v-model="startDate"
                 :enable-time-picker="false"
+                placeholder="dd/mm/yyyy"
               ></Datepicker>
             </p>
             <p class="control">
               <Datepicker
                 v-model="endDate"
                 :enable-time-picker="false"
+                placeholder="dd/mm/yyyy"
               ></Datepicker>
             </p>
             <p class="control">
-              <button class="button" @click="search">Search</button>
+              <button class="button" @click="search">Rechercher</button>
             </p>
           </div>
         </div>
@@ -96,10 +98,9 @@ function search() {
       <div class="navbar-end">
         <div class="navbar-item">
           <div class="buttons">
-            <a class="button is-primary">
-              <strong>Sign up</strong>
-            </a>
-            <a class="button is-light"> Log in </a>
+            <router-link class="button is-primary" to="/login">
+              <strong>Se connecter</strong>
+            </router-link>
           </div>
         </div>
       </div>
