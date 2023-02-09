@@ -100,6 +100,7 @@ router.beforeEach((to, from, next) => {
 
     fetch(requestToken)
         .then((response) => {
+          console.log(response)
             if (response.status === 200) {
                 next()
             } else {

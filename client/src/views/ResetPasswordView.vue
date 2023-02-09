@@ -86,7 +86,7 @@ function resetPassword() {
                   <p v-if="data.error" class="has-text-centered has-text-danger">{{data.error}}</p>
 
                   <div class="is-flex is-justify-content-center">
-                    <button class="button is-primary" type="submit">Se connecter</button>
+                    <button class="button btn--lavender" type="submit">Se connecter</button>
                   </div>
                 </form>
               </div>

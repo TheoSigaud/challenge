@@ -73,6 +73,11 @@ class BookingController extends AbstractController
                 'source' => $token,
             ]);
 
+//            $booking = new Booking();
+//            $booking->setAdvertisement('1');
+//            $booking->setStatus(1);
+//            $booking->setClient('1');
+//
 
             return $this->json(['message' => 'success'], 200);
         } catch (\Exception $e) {

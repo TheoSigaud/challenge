@@ -409,8 +409,8 @@ body {
 }
 
 .card-item {
-  max-width: 430px;
-  height: 270px;
+  max-width: 380px;
+  height: 220px;
   margin-left: auto;
   margin-right: auto;
   position: relative;
@@ -534,7 +534,7 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   padding: 0 10px;
 }
 
@@ -668,7 +668,6 @@ body {
   line-height: 1;
   color: #fff;
   font-size: 27px;
-  margin-bottom: 35px;
   display: inline-block;
   padding: 10px 15px;
   cursor: pointer;
