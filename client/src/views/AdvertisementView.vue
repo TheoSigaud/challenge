@@ -4,11 +4,11 @@
     <div v-else>
       <!-- row of pictures -->
       <div class="row" id="pictures">
-        <figure class="image">
+        <figure class="image is-16by9">
           <img :src="photo" />
         </figure>
         <figure class="image">
-          <img src="https://bulma.io/images/placeholders/600x480.png" />
+          <img src="https://bulma.io/images/placeholders/640x360.png" />
         </figure>
       </div>
       <div class="row">
@@ -97,6 +97,6 @@ onMounted(async () => {
 }
 
 #pictures figure {
-  margin: 30px;
+  margin: 15px;
 }
 </style>

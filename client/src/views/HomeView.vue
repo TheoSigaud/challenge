@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const city = ref("");
 const startDate = ref("");
@@ -32,6 +32,10 @@ function search() {
 
   console.log("search", city.value, startDate._value, endDate._value);
 }
+
+onMounted(async () => {
+  search();
+});
 </script>
 
 <template>
@@ -42,11 +46,7 @@ function search() {
   >
     <div class="navbar-brand">
       <a class="" href="/">
-        <img
-          src="../assets/logo.png"
-          width="90"
-          height="90"
-        />
+        <img src="../assets/logo.png" width="90" height="90" />
       </a>
 
       <a
@@ -64,7 +64,7 @@ function search() {
 
     <div id="navbarBasicExample" class="navbar-menu">
       <div class="navbar-start" style="flex-grow: 1; justify-content: center">
-        <div class="level-item">
+        <!-- <div class="level-item">
           <div class="field has-addons">
             <p class="control">
               <input
@@ -92,7 +92,7 @@ function search() {
               <button class="button" @click="search">Rechercher</button>
             </p>
           </div>
-        </div>
+        </div> -->
       </div>
 
       <div class="navbar-end">
@@ -106,51 +106,124 @@ function search() {
       </div>
     </div>
   </nav>
-  <div v-if="!data.length">
-    <!-- Carte d'accueil ici -->
-    <div class="card bd-is-size-1-2">
-      <div class="card-content">
-        <p class="title">Projet Scolaire</p>
-        <p class="subtitle">
-          Conçu par Samy HAMED E SABERI, SIGAUD Théo, KAJEIOU Mohamed et
-          MEKHICHE Sid Ahmed
+  <!-- <div class="card">
+    <div class="card-content">
+      <div class="field">
+        <p class="control">
+          <input v-model="city" class="input" type="text" placeholder="Ville" />
         </p>
-        <p>Dans le cadre du challenge IW SEMESTRE 1</p>
+      </div>
+      <div class="field">
+        <p class="control">
+          <Datepicker
+            v-model="startDate"
+            :enable-time-picker="false"
+            placeholder="dd/mm/yyyy"
+          ></Datepicker>
+        </p>
+      </div>
+      <div class="field">
+        <p class="control">
+          <Datepicker
+            v-model="endDate"
+            :enable-time-picker="false"
+            placeholder="dd/mm/yyyy"
+          ></Datepicker>
+        </p>
+      </div>
+      <div class="field">
+        <p class="control">
+          <button class="button" @click="search">Rechercher</button>
+        </p>
       </div>
     </div>
+  </div> -->
+
+  <div class="level-item" style="margin-top: 110px">
+    <div class="field has-addons">
+      <p class="control">
+        <input
+          v-model="city"
+          class="input input-city"
+          type="text"
+          placeholder="Ville"
+        />
+      </p>
+      <p class="control">
+        <Datepicker
+          class="input"
+          v-model="startDate"
+          :enable-time-picker="false"
+          placeholder="dd/mm/yyyy"
+        ></Datepicker>
+      </p>
+      <p class="control">
+        <Datepicker
+          class="input"
+          v-model="endDate"
+          :enable-time-picker="false"
+          placeholder="dd/mm/yyyy"
+        ></Datepicker>
+      </p>
+      <p class="control" style="background-color: #00D1B2;">
+        <button class="button input" style="background-color: #00D1B2;"  @click="search">Rechercher</button>
+      </p>
+    </div>
   </div>
-  <div v-else>
-    <div class="columns is-multiline">
-      <div class="column is-one-third" v-for="item in data" :key="item.id">
-        <router-link
-          class="nav-link"
-          :to="{ name: 'advertisement', params: { id: item.id } }"
-        >
-          <div class="card">
-            <div class="card-content">
-              <div class="media">
-                <div class="media-left">
-                  <figure class="image">
-                    <img
-                      src="https://bulma.io/images/placeholders/96x96.png"
-                      alt="Placeholder image"
-                    />
-                  </figure>
+
+  <div class="columns" style="margin-top: 10px">
+    <div class="column">
+      <div class="columns is-multiline">
+        <div class="column is-one-third" v-for="item in data" :key="item.id">
+          <router-link
+            class="nav-link"
+            :to="{ name: 'advertisement', params: { id: item.id } }"
+          >
+            <div class="card">
+              <div class="card-content">
+                <div class="media">
+                  <div class="media-left">
+                    <figure class="image">
+                      <img
+                        src="https://bulma.io/images/placeholders/96x96.png"
+                        alt="Placeholder image"
+                      />
+                    </figure>
+                  </div>
+                  <!-- <div class="media-content">
+                    <p class="title is-4">{{ item.name }}</p>
+                    <p class="subtitle is-6">{{ item.owner.email }}</p>
+                  </div> -->
                 </div>
-                <div class="media-content">
-                  <p class="title is-4">{{ item.name }}</p>
-                  <!-- <p class="subtitle is-6">@johnsmith</p> -->
-                  <!-- <p class="subtitle is-6">{{ getOwnerMail(item.owner) }}</p> -->
-                  <p class="subtitle is-6">{{ item.owner.email }}</p>
+                <div class="content">
+                  <p class="title is-6">{{ item.name }}</p>
+                  <br />
+                  <p class="subtitle is-6">
+                    Posté par : {{ item.owner.lastname.toUpperCase() }}
+                    {{ item.owner.firstname }}
+                  </p>
+                  <p class="subtitle is-6">Contact : {{ item.owner.email }}</p>
                 </div>
               </div>
-              <div class="content">
-                {{ item.description }}
-              </div>
-            </div>
-          </div></router-link
-        >
+            </div></router-link
+          >
+        </div>
       </div>
     </div>
   </div>
 </template>
+
+<style>
+.input {
+  height: 50px;
+  border-radius: 10px 100px / 120px;
+}
+
+.control {
+  border-radius: 10px 100px / 120px;
+}
+
+.card :hover {
+  background-color: #00D1B2;
+}
+</style>
