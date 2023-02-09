@@ -12,6 +12,7 @@ import ProfileView from '../views/ProfileView.vue'
 import ResetPwdView from '../views/ResetPwdView.vue'
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import CheckoutView from "@/views/CheckoutView.vue";
+import PageNotFound from "@/views/PageNotFound.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,6 +76,10 @@ const router = createRouter({
       path: '/checkout',
       name: 'checkout',
       component: CheckoutView
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      component: PageNotFound
     }
   ]
 })
