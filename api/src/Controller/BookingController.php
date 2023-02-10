@@ -101,6 +101,7 @@ class BookingController extends AbstractController
             $booking->setDateStart(new DateTime());
             $booking->setDateEnd(new DateTime());
             $booking->setCreatedAt(new \DateTimeImmutable());
+            $booking->setPayment($charge->id);
 
 
             $entityManager = $this->managerRegistry->getManager();
