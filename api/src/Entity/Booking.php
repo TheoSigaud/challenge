@@ -18,7 +18,7 @@ use ApiPlatform\Metadata\ApiResource;
         uriTemplate: '/buy',
         controller: BookingController::class
     )
-])]
+], routePrefix: '/api')]
 class Booking
 {
     #[ORM\Id]
@@ -27,7 +27,7 @@ class Booking
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $date = null;
+    private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column]
     private ?int $status = null;
@@ -38,19 +38,25 @@ class Booking
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?User $client = null;
 
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTimeInterface $date_end = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $created_at = null;
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getDate(): ?\DateTimeInterface
+    public function getDateStart(): ?\DateTimeInterface
     {
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
+    public function setDateStart(\DateTimeInterface $date_start): self
     {
-        $this->date = $date;
+        $this->date_start = $date_start;
 
         return $this;
     }
@@ -87,6 +93,30 @@ class Booking
     public function setClient(?User $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getDateEnd(): ?\DateTimeInterface
+    {
+        return $this->date_end;
+    }
+
+    public function setDateEnd(\DateTimeInterface $date_end): self
+    {
+        $this->date_end = $date_end;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $created_at): self
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }
