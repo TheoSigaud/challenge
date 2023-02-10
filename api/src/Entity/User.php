@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use App\Controller\LoginController;
 use App\Controller\ResetPasswordController;
 use App\Controller\ConfirmAccountController;
 use App\Controller\CheckTokenController;
@@ -20,9 +21,8 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement']], routePrefix: '/api')]
 #[ApiResource(operations: [
-    new Get(),
     new Patch(
         name: 'reset-password',
         uriTemplate: '/reset/password',
@@ -49,6 +49,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         read: false
     )
 ])]
+#[ApiResource(routePrefix: '/api')]
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -56,51 +58,64 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups('owner')]
+    #[Groups('advertisement')]
     private ?int $id = null;
 
+
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups('owner')]
+    #[Groups('advertisement')]
     private ?string $email = null;
 
     #[ORM\Column]
+    #[Groups('advertisement')]
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Groups('advertisement')]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('advertisement')]
     private ?string $token = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('owner')]
+    #[Groups('advertisement')]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('owner')]
+    #[Groups('advertisement')]
     private ?string $lastname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    
+    #[Groups('advertisement')]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups('advertisement')]
     private ?string $address = null;
 
     #[ORM\OneToMany(mappedBy: 'owner', targetEntity: Advertisement::class)]
+    #[Groups('advertisement')]
     private Collection $advertisements;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Comment::class)]
+    #[Groups('advertisement')]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Booking::class)]
+    #[Groups('advertisement')]
     private Collection $bookings;
 
     #[ORM\OneToMany(mappedBy: 'client', targetEntity: Favorite::class)]
+    #[Groups('advertisement')]
     private Collection $favorites;
+
+    #[ORM\Column]
+    #[Groups('advertisement')]
+    private ?int $status = 0;
 
     public function __construct()
     {
@@ -357,6 +372,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $favorite->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

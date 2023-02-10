@@ -100,10 +100,43 @@ router.beforeEach((to, from, next) => {
 
     fetch(requestToken)
         .then((response) => {
-            if (response.status === 200) {
-                next()
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            next('/login')
+            throw new Error('Token request failed')
+          }
+        })
+        .then((data) => {
+          next()
+        })
+  }else if (to.meta.requiresAuthAdmin) {
+    const token = jsCookie.get('jwt')
+
+    const requestToken = new Request(
+        "https://localhost/api/auth",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+    fetch(requestToken)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            next('/login')
+            throw new Error('Token request failed')
+          }
+        })
+        .then((data) => {
+
+            if (data.data.roles.includes('ROLE_ADMIN')) {
+              next()
             } else {
-                next('/login')
+              next('/login')
             }
         })
   }else {
