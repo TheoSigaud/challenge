@@ -18,7 +18,6 @@ export default {
   },
 
   setup(props) {
-    console.log(props.title)
     const titleReview = ref(props.title)
     const descriptionReview = ref(props.message)
     const rateReview = ref(props.rate)

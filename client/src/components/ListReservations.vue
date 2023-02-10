@@ -96,7 +96,7 @@ export default {
       reload.value = false;
     })
 
-    watch(() => ad_id.value, async () => {
+    watch(() => showModalUpdate.value, async () => {
       await getReview();
     })
 
@@ -206,10 +206,8 @@ export default {
         <button class="delete" aria-label="close" v-on:click="showModalUpdate = false"></button>
       </header>
 
-      <div v-if="loading">
-        <progress class="progress is-large is-info" max="100">60%</progress>
-      </div>
-      <section class="modal-card-body" v-else>
+
+      <section class="modal-card-body" v-if="!loading">
         <reviewFormUpdate
             :ad_id="ad_id"
             :c_id="c_id"
