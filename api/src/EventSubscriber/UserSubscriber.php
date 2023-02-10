@@ -38,8 +38,6 @@ use Symfony\Component\Mailer\MailerInterface;
         {
             $hash = $this->hasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hash);
-            $user->setRoles(['ROLE_USER']);
-            $user->setStatus(0);
 
             $token = $this->generateTokenService->generateToken($user->getEmail(), '2021-06-01');
             $user->setToken($token);

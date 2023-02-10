@@ -17,20 +17,39 @@ class UserFixtures extends Fixture
 
         $pwd = '$2y$13$SycYF7SwGuxS/x6OsvcepO3Ly/jX.di80ugEQ.JG1UTXlguaaayGK';
 
-            $object = (new User())
+        $object = (new User())
             ->setEmail("aa@aa.aa")
-                ->setRoles(['ROLE_USER'])
-                ->setPassword($pwd);
+            ->setRoles(['ROLE_USER'])
+            ->setPassword($pwd)
+            ->setToken(bin2hex(random_bytes(32)))
+            ->setAddress("4 rue de la paix")
+            ->setBirthday(new \DateTime("1990-01-01"))
+            ->setLastname("sidox")
+            ->setFirstname("sidox");
+
+
 
         $admin = (new User())
             ->setEmail("admin@aa.aa")
             ->setRoles(['ROLE_ADMIN'])
-            ->setPassword($pwd);
+            ->setPassword($pwd)
+            ->setPassword($pwd)
+            ->setToken(bin2hex(random_bytes(32)))
+            ->setAddress("4 rue de la paix")
+            ->setBirthday(new \DateTime("1990-01-01"))
+            ->setLastname("sidox")
+            ->setFirstname("sidox");
 
-        $modo= (new User())
+        $modo = (new User())
             ->setEmail("modo@aa.aa")
             ->setRoles(['ROLE_MODERATOR'])
-            ->setPassword($pwd);
+            ->setPassword($pwd)
+            ->setPassword($pwd)
+            ->setToken(bin2hex(random_bytes(32)))
+            ->setAddress("4 rue de la paix")
+            ->setBirthday(new \DateTime("1990-01-01"))
+            ->setLastname("sidox")
+            ->setFirstname("sidox");
 
 
 
@@ -40,5 +59,4 @@ class UserFixtures extends Fixture
 
         $manager->flush();
     }
-
 }

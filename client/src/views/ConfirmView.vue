@@ -10,7 +10,6 @@
 
   onMounted(() => {
     const token = route.query.token
-    console.log(token)
 
     if (token === undefined) {
       router.push({name: 'login'})
@@ -33,16 +32,18 @@
 <template>
   <main>
     <div class="container">
-      <div v-if="success" class="notification is-primary">
-        <p>Votre compte est maintenant activé !</p>
+      <div v-if="success">
+        <p class="is-size-3	">Votre compte est maintenant activé !</p>
       </div>
 
-      <div v-if="error" class="notification is-warning">
-        <p>Le token n'est pas valide !</p>
+      <div v-if="error">
+        <p class="is-size-3	">Le lien n'est pas valide !</p>
       </div>
 
       <div class="is-flex is-justify-content-center">
-        <router-link to="/login" class="button is-info">Se connecter</router-link>
+        <router-link to="/login" class="button btn--lavender mt-5">
+          <span>Se connecter</span>
+        </router-link>
       </div>
     </div>
   </main>

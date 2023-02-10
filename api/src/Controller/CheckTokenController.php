@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 
 #[AsController]
-class ConfirmAccountController extends AbstractController
+class CheckTokenController extends AbstractController
 {
     public function __construct(
         private ManagerRegistry $managerRegistry,
@@ -22,11 +22,6 @@ class ConfirmAccountController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $user->setToken(null);
-        $user->setStatus(1);
-        $user->setRoles(['ROLE_USER']);
-
-        $this->managerRegistry->getManager()->flush();
 
         return $this->json('Success');
     }

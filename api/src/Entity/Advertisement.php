@@ -2,19 +2,26 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\AdvertisementRepository;
+use App\Controller\SearchAdvertisementController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiResource;
-use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource]
+// #[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['owner']], routePrefix: '/api')]
+#[ApiFilter(SearchFilter::class, properties: ['city' => 'exact'])]
+#[ApiFilter(DateFilter::class, properties: ['date_start', 'date_end'])]
+
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]
 class Advertisement
@@ -22,60 +29,63 @@ class Advertisement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private ?string $type = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private ?string $description = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private ?string $photo = null;
 
     #[ORM\Column(nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private array $properties = [];
 
     #[ORM\ManyToOne(inversedBy: 'advertisements')]
+    #[Groups('owner')]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'advertisement', targetEntity: Comment::class)]
+    #[Groups('owner')]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'advertisement', targetEntity: Booking::class)]
+    #[Groups('owner')]
     private Collection $bookings;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('owner')]
     #[Assert\Length(max: 255)]
-    #[Groups('advertisement')]
     private ?string $city = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private ?string $address = null;
 
     #[ORM\Column(length: 5, nullable: true)]
     #[Assert\Length(max: 5)]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private ?string $zipcode = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
     private ?\DateTimeInterface $date_end = null;
 
     public function __construct()

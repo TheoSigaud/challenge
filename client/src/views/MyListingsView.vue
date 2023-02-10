@@ -1,37 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import router from '@/router'
 
-const user = ref(null);
-const adData = ref({
-  name: null,
-  type: null,
-  description: null,
-  city: null,
-  zipcode: null,
-  address: null,
-  dateStart: null,
-  dateEnd: null,
-  error: null
-});
-const advertisements = ref([]);
-const requestAd = new Request(
-  //USER ID AMODIFIER
-    "https://localhost/users/1",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/Id+json"
-      }
-    });
-  fetch(requestAd)
-    .then((response) => response.json())
-    .then((data) => {
-      data.advertisements.forEach(add => advertisements.value.push(add));
-    })
-    .catch((error) => console.log(error))
 </script>
-
+ 
 <template>
   <div class="container">
     <div class="card">
@@ -43,7 +13,7 @@ const requestAd = new Request(
             <thead>
               <tr>
                 <th><abbr title="Id">id</abbr></th>
-                <th><abbr title="Titre">Titre</abbr></th>
+                <th>Titre</th>
                 <th><abbr title="Date de début">Date début</abbr></th>
                 <th><abbr title="Date de fin">Date fin</abbr></th>
                 <th><abbr title="Ville">Ville</abbr></th>
@@ -52,20 +22,24 @@ const requestAd = new Request(
               </tr>
             </thead>
             <tbody>
-              <tr v-for="ad in advertisements" :key="ad.id">
-                <th>{{ad.id}}</th>
-                <td>{{ ad.name }}</td>
-                <td>{{new Date(ad.date_start).toLocaleDateString()}}</td>
-                <td>{{new Date(ad.date_end).toLocaleDateString()}}</td>
-                <td>{{ad.city}}</td>
-                <td>{{ad.zipcode}}</td>
-                <td>
-                  <a href="#">
-                    <div class="buttons">
-                      <button class="button is-info" @click="router.push({name: 'my-advertisement', query: {id: ad.id}})"><a href="">Voir plus </a></button>
-                    </div>                    
-                  </a>
+              <tr>
+                <th>1</th>
+                <td><a href="https://en.wikipedia.org/wiki/Leicester_City_F.C." title="Leicester City F.C.">Leicester City</a> <strong>(C)</strong>
                 </td>
+                <td>38</td>
+                <td>23</td>
+                <td>12</td>
+                <td>23</td>
+                <td></td>
+              </tr>
+              <tr>
+                <th>2</th>
+                <td><a href="https://en.wikipedia.org/wiki/Arsenal_F.C." title="Arsenal F.C.">Arsenal</a></td>
+                <td>38</td>
+                <td>20</td>
+                <td>11</td>
+                <td>7</td>
+                <td></td>
               </tr>
             </tbody>
           </table>
