@@ -2,7 +2,7 @@
 import {ref} from "vue";
 
 export default {
-  props: ['ad_id', 'c_id'],
+  props: ['ad_id', 'c_id', 'rate', 'message', 'title', 'id'],
   data() {
     return {
       selectedOption: '',
@@ -18,15 +18,16 @@ export default {
   },
 
   setup(props) {
-    const titleReview = ref("")
-    const descriptionReview = ref("")
-    const rateReview = ref("")
+    console.log(props.title)
+    const titleReview = ref(props.title)
+    const descriptionReview = ref(props.message)
+    const rateReview = ref(props.rate)
     const statusFetch = ref(null)
 
     const onSubmit = async () => {
       try {
-        const response = await fetch("https://localhost/comments", {
-          method: "POST",
+        const response = await fetch("https://localhost/comments/" + props.id, {
+          method: "PUT",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
             advertisement: props.ad_id,
@@ -44,7 +45,7 @@ export default {
         }
         statusFetch.value = ["Sent", "Review sent", "success"]
       } catch (error) {
-          console.log(error)
+        console.log(error)
       }
     }
 

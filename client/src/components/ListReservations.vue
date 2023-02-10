@@ -1,10 +1,12 @@
 <script>
 import {ref, onMounted, watch} from 'vue';
 import reviewForm from "./form/reviewForm.vue";
+import reviewFormUpdate from "./form/reviewFormUpdate.vue";
 
 export default {
   components: {
-    reviewForm
+    reviewForm,
+    reviewFormUpdate
   },
   data() {
     return {
@@ -22,12 +24,27 @@ export default {
     const reservations = ref([]);
     const reload = ref(false);
     const showModal = ref(false);
+    const showModalUpdate = ref(false);
     const ad_id = ref("");
     const ad_name = ref("");
     const c_id = ref("");
+    const comments = ref([])
+    const message = ref("");
+    const title = ref("");
+    const rate = ref("");
+    const idcomment = ref("");
 
     const requestReservations = new Request(
         "https://localhost/bookings",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+    const requestComments = new Request(
+        "https://localhost/comments",
         {
           method: "GET",
           headers: {
@@ -45,12 +62,25 @@ export default {
       try {
         const response = await fetch(requestReservations)
         const data = await response.json()
-        reservations.value = data["hydra:member"]
-
+        reservations.value = data["hydra:member"].filter(item => item.client["@id"] === "/users/3")
       } catch (err) {
         error.value = err.message
       } finally {
         loading.value = false
+      }
+    }
+
+    const getReview = async () => {
+      try {
+        const response = await fetch(requestComments)
+        const data = await response.json()
+        comments.value = data["hydra:member"].filter(item => item.client === "/users/3" && item.advertisement === ad_id.value)
+        message.value = comments.value[0].message;
+        title.value = comments.value[0].title;
+        rate.value = comments.value[0].rate;
+        idcomment.value = comments.value[0].id
+      } catch (err) {
+        error.value = err.message
       }
     }
 
@@ -63,15 +93,24 @@ export default {
       reload.value = false;
     })
 
+    watch(() => ad_id.value, async () => {
+      await getReview();
+    })
+
     return {
       reservations,
       loading,
       error,
       reloadData,
       showModal,
+      showModalUpdate,
       ad_id,
       ad_name,
-      c_id
+      c_id,
+      rate,
+      message,
+      title,
+      idcomment
     }
   }
 }
@@ -104,7 +143,7 @@ export default {
       </tr>
       </thead>
       <tbody v-for="reservation in reservations">
-      <tr v-if="reservation.client['@id'] === '/users/3'">
+      <tr>
         <td>{{ reservation.id }}</td>
         <td>{{ reservation.advertisement['@id'] }}</td>
         <td>{{ reservation.advertisement.name }}</td>
@@ -122,7 +161,11 @@ export default {
             <ion-icon name="add-outline"></ion-icon>
             Add a review
           </button>
-          <button class="button is-info is-light">
+          <button class="button is-info is-light" @click="
+            showModalUpdate = true;
+            ad_id = reservation.advertisement['@id'];
+            c_id = reservation.client['@id'];
+          ">
             <ion-icon name="create-outline"></ion-icon>
             Edit
           </button>
@@ -150,5 +193,29 @@ export default {
 
     </div>
   </div>
+
+  <div class="modal" style="display: block;" v-if="showModalUpdate">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+
+      <header class="modal-card-head">
+        <p class="modal-card-title">Update</p>
+        <button class="delete" aria-label="close" v-on:click="showModalUpdate = false"></button>
+      </header>
+
+      <section class="modal-card-body">
+        <reviewFormUpdate
+            :ad_id="ad_id"
+            :c_id="c_id"
+            :title="title"
+            :message="message"
+            :rate="rate"
+            :id="idcomment"
+        />
+      </section>
+
+    </div>
+  </div>
+
 
 </template>
