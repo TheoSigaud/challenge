@@ -35,12 +35,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         controller: ResetEmailController::class
     ),
 
-    new Post(
-        name: 'login',
-        uriTemplate: '/api/login',
-        controller: LoginController::class
-    ),
-
     new Get(
         name: 'check-token',
         uriTemplate: '/check-token/{token}',

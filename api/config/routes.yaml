@@ -6,6 +6,12 @@ kernel:
     resource: ../src/Kernel.php
     type: annotation
 
-authentication_token:
-    path: /authentication_token
+login:
+    path: /api/login
     methods: ['POST']
+    controller: App\Controller\LoginController
+
+auth:
+    path: /api/auth
+    methods: ['POST']
+    controller: App\Controller\AuthJWTController
