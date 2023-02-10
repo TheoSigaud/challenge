@@ -1,5 +1,6 @@
 <script setup>
 import {computed, onMounted, ref, watchEffect} from 'vue'
+import jsCookie from "js-cookie";
 
 const currentCardBackground = ref(Math.floor(Math.random() * 25 + 1))
 const cardName = ref("")
@@ -71,9 +72,10 @@ function flipCard(status) {
 function buy() {
   modeLoading.value = true;
   error.value = null;
+  const token = jsCookie.get('jwt')
 
   const requestBuy = new Request(
-      "https://localhost/buy",
+      "https://localhost/api/buy",
       {
         method: "POST",
         body: JSON.stringify({
@@ -84,7 +86,8 @@ function buy() {
           cardCvv: cardCvv.value
         }),
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
         }
       });
 
@@ -266,8 +269,6 @@ function buy() {
 </template>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap");
-
 body {
   background: #ddeefc;
   font-family: "Source Sans Pro", sans-serif;
@@ -726,7 +727,7 @@ body {
 
 .card-item__date {
   flex-wrap: wrap;
-  font-size: 18px;
+  font-size: 14px;
   margin-left: auto;
   padding: 10px;
   display: inline-flex;
@@ -738,7 +739,7 @@ body {
 
 @media screen and (max-width: 480px) {
   .card-item__date {
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 
