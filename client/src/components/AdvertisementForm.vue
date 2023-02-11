@@ -62,6 +62,7 @@ if(method == "PATCH"){
   fetch(requestUser)
     .then((response) => response.json())
     .then((data) => {
+      console.log(data)
       adData.value.name = data.name
       adData.value.type = data.type
       adData.value.description = data.description

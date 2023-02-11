@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRouter } from "vue-router";
-import jsCookie from "js-cookie";
-import jwtDecode from "jwt-decode";
-const router = useRouter();
+import router from '@/router'
+import jsCookie from 'js-cookie'
+import jwtDecode from 'jwt-decode'
 
 const user = ref(null);
 const adData = ref({
@@ -58,7 +57,7 @@ const deleteAdvertisement = (id) => {
         .then((response) => router.push({name: 'my-listings'}))
 }
 </script>
- 
+
 <template>
   <div class="container">
     <div class="card">
@@ -66,11 +65,12 @@ const deleteAdvertisement = (id) => {
         <div class="content">
           <h2>Mes annonces</h2>
           <hr>
+          <button class="button is-info" @click="router.push({name: 'create-advertisement'})">Créer une annonce</button>
           <table class="table">
             <thead>
               <tr>
                 <th><abbr title="Id">id</abbr></th>
-                <th>Titre</th>
+                <th><abbr title="Titre">Titre</abbr></th>
                 <th><abbr title="Date de début">Date début</abbr></th>
                 <th><abbr title="Date de fin">Date fin</abbr></th>
                 <th><abbr title="Ville">Ville</abbr></th>

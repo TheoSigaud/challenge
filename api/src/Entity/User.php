@@ -49,8 +49,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         read: false
     )
 ])]
-#[ApiResource(routePrefix: '/api')]
-
+#[ApiResource(normalizationContext: ['groups' => ['advertisement']], routePrefix: '/api')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
