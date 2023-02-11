@@ -8,7 +8,6 @@ const isRegister = ref(false)
 const showModal = ref(false)
 const resetEmail = ref(null)
 const resetSuccess = ref(null)
-const props = defineProps(['user'])
 function resetPassword() {
   const requestReset = new Request(
       "https://localhost/reset/email",
@@ -33,12 +32,6 @@ function resetPassword() {
 <template>
   <div>
     <NavBar />
-    {{ props.user}}
-    {{ props.user}}
-    {{ props.user}}
-    {{ props.user}}
-    {{ props.user}}
-    {{ props.user}}
     <div class="container is-flex is-justify-content-center mb-5">
       <div class="card">
         <div class="card-content pb-1">
