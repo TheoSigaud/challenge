@@ -89,6 +89,7 @@ const router = createRouter({
       name: 'admin-update-users',
       component: ProfileView
     },
+    {
       path: '/booking',
       name: 'booking',
       component: Booking

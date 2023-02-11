@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import jsCookie from "js-cookie";
+import jwtDecode from "jwt-decode";
+const router = useRouter();
 
 const user = ref(null);
 const adData = ref({
