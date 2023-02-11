@@ -89,6 +89,7 @@ function sendRequest() {
               </div>
 
               <span v-else-if="item.booking.status === 1" class="has-text-info">La demande d'annulation a été envoyée à l'hôte</span>
+              <span v-else-if="item.booking.status === 2" class="has-text-info">La demande d'annulation a envoyée à l'administrateur pour vérification</span>
               <span v-else-if="item.booking.status === -1" class="has-text-info">L'annulation a bien été prise en compte.<br>Le remboursement est en cours.</span>
             </div>
           </div>
@@ -112,7 +113,7 @@ function sendRequest() {
 
                   <p v-if="error" class="has-text-centered has-text-danger">{{error}}</p>
                   <div class="is-flex is-justify-content-center mt-6">
-                    <button class="button btn--lavender" type="submit" @click="showModal = !showModal; error = null">Envoyer</button>
+                    <button class="button btn--lavender" type="submit">Envoyer</button>
                   </div>
                 </form>
               </div>

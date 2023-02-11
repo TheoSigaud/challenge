@@ -5,7 +5,7 @@ import jsCookie from "js-cookie";
 const showModal = ref(false)
 const resultRefunds = ref([])
 const bookingId = ref(null)
-const message = ref(null)
+const message = ref('')
 const error = ref(null)
 const token = jsCookie.get('jwt')
 
@@ -32,11 +32,15 @@ function getRefunds() {
       })
 }
 
-function sendRequest() {
-  if (message.value === null || bookingId.value === null) {
+function sendRequest(valueRefund= false) {
+  if ((message.value === '' && !valueRefund) || bookingId.value === null) {
     error.value = 'Veuillez remplir tous les champs'
   } else {
     error.value = null
+
+    if (valueRefund) {
+      message.value =''
+    }
 
     const requestReset = new Request(
         "https://localhost/api/cancel-booking",
@@ -44,7 +48,8 @@ function sendRequest() {
           method: "POST",
           body: JSON.stringify({
             bookingId: bookingId.value,
-            message: message.value
+            message: message.value,
+            valueRefund: valueRefund
           }),
           headers: {
             "Content-Type": "application/json",
@@ -83,8 +88,8 @@ function sendRequest() {
             </div>
 
             <div v-if="item.booking.status === 1" class="is-flex is-justify-content-space-between is-align-items-center">
-              <button class="button is-success is-light">Accepter l'annulation</button>
-              <button class="button is-warning is-light" @click="showModal = !showModal; bookingId = item.booking.id">Refuser l'annulation</button>
+              <button class="button is-success is-light" @click="bookingId = item.booking.id; sendRequest(true)">Accepter l'annulation</button>
+              <button class="button is-warning is-light" @click="showModal = !showModal; bookingId = item.booking.id; valueRefund = false">Refuser l'annulation</button>
             </div>
             <div v-else-if="item.booking.status === 2">
               <span class="has-text-info">La demande d'annulation a été envoyée à un administrateur pour vérification</span>
@@ -108,7 +113,7 @@ function sendRequest() {
               <div class="content">
                 <h3 class="mb-5">La demande sera envoyée directement à l'administrateur</h3>
 
-                <form @submit.prevent="sendRequest">
+                <form @submit.prevent="sendRequest(false)">
                   <textarea v-model="message" class="textarea" placeholder="Votre message" rows="10"></textarea>
 
                   <p v-if="error" class="has-text-centered has-text-danger">{{error}}</p>
