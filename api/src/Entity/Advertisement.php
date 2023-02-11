@@ -88,6 +88,10 @@ class Advertisement
     #[Groups('owner')]
     private ?\DateTimeInterface $date_end = null;
 
+    #[ORM\Column]
+    #[Groups('owner')]
+    private ?int $price = null;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -291,6 +295,18 @@ class Advertisement
     public function setDateEnd(\DateTimeInterface $date_end): self
     {
         $this->date_end = $date_end;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }

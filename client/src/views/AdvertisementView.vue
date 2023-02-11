@@ -1,56 +1,69 @@
 <template>
-  <div class="container">
+  <div class="container custom">
     <div v-if="loading">Loading...</div>
     <div v-else>
-      <!-- row of pictures -->
-      <div class="row" id="pictures">
-        <figure class="image is-16by9">
-          <img :src="photo" />
-        </figure>
-        <figure class="image">
-          <img src="https://bulma.io/images/placeholders/640x360.png" />
-        </figure>
-      </div>
-      <div class="row">
-        <div class="columns">
-          <div class="column is-half">
-            <div class="card">
-              <div class="card-content pb-8">
-                <div class="columns">
-                  <div class="column is-8">
-                    <h1 class="title">{{ state.advertisement.name }}</h1>
-                    <p>{{ state.advertisement.location }}</p>
-                    <p>{{ state.advertisement.description }}</p>
-                  </div>
-                  <!-- <div class="column is-4">
-          <img :src="advertisement.image" />
-        </div> -->
-                </div>
-                <div class="columns">
-                  <div class="column is-6">
-                    <p>
-                      <strong>Type de logement : </strong>
-                      {{ state.advertisement.type }}
-                    </p>
-                  </div>
-                  <div class="column is-6">
-                    <p>
-                      <strong>Prix par nuit: </strong>
-                    </p>
-                  </div>
-                </div>
-                <div id="payment" class="button is-danger">Let's book !</div>
-              </div>
+      <div class="columns">
+        <div class="column is-three-fifths" style="width: 100%">
+          <div class="row" id="pictures">
+            <figure class="image">
+              <img src="https://bulma.io/images/placeholders/640x360.png" />
+            </figure>
+          </div>
+          <div class="card">
+            <div class="card-content pb-8">
+              <h1 class="title">Description</h1>
+              <p>{{ state.advertisement.description }}</p>
+              <h1 class="title">Contact</h1>
+              <p>{{ state.advertisement.owner?.email }}</p>
             </div>
           </div>
-          <div class="column">
-            <div class="card">
-              <div class="card-content pb-8">
-                <h1 class="title">Properties</h1>
-                <p>{{ state.advertisement?.properties }}</p>
-                <h1 class="title">Contact</h1>
-                <p>{{ state.advertisement.owner?.email }}</p>
+        </div>
+        <div class="column book-card">
+          <div class="card" style="display: block">
+            <div class="card-content pb-8">
+              <div class="columns">
+                <div class="column is-8">
+                  <h1 class="title">{{ state.advertisement.name }}</h1>
+                  <p>{{ state.advertisement.location }}</p>
+                  <h1 class="title is-4">Ce que propose ce logement</h1>
+                  <p>{{ state.advertisement?.properties }}</p>
+                </div>
               </div>
+              <div class="columns">
+                <div class="column is-6">
+                  <p>
+                    <strong>Type de logement : </strong>
+                    {{ state.advertisement.type }}
+                  </p>
+                </div>
+                <div class="column is-6">
+                  <p>
+                    <strong>Prix par nuit: </strong>
+                    {{ state.advertisement.price }} €
+                  </p>
+                </div>
+              </div>
+              <div class="level-item">
+                <div class="field has-addons">
+                  <p class="control">
+                    <Datepicker
+                      class="input"
+                      v-model="startDate"
+                      :enable-time-picker="false"
+                      placeholder="dd/mm/yyyy"
+                    ></Datepicker>
+                  </p>
+                  <p class="control">
+                    <Datepicker
+                      class="input"
+                      v-model="endDate"
+                      :enable-time-picker="false"
+                      placeholder="dd/mm/yyyy"
+                    ></Datepicker>
+                  </p>
+                </div>
+              </div>
+              <div id="payment" class="button is-danger">Let's book !</div>
             </div>
           </div>
         </div>
@@ -82,6 +95,20 @@ onMounted(async () => {
 </script>
 
 <style>
+.book-card {
+  position: fixed;
+  top: 100px;
+  right: 0;
+  width: 40%;
+}
+.card :hover {
+  background-color: white;
+}
+.custom {
+  position: relative;
+  top: 45px;
+}
+
 #pictures {
   display: inline-flex;
   margin: auto;
@@ -98,5 +125,9 @@ onMounted(async () => {
 
 #pictures figure {
   margin: 15px;
+}
+
+p {
+  margin-bottom: 20px;
 }
 </style>
