@@ -12,4 +12,4 @@ import AdvertisementForm from "../components/AdvertisementForm.vue";
       </div>
     </div>
   </div>
-</template>
+</template> 
