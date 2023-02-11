@@ -79,6 +79,7 @@ function sendRequest(valueRefund = false) {
           <th>Message de l'utilisateur</th>
           <th>Message de l'hôte</th>
           <th>Demande de remboursement</th>
+          <th>Annulation</th>
         </tr>
         </thead>
         <tbody>
@@ -101,6 +102,10 @@ function sendRequest(valueRefund = false) {
               </button>
             </div>
             <p v-if="item.status === 3" class="has-text-danger">Refusée</p>
+          </td>
+          <td>
+            <button v-if="item.status > -1 && item.status < 2" class="button is-danger is-light" @click="bookingId = item.id; sendRequest('cancel')">Annuler</button>
+            <p v-if="item.status === -2" class="has-text-success">Annulée</p>
           </td>
         </tr>
         </tbody>

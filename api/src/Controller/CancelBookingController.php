@@ -54,6 +54,25 @@ class CancelBookingController extends AbstractController
                 }
             }
 
+            if(!empty($parameters['valueRefund'])) {
+                if ($parameters['valueRefund'] === 'cancel') {
+                    $booking->setStatus(-2);
+                    $this->managerRegistry->getManager()->flush();
+
+                    $this->refund($booking->getPayment());
+
+                    $email = ApiMailerService::send_email(
+                        $booking->getClient()->getEmail(),
+                        "Annulation acceptée",
+                        'Votre demande d\'annulation a été accepté. le remboursement est en cours.'
+                    );
+
+                    $this->mailer->send($email);
+
+                    return $this->json(['message' => 'success'], 200);
+                }
+            }
+
             if ($booking->getStatus() === 0) {
                 $currentDate = new \DateTimeImmutable();
 
