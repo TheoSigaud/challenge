@@ -8,7 +8,6 @@ import AdvertisementForm from "../components/AdvertisementForm.vue";
     <div class="card">
       <div class="card-content">
         <div class="content">
-          aa
           <AdvertisementForm method="PATCH"/>
         </div>
       </div>
