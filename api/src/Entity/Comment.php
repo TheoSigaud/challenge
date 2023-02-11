@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 #[ApiResource]
 #[ORM\Entity(repositoryClass: CommentRepository::class)]
@@ -34,7 +35,7 @@ class Comment
      * @Assert\NotBlank()
      * @Assert\Range(
      *     min=1, max=5,
-     *     notInRangeMessage="You must rate the location between {{min}} and {{max}}.")
+     *     notInRangeMessage="Rate must be between {{ min }} and {{ max }}.")
      * @Assert\Type(
      *     type="integer",
      *     message="The rate must be between 1 and 5",
@@ -49,6 +50,14 @@ class Comment
     #[ORM\ManyToOne(inversedBy: 'comments')]
     private ?Advertisement $advertisement = null;
 
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(
+     *     min=3, max=30,
+     *     minMessage="The title must be at least {{ limit }} characters long",
+     *     maxMessage="The title cannot be longer than {{ limit }} characters",
+     *     )
+     */
     #[ORM\Column(length: 50)]
     private ?string $title = null;
 
@@ -165,5 +174,14 @@ class Comment
         return $this;
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function check(){
+        $dataUser =  $this->JWTManager->decode($this->tokenStorage->getToken());
+        if($dataUser['token'] !== $this->getClient()->getToken())
+            throw new \Exception('L\'ID du client ne correspond pas à l\'ID du client connecté');
+        else return true;
+    }
 
 }
