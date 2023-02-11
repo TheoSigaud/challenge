@@ -24,6 +24,7 @@ class ConfirmAccountController extends AbstractController
 
         $user->setToken(null);
         $user->setStatus(1);
+        $user->setRoles(['ROLE_USER']);
 
         $this->managerRegistry->getManager()->flush();
 

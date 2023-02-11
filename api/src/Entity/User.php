@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
+use App\Controller\LoginController;
 use App\Controller\ResetPasswordController;
 use App\Controller\ConfirmAccountController;
 use App\Controller\CheckTokenController;
@@ -60,7 +61,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups('advertisement')]
     private ?int $id = null;
 
-    
+
     #[ORM\Column(length: 180, unique: true)]
     #[Groups('advertisement')]
     private ?string $email = null;
@@ -114,7 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     #[Groups('advertisement')]
-    private ?int $status = null;
+    private ?int $status = 0;
 
     public function __construct()
     {

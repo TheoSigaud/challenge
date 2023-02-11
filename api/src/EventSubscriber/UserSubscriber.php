@@ -38,14 +38,12 @@ use Symfony\Component\Mailer\MailerInterface;
         {
             $hash = $this->hasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hash);
-            $user->setRoles(['ROLE_USER']);
-            $user->setStatus(0);
 
             $token = $this->generateTokenService->generateToken($user->getEmail(), '2021-06-01');
             $user->setToken($token);
 
             $email = ApiMailerService::send_email(
-                                $user->getEmail(),
+                                "theodoresigaud@gmail.com",
                                 "Création de votre compte",
                                 'Bonjour, voici le lien pour valider votre compte : http://'. $_SERVER['SERVER_NAME'] . ':8081/confirm-account?token=' . $token,
                             );

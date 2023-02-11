@@ -93,7 +93,7 @@
 
     <div class="field">
       <label class="label">Date de naissance</label>
-      <Datepicker v-model="registerData.birthday" :enable-time-picker="false"></Datepicker>
+      <Datepicker v-model="registerData.birthday" :enable-time-picker="false" placeholder="dd/mm/yyyy"></Datepicker>
     </div>
 
     <div class="field">
