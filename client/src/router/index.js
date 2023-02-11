@@ -1,40 +1,48 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from "vue-router";
+import HomeView from "../views/HomeView.vue";
 import LoginView from '../views/LoginView.vue'
-import CreateAdvertisementView from '../views/CreateAdvertisementView.vue'
-import MyListingsView from '../views/MyListingsView.vue'
-import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
 import ConfirmAccount from '../views/ConfirmView.vue'
-import ListingsAdvertisementsView from '../views/admin/ListingsAdvertisementsView.vue'
+import CreateAdvertisementView from "../views/CreateAdvertisementView.vue";
+import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
+import MyListingsView from "../views/MyListingsView.vue";
+import AdvertisementView from "../views/AdvertisementView.vue";
+import ListingsAdvertisementsView from "../views/admin/ListingsAdvertisementsView.vue"
 import jsCookie from 'js-cookie'
 import ProfileView from '../views/ProfileView.vue'
 import ResetPwdView from '../views/ResetPwdView.vue'
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import CheckoutView from "@/views/CheckoutView.vue";
 import ListingUserView from "@/views/admin/ListingUserView.vue";
+import PageNotFound from "@/views/PageNotFound.vue";
+import Booking from "@/views/Booking.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/login',
-      name: 'login',
-      component: LoginView
+      path: "/login",
+      name: "login",
+      component: LoginView,
     },
     {
-      path: '/create-advertisement',
-      name: 'create-advertisement',
-      component: CreateAdvertisementView
+      path: "/",
+      name: "home",
+      component: HomeView,
     },
     {
-      path: '/my-listings',
-      name: 'my-listings',
+      path: "/advertisement/:id",
+      name: "advertisement",
+      component: AdvertisementView,
+    },
+    {
+      path: "/create-advertisement",
+      name: "create-advertisement",
+      component: CreateAdvertisementView,
+    },
+    {
+      path: "/my-listings",
+      name: "my-listings",
       component: MyListingsView,
-      meta: {requiresAuth: true}
-    },
-    {
-      path: '/my-advertisement',
-      name: 'my-advertisement',
-      component: MyAdvertisementsView
     },
     {
       path: '/confirm-account',
@@ -81,8 +89,17 @@ const router = createRouter({
       name: 'admin-update-users',
       component: ProfileView
     },
+      path: '/booking',
+      name: 'booking',
+      component: Booking
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      component: PageNotFound
+    }
   ]
 })
+
 
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
@@ -99,14 +116,47 @@ router.beforeEach((to, from, next) => {
 
     fetch(requestToken)
         .then((response) => {
-            if (response.status === 200) {
-                next()
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            next('/login')
+            throw new Error('Token request failed')
+          }
+        })
+        .then((data) => {
+          next()
+        })
+  }else if (to.meta.requiresAuthAdmin) {
+    const token = jsCookie.get('jwt')
+
+    const requestToken = new Request(
+        "https://localhost/api/auth",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+    fetch(requestToken)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            next('/login')
+            throw new Error('Token request failed')
+          }
+        })
+        .then((data) => {
+
+            if (data.data.roles.includes('ROLE_ADMIN')) {
+              next()
             } else {
-                next('/login')
+              next('/login')
             }
         })
   }else {
     next()
   }
 })
-export default router
+export default router;
