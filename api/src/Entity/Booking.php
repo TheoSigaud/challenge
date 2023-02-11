@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Controller\BookingController;
+use App\Controller\CancelBookingController;
 use App\Controller\GetBookingController;
 use App\Repository\BookingRepository;
 use Doctrine\DBAL\Types\Types;
@@ -19,6 +20,12 @@ use ApiPlatform\Metadata\ApiResource;
         name: 'buy',
         uriTemplate: '/buy',
         controller: BookingController::class
+    ),
+
+    new Post(
+        name: 'cancel-booking',
+        uriTemplate: '/cancel-booking',
+        controller: CancelBookingController::class
     ),
 
     new Get(
@@ -55,6 +62,12 @@ class Booking
 
     #[ORM\Column(length: 255)]
     private ?string $payment = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $cancel_user = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $cancel_host = null;
 
     public function getId(): ?int
     {
@@ -141,6 +154,30 @@ class Booking
     public function setPayment(string $payment): self
     {
         $this->payment = $payment;
+
+        return $this;
+    }
+
+    public function getCancelUser(): ?string
+    {
+        return $this->cancel_user;
+    }
+
+    public function setCancelUser(?string $cancel_user): self
+    {
+        $this->cancel_user = $cancel_user;
+
+        return $this;
+    }
+
+    public function getCancelHost(): ?string
+    {
+        return $this->cancel_host;
+    }
+
+    public function setCancelHost(?string $cancel_host): self
+    {
+        $this->cancel_host = $cancel_host;
 
         return $this;
     }
