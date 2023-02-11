@@ -1,4 +1,6 @@
 <?php
+// api/src/OpenApi/JwtDecorator.php
+
 namespace App\OpenApi;
 
 use ApiPlatform\OpenApi\Factory\OpenApiFactoryInterface;
@@ -25,18 +27,32 @@ final class JwtDecorator implements OpenApiFactoryInterface
                 ],
             ],
         ]);
+
+        $schemas['JWT'] = new \ArrayObject([
+            'type' => 'http',
+            'scheme' => 'bearer',
+            'bearerFormat' => 'JWT',
+        ]);
+
         $schemas['Credentials'] = new \ArrayObject([
             'type' => 'object',
             'properties' => [
                 'email' => [
                     'type' => 'string',
-                    'example' => 'user@user.fr',
+                    'example' => 'johndoe@example.com',
                 ],
                 'password' => [
                     'type' => 'string',
-                    'example' => 'test',
+                    'example' => 'apassword',
                 ],
             ],
+        ]);
+
+        $schemas = $openApi->getComponents()->getSecuritySchemes() ?? [];
+        $schemas['JWT'] = new \ArrayObject([
+            'type' => 'http',
+            'scheme' => 'bearer',
+            'bearerFormat' => 'JWT',
         ]);
 
         $pathItem = new Model\PathItem(
@@ -70,7 +86,7 @@ final class JwtDecorator implements OpenApiFactoryInterface
                 security: [],
             ),
         );
-        $openApi->getPaths()->addPath('/authentication_token', $pathItem);
+        $openApi->getPaths()->addPath('/api/login', $pathItem);
 
         return $openApi;
     }
