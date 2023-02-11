@@ -26,7 +26,7 @@ class ResetEmailController extends AbstractController
         $parameters = json_decode($this->requestStack->getCurrentRequest()->getContent(), true);
 
         if(!$user = $this->managerRegistry->getRepository(User::class)->findOneBy(['email' => $parameters['email']])) {
-            return $this->json(['message' => 'Success']);
+            return $this->json(['message' => 'error']);
         }
 
         $token = $this->generateTokenService->generateToken($user->getEmail(), '2021-06-01');

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Post;
 use App\Controller\BookingController;
 use App\Controller\CancelBookingController;
@@ -12,8 +13,8 @@ use App\Repository\BookingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource]
 #[ORM\Table(name: '`booking`')]
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[ApiResource(operations: [
@@ -43,26 +44,39 @@ use ApiPlatform\Metadata\ApiResource;
         read: false
     )
 ], routePrefix: '/api')]
+
+#[ApiResource(operations: [
+    new GetCollection(
+        uriTemplate: '/admin/bookings',
+        normalizationContext: ['groups' => ['booking:read']],
+    )
+])]
+
 class Booking
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups(['booking:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['booking:read'])]
     private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column]
+    #[Groups(['booking:read'])]
     private ?int $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
+    #[Groups(['booking:read'])]
     private ?Advertisement $advertisement = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?User $client = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(['booking:read'])]
     private ?\DateTimeInterface $date_end = null;
 
     #[ORM\Column]
@@ -72,9 +86,11 @@ class Booking
     private ?string $payment = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['booking:read'])]
     private ?string $cancel_user = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['booking:read'])]
     private ?string $cancel_host = null;
 
     public function getId(): ?int
