@@ -15,7 +15,6 @@ onMounted(() => {
 })
 
 function getRefunds() {
-  console.log('getRefunds')
   const request = new Request(
       "https://localhost/api/get-refunds",
       {
@@ -54,10 +53,10 @@ function sendRequest() {
         });
     fetch(requestReset)
         .then((response) => {
-          console.log(response)
           message.value = null
           bookingId.value = null
           getRefunds()
+          showModal.value = !showModal;
         })
   }
 }
@@ -114,7 +113,7 @@ function sendRequest() {
 
                   <p v-if="error" class="has-text-centered has-text-danger">{{error}}</p>
                   <div class="is-flex is-justify-content-center mt-6">
-                    <button class="button btn--lavender" type="submit" @click="showModal = !showModal; error = null">Envoyer</button>
+                    <button class="button btn--lavender" type="submit">Envoyer</button>
                   </div>
                 </form>
               </div>

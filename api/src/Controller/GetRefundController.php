@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Booking;
 use App\Entity\User;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
@@ -44,7 +43,7 @@ class GetRefundController extends AbstractController
                 ->createQuery(
                     'SELECT b FROM App\Entity\Booking b
             JOIN b.advertisement a
-            WHERE b.status = 1
+            WHERE b.status > 0
             AND a.owner = :user'
                 )
                 ->setParameter('user', $user);

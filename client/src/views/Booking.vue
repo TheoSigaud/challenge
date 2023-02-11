@@ -56,6 +56,7 @@ function sendRequest() {
           message.value = null
           bookingId.value = null
           getBookings()
+          showModal.value = !showModal;
         })
   }
 }
@@ -118,7 +119,7 @@ function sendRequest() {
             </div>
           </div>
         </div>
-        <button class="modal-close is-large" aria-label="close" @click="showModal = !showModal; error = null"></button>
+        <button class="modal-close is-large" aria-label="close"></button>
       </div>
     </div>
   </main>
