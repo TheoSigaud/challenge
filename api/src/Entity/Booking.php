@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
 use App\Controller\BookingController;
+use App\Controller\GetBookingController;
 use App\Repository\BookingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,6 +19,13 @@ use ApiPlatform\Metadata\ApiResource;
         name: 'buy',
         uriTemplate: '/buy',
         controller: BookingController::class
+    ),
+
+    new Get(
+        name: 'get-bookings',
+        uriTemplate: '/get-bookings',
+        controller: GetBookingController::class,
+        read: false
     )
 ], routePrefix: '/api')]
 class Booking
@@ -54,7 +63,7 @@ class Booking
 
     public function getDateStart(): ?\DateTimeInterface
     {
-        return $this->date;
+        return $this->date_start;
     }
 
     public function setDateStart(\DateTimeInterface $date_start): self
