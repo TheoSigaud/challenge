@@ -19,119 +19,127 @@ import Booking from "@/views/Booking.vue";
 import Refund from "@/views/Refund.vue";
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: "/login",
-      name: "login",
-      component: LoginView,
-    },
-    {
-      path: "/",
-      name: "home",
-      component: HomeView,
-    },
-    {
-      path: "/advertisement/:id",
-      name: "advertisement",
-      component: AdvertisementView,
-    },
-    {
-      path: "/create-advertisement",
-      name: "create-advertisement",
-      component: CreateAdvertisementView,
-    },
-    {
-      path: "/my-listings",
-      name: "my-listings",
-      component: MyListingsView,
-    },
-    {
-      path: '/my-advertisement',
-      name: 'my-advertisement',
-      component: MyAdvertisementsView
-    },
-    {
-      path: '/confirm-account',
-      name: 'confirm-account',
-      component: ConfirmAccount
-    },
-    {
-      path: '/admin/listings-advertisements',
-      name: 'listings-advertisements',
-      component: ListingsAdvertisementsView,
-      meta: {
-        requiresAuthAdmin: true
-      }
-    },
-    {
-      path: '/admin/modify-advertisement',
-      name: 'admin-my-advertisement',
-      component: MyAdvertisementsView,
-      meta: {
-        requiresAuthAdmin: true
-      }
-    },
-    {
-      path: '/profile',
-      name: 'profile',
-      component: ProfileView
-    },
-    {
-      path: '/resetpwd',
-      name: 'resetpwd',
-      component: ResetPwdView
-    },
-    {
-      path: '/reset-password',
-      name: 'reset-password',
-      component: ResetPasswordView
-    },
-    {
-      path: '/checkout',
-      name: 'checkout',
-      component: CheckoutView,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/admin/listings-users',
-      name: 'listings-users',
-      component: ListingUserView,
-      meta: {
-        requiresAuthAdmin: true
-      }
-    },
-    {
-      path: '/admin/update-user',
-      name: 'admin-update-users',
-      component: ProfileView,
-      meta: {
-        requiresAuthAdmin: true
-      }
-    },
-    {
-      path: '/bookings',
-      name: 'bookings',
-      component: Booking,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/refunds',
-      name: 'refunds',
-      component: Refund,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: "/:pathMatch(.*)*",
-      component: PageNotFound
-    }
-  ]
+    history: createWebHistory(import.meta.env.BASE_URL),
+    routes: [
+        {
+            path: "/login",
+            name: "login",
+            component: LoginView,
+        },
+        {
+            path: "/",
+            name: "home",
+            component: HomeView,
+        },
+        {
+            path: "/advertisement/:id",
+            name: "advertisement",
+            component: AdvertisementView,
+        },
+        {
+            path: "/my-reservations",
+            name: "reservations",
+            component: MyReservations,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: "/create-advertisement",
+            name: "create-advertisement",
+            component: CreateAdvertisementView,
+        },
+        {
+            path: "/my-listings",
+            name: "my-listings",
+            component: MyListingsView,
+        },
+        {
+            path: '/my-advertisement',
+            name: 'my-advertisement',
+            component: MyAdvertisementsView
+        },
+        {
+            path: '/confirm-account',
+            name: 'confirm-account',
+            component: ConfirmAccount
+        },
+        {
+            path: '/admin/listings-advertisements',
+            name: 'listings-advertisements',
+            component: ListingsAdvertisementsView,
+            meta: {
+                requiresAuthAdmin: true
+            }
+        },
+        {
+            path: '/admin/modify-advertisement',
+            name: 'admin-my-advertisement',
+            component: MyAdvertisementsView,
+            meta: {
+                requiresAuthAdmin: true
+            }
+        },
+        {
+            path: '/profile',
+            name: 'profile',
+            component: ProfileView
+        },
+        {
+            path: '/resetpwd',
+            name: 'resetpwd',
+            component: ResetPwdView
+        },
+        {
+            path: '/reset-password',
+            name: 'reset-password',
+            component: ResetPasswordView
+        },
+        {
+            path: '/checkout',
+            name: 'checkout',
+            component: CheckoutView,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: '/admin/listings-users',
+            name: 'listings-users',
+            component: ListingUserView,
+            meta: {
+                requiresAuthAdmin: true
+            }
+        },
+        {
+            path: '/admin/update-user',
+            name: 'admin-update-users',
+            component: ProfileView,
+            meta: {
+                requiresAuthAdmin: true
+            }
+        },
+        {
+            path: '/bookings',
+            name: 'bookings',
+            component: Booking,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: '/refunds',
+            name: 'refunds',
+            component: Refund,
+            meta: {
+                requiresAuth: true
+            }
+        },
+        {
+            path: "/:pathMatch(.*)*",
+            component: PageNotFound
+        }
+    ]
 })
 
 

@@ -29,7 +29,7 @@ export default {
         const token = jsCookie.get('jwt')
         const idUser = jwtDecode(token)
         console.log(idUser)
-        const response = await fetch("https://localhost/comments/" + props.id, {
+        const response = await fetch("https://localhost/api/comments/" + props.id, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

@@ -1,7 +1,6 @@
 <script>
 import {ref} from "vue";
 import jsCookie from 'js-cookie';
-import jwtDecode from 'jwt-decode';
 
 export default {
   props: ['ad_id', 'c_id'],
@@ -29,9 +28,7 @@ export default {
       try {
         const token = jsCookie.get('jwt')
         console.log(token)
-        const idUser = jwtDecode(token)
-        console.log(idUser)
-        const response = await fetch("https://localhost/comments", {
+        const response = await fetch("https://localhost/api/comments", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

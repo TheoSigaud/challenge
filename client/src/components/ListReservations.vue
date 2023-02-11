@@ -2,6 +2,7 @@
 import {ref, onMounted, watch} from 'vue';
 import reviewForm from "./form/reviewForm.vue";
 import reviewFormUpdate from "./form/reviewFormUpdate.vue";
+import jsCookie from 'js-cookie';
 
 export default {
   components: {
@@ -34,21 +35,27 @@ export default {
     const rate = ref("");
     const idcomment = ref("");
 
+    const token = jsCookie.get('jwt')
+    console.log(token)
+
     const requestReservations = new Request(
-        "https://localhost/bookings",
+        "https://localhost/api/bookings",
         {
           method: "GET",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
           }
         });
 
     const requestComments = new Request(
-        "https://localhost/comments",
+        "https://localhost/api/comments",
         {
           method: "GET",
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+
           }
         });
 
@@ -62,7 +69,8 @@ export default {
       try {
         const response = await fetch(requestReservations)
         const data = await response.json()
-        reservations.value = data["hydra:member"].filter(item => item.client["@id"] === "/users/3")
+        console.log(data);
+        reservations.value = data["hydra:member"].filter(item => item.client["@id"] === "/api/users/3")
       } catch (err) {
         error.value = err.message
       } finally {
@@ -75,7 +83,7 @@ export default {
       try {
         const response = await fetch(requestComments)
         const data = await response.json()
-        comments.value = data["hydra:member"].filter(item => item.client === "/users/3" && item.advertisement === ad_id.value)
+        comments.value = data["hydra:member"].filter(item => item.client === "/api/users/3" && item.advertisement === ad_id.value)
         message.value = comments.value[0].message;
         title.value = comments.value[0].title;
         rate.value = comments.value[0].rate;

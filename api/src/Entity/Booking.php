@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Table(name: '`booking`')]
 #[ORM\Entity(repositoryClass: BookingRepository::class)]
-#[ApiResource(normalizationContext: ['groups' => ['booking']])]
+#[ApiResource(normalizationContext: ['groups' => ['booking', 'advertisement']])]
 #[ApiResource(operations: [
     new Post(
         name: 'buy',
@@ -45,6 +45,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         read: false
     )
 ], routePrefix: '/api')]
+#[ApiResource(routePrefix: "/api")]
 class Booking
 {
     #[ORM\Id]
