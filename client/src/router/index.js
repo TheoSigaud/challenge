@@ -58,11 +58,17 @@ const router = createRouter({
       path: '/admin/listings-advertisements',
       name: 'listings-advertisements',
       component: ListingsAdvertisementsView
+      meta: {
+        requiresAuthAdmin: true
+      }
     },
     {
       path: '/admin/modify-advertisement',
       name: 'admin-my-advertisement',
       component: MyAdvertisementsView
+      meta: {
+        requiresAuthAdmin: true
+      }
     },
     {
       path: '/profile',
@@ -87,12 +93,18 @@ const router = createRouter({
     {
       path: '/admin/listings-users',
       name: 'listings-users',
-      component: ListingUserView
+      component: ListingUserView,
+      meta: {
+        requiresAuthAdmin: true
+      }
     },
     {
       path: '/admin/update-user',
       name: 'admin-update-users',
-      component: ProfileView
+      component: ProfileView, 
+      meta: {
+        requiresAuthAdmin: true
+      }
     },
     {
       path: '/booking',
