@@ -14,6 +14,7 @@ const adData = ref({
   address: null,
   dateStart: null,
   dateEnd: null,
+  status: null,
   error: null
 });
 const advertisements = ref([]);
@@ -22,7 +23,6 @@ let idUser = jwtDecode(token).id
 console.log(idUser)
 const requestAd = new Request(
   
-  //USER ID AMODIFIER
     "https://localhost/api/users/"+idUser,
     {
       method: "GET",
@@ -34,9 +34,28 @@ const requestAd = new Request(
   fetch(requestAd)
     .then((response) => response.json())
     .then((data) => {
+      console.log(data)
       data.advertisements.forEach(add => advertisements.value.push(add));
     })
     .catch((error) => console.log(error))
+
+
+const deleteAdvertisement = (id) => {
+  const requestAdvertisement = new Request(
+    "https://localhost/api/advertisements/"+id,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        status: false
+      }),
+      headers: {
+        "Content-Type": "application/merge-patch+json",
+        "Authorization": "Bearer " + token
+      }
+    });
+  fetch(requestAdvertisement)
+        .then((response) => router.push({name: 'my-listings'}))
+}
 </script>
 
 <template>
@@ -56,6 +75,7 @@ const requestAd = new Request(
                 <th><abbr title="Date de fin">Date fin</abbr></th>
                 <th><abbr title="Ville">Ville</abbr></th>
                 <th><abbr title="Code postal">Code postal</abbr></th>
+                <th><abbr title="Statut">Statut</abbr></th>
                 <th><abbr title="Action">Action</abbr></th>
               </tr>
             </thead>
@@ -67,10 +87,12 @@ const requestAd = new Request(
                 <td>{{new Date(ad.date_end).toLocaleDateString()}}</td>
                 <td>{{ad.city}}</td>
                 <td>{{ad.zipcode}}</td>
+                <td>{{ad.status ? 'Actif' : 'Désactivé'}}</td>
                 <td>
                   <a href="#">
                     <div class="buttons">
                       <button class="button is-info" @click="router.push({name: 'my-advertisement', query: {id: ad.id}})"><a href="">Voir plus </a></button>
+                      <button v-if="ad.status" class="button is-danger" @click="deleteAdvertisement(ad.id)"><a href="">Supprimer</a></button>
                     </div>                    
                   </a>
                 </td>

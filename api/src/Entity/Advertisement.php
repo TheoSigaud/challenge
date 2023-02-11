@@ -78,6 +78,10 @@ class Advertisement
     #[Groups('advertisement')]
     private ?\DateTimeInterface $date_end = null;
 
+    #[ORM\Column]
+    #[Groups('advertisement')]
+    private ?bool $status = true;
+
     public function __construct()
     {
         $this->comments = new ArrayCollection();
@@ -281,6 +285,18 @@ class Advertisement
     public function setDateEnd(\DateTimeInterface $date_end): self
     {
         $this->date_end = $date_end;
+
+        return $this;
+    }
+
+    public function isStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
