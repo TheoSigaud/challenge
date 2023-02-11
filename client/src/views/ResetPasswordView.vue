@@ -36,9 +36,9 @@ function resetPassword() {
 
   if (data.value.password === null || data.value.passwordConfirm === null) {
     data.value.error = 'Tous les champs sont obligatoires'
-  }else if (data.value.password !== data.value.passwordConfirm) {
+  } else if (data.value.password !== data.value.passwordConfirm) {
     data.value.error = 'Les mots de passe ne correspondent pas'
-  }  else {
+  } else {
     const reset = new Request(`https://localhost/reset/password`, {
       method: 'Patch',
       body: JSON.stringify({
@@ -59,52 +59,50 @@ function resetPassword() {
 </script>
 
 <template>
-  <main>
-    <div class="container">
-      <div v-if="!error">
-        <div class="card">
-          <div class="card-content">
-            <div class="content">
-              <div>
-                <h2 class="has-text-centered">Réinitialisation du mot de passe</h2>
+  <div class="container">
+    <div v-if="!error">
+      <div class="card">
+        <div class="card-content">
+          <div class="content">
+            <div>
+              <h2 class="has-text-centered">Réinitialisation du mot de passe</h2>
 
-                <form @submit.prevent="resetPassword">
-                  <div class="field">
-                    <label class="label">Mot de passe</label>
-                    <div class="control">
-                      <input v-model="data.password" class="input" type="password" placeholder="*****">
-                    </div>
+              <form @submit.prevent="resetPassword">
+                <div class="field">
+                  <label class="label">Mot de passe</label>
+                  <div class="control">
+                    <input v-model="data.password" class="input" type="password" placeholder="*****">
                   </div>
+                </div>
 
-                  <div class="field">
-                    <label class="label">Confirmation du mot de passe</label>
-                    <div class="control">
-                      <input v-model="data.passwordConfirm" class="input" type="password" placeholder="*****">
-                    </div>
+                <div class="field">
+                  <label class="label">Confirmation du mot de passe</label>
+                  <div class="control">
+                    <input v-model="data.passwordConfirm" class="input" type="password" placeholder="*****">
                   </div>
+                </div>
 
-                  <p v-if="data.error" class="has-text-centered has-text-danger">{{data.error}}</p>
+                <p v-if="data.error" class="has-text-centered has-text-danger">{{ data.error }}</p>
 
-                  <div class="is-flex is-justify-content-center">
-                    <button class="button btn--lavender" type="submit">Se connecter</button>
-                  </div>
-                </form>
-              </div>
+                <div class="is-flex is-justify-content-center">
+                  <button class="button btn--lavender" type="submit">Se connecter</button>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
 
-      <div v-else>
-        <div class="notification is-warning">
-          <p>Le lien n'est pas valide !</p>
-        </div>
+    <div v-else>
+      <div class="notification is-warning">
+        <p>Le lien n'est pas valide !</p>
+      </div>
 
-        <div class="is-flex is-justify-content-center">
-          <router-link to="/login" class="button is-info">Se connecter</router-link>
-        </div>
+      <div class="is-flex is-justify-content-center">
+        <router-link to="/login" class="button is-info">Se connecter</router-link>
       </div>
     </div>
-  </main>
+  </div>
 </template>

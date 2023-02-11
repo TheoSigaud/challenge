@@ -16,6 +16,7 @@ import ListingUserView from "@/views/admin/ListingUserView.vue";
 import PageNotFound from "@/views/PageNotFound.vue";
 import Booking from "@/views/Booking.vue";
 import Refund from "@/views/Refund.vue";
+import Bookings from "@/views/admin/Bookings.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -124,6 +125,14 @@ const router = createRouter({
       component: Refund,
       meta: {
         requiresAuth: true
+      }
+    },
+    {
+      path: '/admin/bookings',
+      name: 'admin-bookings',
+      component: Bookings,
+      meta: {
+        requiresAuthAdmin: true
       }
     },
     {

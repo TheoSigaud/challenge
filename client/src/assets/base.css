@@ -1,5 +1,6 @@
-body {
+#app {
   min-height: 100vh;
+  min-width: 100%;
   background-image: linear-gradient(to right, #b8cbb8 0%, #b8cbb8 0%, #b465da 0%, #cf6cc9 33%, #ee609c 66%, #ee609c 100%);
   transition: color 0.5s, background-color 0.5s;
   line-height: 1.6;
@@ -9,6 +10,10 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+nav {
+  margin-bottom: 100px;
 }
 
 .btn--lavender {
