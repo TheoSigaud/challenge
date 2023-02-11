@@ -48,7 +48,7 @@ const saveAdvertisement = () => {
   }
 
   const requestAdvertisement = new Request(
-    "https://localhost/advertisements",
+    "https://localhost/api/advertisements",
     {
       method: "POST",
       body: JSON.stringify({

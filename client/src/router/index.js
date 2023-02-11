@@ -12,6 +12,7 @@ import ProfileView from '../views/ProfileView.vue'
 import ResetPwdView from '../views/ResetPwdView.vue'
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import CheckoutView from "@/views/CheckoutView.vue";
+import ListingUserView from "@/views/admin/ListingUserView.vue";
 import PageNotFound from "@/views/PageNotFound.vue";
 import Booking from "@/views/Booking.vue";
 
@@ -77,6 +78,16 @@ const router = createRouter({
       path: '/checkout',
       name: 'checkout',
       component: CheckoutView
+    },
+    {
+      path: '/admin/listings-users',
+      name: 'listings-users',
+      component: ListingUserView
+    },
+    {
+      path: '/admin/update-user',
+      name: 'admin-update-users',
+      component: ProfileView
     },
     {
       path: '/booking',
