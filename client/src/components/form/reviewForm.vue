@@ -8,7 +8,6 @@ export default {
     return {
       selectedOption: '',
       options: [
-        {value: null, text: 'Rating'},
         {value: '1', text: '1'},
         {value: '2', text: '2'},
         {value: '3', text: '3'},
@@ -21,7 +20,7 @@ export default {
   setup(props) {
     const titleReview = ref("")
     const descriptionReview = ref("")
-    const rateReview = ref("")
+    const rateReview = ref("Note")
     const statusFetch = ref(null)
 
     const onSubmit = async () => {
@@ -48,7 +47,7 @@ export default {
           statusFetch.value = ["Error", data["hydra:description"], "danger"]
           throw new Error("An error occurred while submitting the form");
         }
-        statusFetch.value = ["Sent", "Review sent", "success"]
+        statusFetch.value = ["Merci pour votre avis", "Avis envoyé, il sera traité par l'administrateur avant sa publication", "success"]
       } catch (error) {
           console.log(error)
       }
@@ -73,21 +72,22 @@ export default {
                 @hideNotification = "statusFetch = null"
   />
   <form @submit.prevent="onSubmit()">
-    <input v-model="titleReview" class="input is-link" type="text" placeholder="Title">
+    <input v-model="titleReview" class="input is-link" type="text" placeholder="Titre">
 
     <div class="select">
       <select v-model="rateReview">
+        <option>Note</option>
         <option v-for="option in options" :value="option.value">
           {{ option.text }}
         </option>
       </select>
     </div>
 
-    <textarea v-model="descriptionReview" class="textarea" placeholder="Leave a review here"></textarea>
+    <textarea v-model="descriptionReview" class="textarea" placeholder="Ajouter un commentaire"></textarea>
     <footer class="modal-card-foot">
       <button class="button is-success">
         <ion-icon name="send"></ion-icon>
-        Send
+        Envoyer
       </button>
     </footer>
   </form>

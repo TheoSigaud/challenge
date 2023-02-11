@@ -144,11 +144,10 @@ export default {
       <thead>
       <tr>
         <th><abbr title="Position">ID</abbr></th>
-        <th>Offer n°</th>
-        <th>Name of the location</th>
-        <th>Description of the location</th>
-        <th>Booked at</th>
-        <th>Booked by</th>
+        <th>Nom de la location</th>
+        <th>Description de la location</th>
+        <th>Date de reservation</th>
+        <th>Réservé par</th>
         <th>Status</th>
         <th>Actions</th>
       </tr>
@@ -156,7 +155,6 @@ export default {
       <tbody v-for="reservation in reservations">
       <tr>
         <td>{{ reservation.id }}</td>
-        <td>{{ reservation.advertisement['@id'] }}</td>
         <td>{{ reservation.advertisement.name }}</td>
         <td>{{ reservation.advertisement.description }}</td>
         <td>{{ reservation.date }}</td>
@@ -170,7 +168,7 @@ export default {
             c_id = reservation.client['@id'];
           ">
             <ion-icon name="add-outline"></ion-icon>
-            Add a review
+            Ajouter un commentaire
           </button>
           <button class="button is-info is-light" @click="
             showModalUpdate = true;
@@ -178,7 +176,7 @@ export default {
             c_id = reservation.client['@id'];
           ">
             <ion-icon name="create-outline"></ion-icon>
-            Edit
+            Modifier
           </button>
         </td>
       </tr>
@@ -191,7 +189,7 @@ export default {
     <div class="modal-card">
 
       <header class="modal-card-head">
-        <p class="modal-card-title">Review for {{ ad_name }}</p>
+        <p class="modal-card-title">Laisser un avis sur <b>{{ ad_name }}</b></p>
         <button class="delete" aria-label="close" v-on:click="showModal = false"></button>
       </header>
 
@@ -210,7 +208,7 @@ export default {
     <div class="modal-card">
 
       <header class="modal-card-head">
-        <p class="modal-card-title">Update</p>
+        <p class="modal-card-title">Mettre à jour mon avis</p>
         <button class="delete" aria-label="close" v-on:click="showModalUpdate = false"></button>
       </header>
 

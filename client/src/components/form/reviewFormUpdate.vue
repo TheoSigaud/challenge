@@ -8,7 +8,6 @@ export default {
     return {
       selectedOption: '',
       options: [
-        {value: null, text: 'Rating'},
         {value: '1', text: '1'},
         {value: '2', text: '2'},
         {value: '3', text: '3'},
@@ -51,7 +50,7 @@ export default {
           statusFetch.value = ["Error", data["hydra:description"], "danger"]
           throw new Error("An error occurred while submitting the form");
         }
-        statusFetch.value = ["Sent", "Review sent", "success"]
+        statusFetch.value = ["Merci pour votre avis", "Avis envoyé, il sera retraité par l'administrateur avant sa publication", "success"]
       } catch (error) {
         console.log(error)
       }
@@ -90,7 +89,7 @@ export default {
     <footer class="modal-card-foot">
       <button class="button is-success">
         <ion-icon name="send"></ion-icon>
-        Send
+        Envoyer
       </button>
     </footer>
   </form>

@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import LoginView from '../views/LoginView.vue'
-import MyReservations from "../views/MyReservations.vue";
+import MyReservations from "@/views/MyReservations.vue";
 import ConfirmAccount from '../views/ConfirmView.vue'
 import CreateAdvertisementView from "../views/CreateAdvertisementView.vue";
 import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
