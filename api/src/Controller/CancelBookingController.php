@@ -80,28 +80,25 @@ class CancelBookingController extends AbstractController
                     $this->mailer->send($email);
                 }
 
+                return $this->json(['message' => 'success'], 200);
+            } else if ($booking->getStatus() === 1) {
+                $booking->setStatus(2);
+                $booking->setCancelHost($parameters['message']);
+                $this->managerRegistry->getManager()->flush();
 
+                $email = ApiMailerService::send_email(
+                    $booking->getClient()->getEmail(),
+                    "Annulation refusée",
+                    'Votre demande d\'annulation a été refusée. Elle a été envoyée à un administrateur pour vérification.
+                        Message de l\'hôte : ' . $parameters['message'],
+                );
+
+                $this->mailer->send($email);
 
                 return $this->json(['message' => 'success'], 200);
             } else {
                 return $this->json(['message' => 'Error'], 401);
             }
-
-//            $booking = new Booking();
-//            $booking->setStatus(0);
-//            $booking->setClient($user);
-//            $booking->setAdvertisement($advertisement);
-//            $booking->setDateStart(new DateTime());
-//            $booking->setDateEnd(new DateTime());
-//            $booking->setCreatedAt(new \DateTimeImmutable());
-//            $booking->setPayment($charge->id);
-//
-//
-//            $entityManager = $this->managerRegistry->getManager();
-//            $entityManager->persist($booking);
-//            $entityManager->flush();
-
-
 
         } catch (\Exception $e) {
             return $this->json(['message' => 'Une erreur est survenue'], 500);

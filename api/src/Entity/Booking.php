@@ -7,6 +7,7 @@ use ApiPlatform\Metadata\Post;
 use App\Controller\BookingController;
 use App\Controller\CancelBookingController;
 use App\Controller\GetBookingController;
+use App\Controller\GetRefundController;
 use App\Repository\BookingRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -34,6 +35,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
         name: 'get-bookings',
         uriTemplate: '/get-bookings',
         controller: GetBookingController::class,
+        read: false
+    ),
+
+    new Get(
+        name: 'get-refunds',
+        uriTemplate: '/get-refunds',
+        controller: GetRefundController::class,
         read: false
     )
 ], routePrefix: '/api')]
