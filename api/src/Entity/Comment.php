@@ -174,14 +174,5 @@ class Comment
         return $this;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function check(){
-        $dataUser =  $this->JWTManager->decode($this->tokenStorage->getToken());
-        if($dataUser['token'] !== $this->getClient()->getToken())
-            throw new \Exception('L\'ID du client ne correspond pas à l\'ID du client connecté');
-        else return true;
-    }
 
 }
