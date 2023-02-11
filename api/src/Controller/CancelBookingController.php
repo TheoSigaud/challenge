@@ -31,19 +31,43 @@ class CancelBookingController extends AbstractController
             }
 
             if ($booking->getStatus() === 0) {
-                $advertisement = $booking->getAdvertisement();
+                $currentDate = new \DateTimeImmutable();
 
-                $booking->setStatus(1);
-                $booking->setCancelUser($parameters['message']);
-                $this->managerRegistry->getManager()->flush();
+                $diffDate = $currentDate->diff($booking->getDateStart());
 
-                $email = ApiMailerService::send_email(
-                    $advertisement->getOwner()->getEmail(),
-                    "Demande d'annulation",
-                    'Une demande d\'annulation a été effectuée sur une de vos annonces',
-                );
+                if ($diffDate->days < 3) {
+                    $advertisement = $booking->getAdvertisement();
 
-                $this->mailer->send($email);
+                    $booking->setStatus(1);
+                    $booking->setCancelUser($parameters['message']);
+                    $this->managerRegistry->getManager()->flush();
+
+                    $email = ApiMailerService::send_email(
+                        $advertisement->getOwner()->getEmail(),
+                        "Demande d'annulation",
+                        'Une demande d\'annulation a été effectuée sur une de vos annonces.
+                        Message de l\'utilisateur : ' . $parameters['message'],
+                    );
+
+                    $this->mailer->send($email);
+                } else {
+                    $advertisement = $booking->getAdvertisement();
+
+                    $booking->setStatus(-1);
+                    $booking->setCancelUser($parameters['message']);
+                    $this->managerRegistry->getManager()->flush();
+
+                    $email = ApiMailerService::send_email(
+                        $advertisement->getOwner()->getEmail(),
+                        "Annulation",
+                        'Une annulation a été effectuée sur une de vos annonces.
+                        Message de l\'utilisateur : ' . $parameters['message'],
+                    );
+
+                    $this->mailer->send($email);
+                }
+
+
 
                 return $this->json(['message' => 'success'], 200);
             } else {

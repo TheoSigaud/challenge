@@ -86,9 +86,9 @@ function sendRequest() {
               <div v-if="item.booking.status === 0">
                 <button class="button is-warning is-light" @click="showModal = !showModal; bookingId = item.booking.id">Faire une demande d'annulation</button>
               </div>
-              <div v-else-if="item.booking.status === 1">
-                <span class="has-text-info">La demande d'annulation a été envoyée à l'hôte</span>
-              </div>
+
+              <span v-else-if="item.booking.status === 1" class="has-text-info">La demande d'annulation a été envoyée à l'hôte</span>
+              <span v-else-if="item.booking.status === -1" class="has-text-info">L'annulation a bien été prise en compte.<br>Le remboursement est en cours.</span>
             </div>
           </div>
         </div>
