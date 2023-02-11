@@ -1,51 +1,62 @@
 <script setup>
-  import { ref } from 'vue'
-  import Register from "@/components/Register.vue";
-  import Login from "@/components/Login.vue";
+import {ref} from 'vue'
+import Register from "@/components/Register.vue";
+import Login from "@/components/Login.vue";
+import NavBar from "@/components/NavBar.vue";
 
-  const isRegister = ref(false)
-  const showModal = ref(false)
-  const resetEmail = ref(null)
-  const resetSuccess = ref(null)
+const isRegister = ref(false)
+const showModal = ref(false)
+const resetEmail = ref(null)
+const resetSuccess = ref(null)
+const props = defineProps(['user'])
+function resetPassword() {
+  const requestReset = new Request(
+      "https://localhost/reset/email",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email: resetEmail.value,
+        }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
 
-  function resetPassword() {
-    const requestReset = new Request(
-        "https://localhost/reset/email",
-        {
-          method: "POST",
-          body: JSON.stringify({
-            email: resetEmail.value,
-          }),
-          headers: {
-            "Content-Type": "application/json"
-          }
-        });
-
-    fetch(requestReset)
-        .then((response) => {
-          resetSuccess.value = 'Si votre email est valide, vous allez recevoir un email de réinitialisation de mot de passe.'
-          showModal.value = false
-        })
-  }
+  fetch(requestReset)
+      .then((response) => {
+        resetSuccess.value = 'Si votre email est valide, vous allez recevoir un email de réinitialisation de mot de passe.'
+        showModal.value = false
+      })
+}
 </script>
 
 <template>
-  <main>
-    <div class="container">
+  <div>
+    <NavBar />
+    {{ props.user}}
+    {{ props.user}}
+    {{ props.user}}
+    {{ props.user}}
+    {{ props.user}}
+    {{ props.user}}
+    <div class="container is-flex is-justify-content-center mb-5">
       <div class="card">
         <div class="card-content pb-1">
           <div class="content">
             <h2 class="has-text-centered">Connexion</h2>
 
-            <Register v-if="isRegister" />
-            <Login v-else />
+            <Register v-if="isRegister"/>
+            <Login v-else/>
 
-            <p v-if="resetSuccess" class="has-text-centered has-text-success mt-5">{{resetSuccess}}</p>
+            <p v-if="resetSuccess" class="has-text-centered has-text-success mt-5">{{ resetSuccess }}</p>
             <div v-if="!isRegister" class="is-flex is-justify-content-space-between">
-              <p class="is-size-6 has-text-centered mt-5 is-underlined is-clickable mr-6" @click="isRegister = !isRegister">Pas de compte</p>
-              <p class="is-size-6 has-text-centered mt-5 is-underlined is-clickable ml-6" @click="showModal = !showModal">Mot de passe oublié</p>
+              <p class="is-size-6 has-text-centered mt-5 is-underlined is-clickable mr-6"
+                 @click="isRegister = !isRegister">Pas de compte</p>
+              <p class="is-size-6 has-text-centered mt-5 is-underlined is-clickable ml-6" @click="showModal = !showModal">
+                Mot de passe oublié</p>
             </div>
-            <p v-else class="is-size-6 has-text-centered	mt-5 is-underlined is-clickable" @click="isRegister = !isRegister">Se connecter</p>
+            <p v-else class="is-size-6 has-text-centered	mt-5 is-underlined is-clickable"
+               @click="isRegister = !isRegister">Se connecter</p>
           </div>
         </div>
       </div>
@@ -77,5 +88,5 @@
         <button class="modal-close is-large" aria-label="close" @click="showModal = !showModal"></button>
       </div>
     </div>
-  </main>
+  </div>
 </template>

@@ -61,6 +61,7 @@ class Booking
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['booking:read'])]
     private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column]
@@ -68,6 +69,7 @@ class Booking
     private ?int $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
+    #[Groups(['booking:read'])]
     private ?Advertisement $advertisement = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
