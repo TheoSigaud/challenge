@@ -5,6 +5,10 @@ namespace App\Controller;
 use App\Entity\Booking;
 use App\Service\ApiMailerService;
 use Doctrine\Persistence\ManagerRegistry;
+use Stripe\Charge;
+use Stripe\Refund;
+use Stripe\Stripe;
+use Stripe\Token;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Attribute\AsController;
@@ -21,6 +25,13 @@ class CancelBookingController extends AbstractController
     {
     }
 
+    private function refund(string $id) {
+        Stripe::setApiKey($_ENV['STRIPE_PRIVATE']);
+
+        $refund = Refund::create([
+            'charge' => $id,
+        ]);
+    }
     public function __invoke()
     {
         try {
@@ -56,6 +67,8 @@ class CancelBookingController extends AbstractController
                     $booking->setStatus(-1);
                     $booking->setCancelUser($parameters['message']);
                     $this->managerRegistry->getManager()->flush();
+
+                    $this->refund($booking->getPayment());
 
                     $email = ApiMailerService::send_email(
                         $advertisement->getOwner()->getEmail(),
