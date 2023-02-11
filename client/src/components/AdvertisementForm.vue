@@ -16,9 +16,9 @@ const { method } = defineProps({
 const id = ref("");
 const idAd = route.query.id
 const contentType = ref("application/ld+json");
-if(route.query.id == undefined){
-  router.push({name: 'my-listings'})
-}
+// if(route.query.id == undefined){
+//   router.push({name: 'my-listings'})
+// }
 if(method == "PATCH"){
   contentType.value = "application/merge-patch+json"
   id.value = "/"+route.query.id
@@ -92,8 +92,33 @@ const saveAdvertisement = () => {
       || adData.value.city == null
       || adData.value.name == null
       || adData.value.address == null
-      || adData.value.date == null) {
+      || adData.value.date == null 
+      || dataProperties.value.nbBedroom == null 
+      || dataProperties.value.nbBedroom != "" 
+      || dataProperties.value.nbBathroom == null 
+      || dataProperties.value.nbBathroom != ""
+      || dataProperties.value.nbBed == null 
+      || dataProperties.value.nbBed!= ""
+      || dataProperties.value.swimingpool == null 
+      || dataProperties.value.swimingpool != ""
+      || dataProperties.value.kitchen == null 
+      || dataProperties.value.kitchen != ""
+      || dataProperties.value.parking == null 
+      || dataProperties.value.parking != ""
+      || dataProperties.value.airConditioning == null 
+      || dataProperties.value.airConditioning != ""
+      || dataProperties.value.heating == null 
+      || dataProperties.value.heating != "") {
         adData.value.error = 'Tous les champs sont obligatoires'
+
+      return
+    }
+
+    // check if nbBedroom is a number positive
+    if(dataProperties.value.nbBedroom < 0
+      || dataProperties.value.nbBed < 0
+      || dataProperties.value.nbBathroom < 0) {
+      adData.value.error = 'Vous devez renseigner des nombres positifs'
 
       return
     }
