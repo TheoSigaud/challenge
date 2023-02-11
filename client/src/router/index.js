@@ -57,7 +57,7 @@ const router = createRouter({
     {
       path: '/admin/listings-advertisements',
       name: 'listings-advertisements',
-      component: ListingsAdvertisementsView
+      component: ListingsAdvertisementsView,
       meta: {
         requiresAuthAdmin: true
       }
@@ -65,7 +65,7 @@ const router = createRouter({
     {
       path: '/admin/modify-advertisement',
       name: 'admin-my-advertisement',
-      component: MyAdvertisementsView
+      component: MyAdvertisementsView,
       meta: {
         requiresAuthAdmin: true
       }
