@@ -3,7 +3,7 @@
     <div v-if="loading">Loading...</div>
     <div v-else>
       <div class="columns">
-        <div class="column is-three-fifths" style="width: 100%">
+        <div class="column is-three-fifths">
           <div class="row" id="pictures">
             <figure class="image">
               <img src="https://bulma.io/images/placeholders/640x360.png" />
