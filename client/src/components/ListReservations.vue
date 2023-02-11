@@ -71,6 +71,7 @@ export default {
         const data = await response.json()
         console.log(data);
         reservations.value = data["hydra:member"].filter(item => item.client["@id"] === "/api/users/3")
+        console.log(reservations)
       } catch (err) {
         error.value = err.message
       } finally {
@@ -146,8 +147,9 @@ export default {
         <th><abbr title="Position">ID</abbr></th>
         <th>Nom de la location</th>
         <th>Description de la location</th>
-        <th>Date de reservation</th>
-        <th>Réservé par</th>
+        <th>Réservé du</th>
+        <th>Au</th>
+        <th>Par</th>
         <th>Status</th>
         <th>Actions</th>
       </tr>
@@ -157,7 +159,8 @@ export default {
         <td>{{ reservation.id }}</td>
         <td>{{ reservation.advertisement.name }}</td>
         <td>{{ reservation.advertisement.description }}</td>
-        <td>{{ reservation.date }}</td>
+        <td>{{ reservation.date_start }}</td>
+        <td>{{ reservation.date_end }}</td>
         <td>{{ reservation.client.firstname + " " + reservation.client.lastname }}</td>
         <td>{{ reservation.status }}</td>
         <td class="buttons">

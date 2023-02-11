@@ -1,13 +1,18 @@
 <script setup>
 import {onMounted, ref} from 'vue'
 import jsCookie from "js-cookie";
+import ReviewForm from "../components/form/reviewForm.vue";
 
 const showModal = ref(false)
+const showModalCreate = ref(false);
 const resultBooking = ref([])
 const bookingId = ref(null)
 const message = ref(null)
 const error = ref(null)
 const token = jsCookie.get('jwt')
+const ad_id = ref("");
+const ad_name = ref("");
+const c_id = ref("");
 
 
 onMounted(() => {
@@ -65,7 +70,8 @@ function sendRequest() {
 <template>
   <main>
     <div class="container">
-      <div v-if="resultBooking.length" v-for="item in resultBooking" :key="item.booking.id" class="mb-5" style="width: 700px">
+      <div v-if="resultBooking.length" v-for="item in resultBooking" :key="item.booking.id" class="mb-5"
+           style="width: 700px">
         <div class="card">
           <div class="card-content">
             <div class="media">
@@ -75,17 +81,30 @@ function sendRequest() {
                 </figure>
               </div>
               <div class="media-content">
-                <p class="title is-4">{{item.advertisement.name}}</p>
+                <p class="title is-4">{{ item.advertisement.name }}</p>
                 <div class="content">
-                  {{item.advertisement.description}}
+                  {{ item.advertisement.description }}
                 </div>
               </div>
+            </div>
+
+            <div>
+              <button class="button is-primary is-light" @click="
+                  showModalCreate = true;
+                  ad_id = item.advertisement.id;
+                  ad_name = item.advertisement.name;
+                ">
+                <ion-icon name="add-outline"></ion-icon>
+                Ajouter un commentaire
+              </button>
             </div>
 
             <div class="is-flex is-justify-content-space-between is-align-items-center">
               <button class="button is-link is-light">Voir l'annonce</button>
               <div v-if="item.booking.status === 0">
-                <button class="button is-warning is-light" @click="showModal = !showModal; bookingId = item.booking.id">Faire une demande d'annulation</button>
+                <button class="button is-warning is-light" @click="showModal = !showModal; bookingId = item.booking.id">
+                  Faire une demande d'annulation
+                </button>
               </div>
 
               <span v-else-if="item.booking.status === 1" class="has-text-info">La demande d'annulation a été envoyée à l'hôte</span>
@@ -110,9 +129,11 @@ function sendRequest() {
                 <form @submit.prevent="sendRequest">
                   <textarea v-model="message" class="textarea" placeholder="Votre message" rows="10"></textarea>
 
-                  <p v-if="error" class="has-text-centered has-text-danger">{{error}}</p>
+                  <p v-if="error" class="has-text-centered has-text-danger">{{ error }}</p>
                   <div class="is-flex is-justify-content-center mt-6">
-                    <button class="button btn--lavender" type="submit" @click="showModal = !showModal; error = null">Envoyer</button>
+                    <button class="button btn--lavender" type="submit" @click="showModal = !showModal; error = null">
+                      Envoyer
+                    </button>
                   </div>
                 </form>
               </div>
@@ -121,6 +142,25 @@ function sendRequest() {
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
       </div>
+
+      <div class="modal" style="display: block;" v-if="showModalCreate">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+
+          <header class="modal-card-head">
+            <p class="modal-card-title">Laisser un avis sur <b>{{ ad_name }}</b></p>
+            <button class="delete" aria-label="close" v-on:click="showModalCreate = false"></button>
+          </header>
+
+          <section class="modal-card-body">
+            <reviewForm
+                :ad_id="ad_id"
+            />
+          </section>
+
+        </div>
+      </div>
+
     </div>
   </main>
 </template>

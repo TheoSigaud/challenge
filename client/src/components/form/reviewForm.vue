@@ -3,7 +3,7 @@ import {ref} from "vue";
 import jsCookie from 'js-cookie';
 
 export default {
-  props: ['ad_id', 'c_id'],
+  props: ['ad_id'],
   data() {
     return {
       selectedOption: '',
@@ -34,8 +34,7 @@ export default {
             "Authorization": "Bearer " + token
           },
           body: JSON.stringify({
-            advertisement: props.ad_id,
-            client: props.c_id,
+            advertisement: "/advertisement/" + props.ad_id,
             title: titleReview.value,
             message: descriptionReview.value,
             rate: parseFloat(rateReview.value),
