@@ -51,7 +51,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         read: false
     )
 ])]
-#[ApiResource(normalizationContext: ['groups' => ['advertisement']], routePrefix: '/api')]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'booking']], routePrefix: '/api')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -62,9 +62,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups('advertisement')]
     private ?int $id = null;
 
-    #[Groups('booking')]
+    #[Groups('booking', 'advertisement')]
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups('advertisement')]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -82,14 +81,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups('advertisement')]
     private ?string $token = null;
 
-    #[Groups('booking')]
     #[ORM\Column(length: 255)]
-    #[Groups('advertisement')]
+    #[Groups('advertisement', 'booking')]
     private ?string $firstname = null;
 
-    #[Groups('booking')]
     #[ORM\Column(length: 255)]
-    #[Groups('advertisement')]
+    #[Groups('advertisement', 'booking')]
     private ?string $lastname = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
@@ -153,7 +150,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**

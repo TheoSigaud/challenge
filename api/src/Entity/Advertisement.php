@@ -21,7 +21,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(routePrefix: '/api')]
 #[ApiFilter(SearchFilter::class, properties: ['city' => 'exact'])]
 #[ApiFilter(DateFilter::class, properties: ['date_start', 'date_end'])]
-
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]
 class Advertisement
@@ -32,30 +31,25 @@ class Advertisement
     #[Groups('advertisement')]
     private ?int $id = null;
 
-    #[Groups('booking')]
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
-    #[Groups('advertisement')]
+    #[Groups('advertisement', 'booking')]
     private ?string $name = null;
 
-    #[Groups('booking')]
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('advertisement', 'booking')]
     private ?string $type = null;
 
-    #[Groups('booking')]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('advertisement', 'booking')]
     private ?string $description = null;
 
-    #[Groups('booking')]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('advertisement', 'booking')]
     private ?string $photo = null;
 
-    #[Groups('booking')]
     #[ORM\Column(nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups('advertisement', 'booking')]
     private array $properties = [];
 
     #[ORM\ManyToOne(inversedBy: 'advertisements')]
@@ -271,10 +265,9 @@ class Advertisement
 
     public function setZipcode(string $zipcode): self
     {
-        if(preg_match ("~^[0-9]{5}$~",$zipcode)) {
+        if (preg_match("~^[0-9]{5}$~", $zipcode)) {
             $this->zipcode = $zipcode;
-        }
-        else {
+        } else {
             $this->zipcode = "00000";
         }
         return $this;
