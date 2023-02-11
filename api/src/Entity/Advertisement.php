@@ -2,7 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\AdvertisementRepository;
+use App\Controller\SearchAdvertisementController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -10,8 +14,14 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\Get;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource]
+// #[ApiResource]
+#[ApiResource(routePrefix: '/api')]
+#[ApiFilter(SearchFilter::class, properties: ['city' => 'exact'])]
+#[ApiFilter(DateFilter::class, properties: ['date_start', 'date_end'])]
+
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]
 class Advertisement
@@ -19,36 +29,73 @@ class Advertisement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
+    #[Groups('advertisement')]
     private ?int $id = null;
 
     #[Groups('booking')]
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    #[Groups('advertisement')]
     private ?string $name = null;
 
     #[Groups('booking')]
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('advertisement')]
     private ?string $type = null;
 
     #[Groups('booking')]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('advertisement')]
     private ?string $description = null;
 
     #[Groups('booking')]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('advertisement')]
     private ?string $photo = null;
 
     #[Groups('booking')]
     #[ORM\Column(nullable: true)]
+    #[Groups('advertisement')]
     private array $properties = [];
 
     #[ORM\ManyToOne(inversedBy: 'advertisements')]
+    #[Groups('advertisement')]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'advertisement', targetEntity: Comment::class)]
+    #[Groups('advertisement')]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'advertisement', targetEntity: Booking::class)]
+    #[Groups('advertisement')]
     private Collection $bookings;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Groups('advertisement')]
+    #[Assert\Length(max: 255)]
+    private ?string $city = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Length(max: 255)]
+    #[Groups('advertisement')]
+    private ?string $address = null;
+
+    #[ORM\Column(length: 5, nullable: true)]
+    #[Assert\Length(max: 5)]
+    #[Groups('advertisement')]
+    private ?string $zipcode = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups('advertisement')]
+    private ?\DateTimeInterface $date_start = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups('advertisement')]
+    private ?\DateTimeInterface $date_end = null;
+
+    #[ORM\Column]
+    #[Groups('advertisement')]
+    private ?bool $status = true;
 
     public function __construct()
     {
@@ -189,6 +236,82 @@ class Advertisement
                 $booking->setAdvertisement(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getAddress(): ?string
+    {
+        return $this->address;
+    }
+
+    public function setAddress(string $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    public function getZipcode(): ?string
+    {
+        return $this->zipcode;
+    }
+
+    public function setZipcode(string $zipcode): self
+    {
+        if(preg_match ("~^[0-9]{5}$~",$zipcode)) {
+            $this->zipcode = $zipcode;
+        }
+        else {
+            $this->zipcode = "00000";
+        }
+        return $this;
+    }
+
+    public function getDateStart(): ?\DateTimeInterface
+    {
+        return $this->date_start;
+    }
+
+    public function setDateStart(\DateTimeInterface $date_start): self
+    {
+        $this->date_start = $date_start;
+
+        return $this;
+    }
+
+    public function getDateEnd(): ?\DateTimeInterface
+    {
+        return $this->date_end;
+    }
+
+    public function setDateEnd(\DateTimeInterface $date_end): self
+    {
+        $this->date_end = $date_end;
+
+        return $this;
+    }
+
+    public function isStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
