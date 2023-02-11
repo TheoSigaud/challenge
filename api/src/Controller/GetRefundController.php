@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[AsController]
-class GetBookingController extends AbstractController
+class GetRefundController extends AbstractController
 {
     public function __construct(
         private TokenStorageInterface $tokenStorage,
@@ -39,8 +39,17 @@ class GetBookingController extends AbstractController
 
             $user = $this->managerRegistry->getRepository(User::class)->findOneBy(['email' => $dataUser['email']]);
 
+            $query = $this->managerRegistry
+                ->getManager()
+                ->createQuery(
+                    'SELECT b FROM App\Entity\Booking b
+            JOIN b.advertisement a
+            WHERE b.status = 1
+            AND a.owner = :user'
+                )
+                ->setParameter('user', $user);
+            $bookings = $query->getResult();
 
-            $bookings = $this->managerRegistry->getRepository(Booking::class)->findBy(['client' => $user]);
 
             $data = [];
             foreach ($bookings as $booking) {

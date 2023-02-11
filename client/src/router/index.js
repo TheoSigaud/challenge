@@ -15,6 +15,7 @@ import CheckoutView from "@/views/CheckoutView.vue";
 import ListingUserView from "@/views/admin/ListingUserView.vue";
 import PageNotFound from "@/views/PageNotFound.vue";
 import Booking from "@/views/Booking.vue";
+import Refund from "@/views/Refund.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -110,9 +111,17 @@ const router = createRouter({
       }
     },
     {
-      path: '/booking',
-      name: 'booking',
+      path: '/bookings',
+      name: 'bookings',
       component: Booking,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/refunds',
+      name: 'refunds',
+      component: Refund,
       meta: {
         requiresAuth: true
       }
