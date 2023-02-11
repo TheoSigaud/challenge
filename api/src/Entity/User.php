@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ApiResource(normalizationContext: ['groups' => ['advertisement']], routePrefix: '/api')]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/api')]
 #[ApiResource(operations: [
     new Patch(
         name: 'reset-password',
@@ -49,7 +49,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         read: false
     )
 ])]
-#[ApiResource(normalizationContext: ['groups' => ['advertisement']], routePrefix: '/api')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -57,12 +56,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?int $id = null;
 
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -81,7 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $token = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]

@@ -10,7 +10,7 @@ const data = ref({});
 
 function search() {
   const url = new URL("https://localhost/api/advertisements");
-  const token = jsCookie.get('jwt')
+  const token = jsCookie.get("jwt");
   if (city.value !== "") {
     url.searchParams.set("city", city.value.toLowerCase());
   } else if (startDate._value !== "") {
@@ -38,7 +38,6 @@ function search() {
       console.log(data.value);
     })
     .catch((error) => console.error("Error fetching advertisements:", error));
-    
 
   console.log("search", city.value, startDate._value, endDate._value);
 }
@@ -49,7 +48,6 @@ onMounted(async () => {
 </script>
 
 <template>
-  
   <div class="level-item custom-class">
     <div class="field has-addons">
       <p class="control">
@@ -107,17 +105,12 @@ onMounted(async () => {
                         />
                       </figure>
                     </div>
-                    <!-- <div class="media-content">
-                    <p class="title is-4">{{ item.name }}</p>
-                    <p class="subtitle is-6">{{ item.owner.email }}</p>
-                  </div> -->
                   </div>
                   <div class="content">
                     <p class="title is-6">{{ item.name }}</p>
                     <br />
                     <p class="subtitle is-6">
-                      Posté par : {{ item.owner.lastname.toUpperCase() }}
-                      {{ item.owner.firstname }}
+                      Posté par : {{ item.owner.firstname }}
                     </p>
                     <p class="subtitle is-6">
                       Contact : {{ item.owner.email }}
@@ -133,7 +126,7 @@ onMounted(async () => {
   </div>
 </template>
 
-<style>
+<style scoped>
 .input {
   height: 50px;
   border-radius: 10px 100px / 120px;

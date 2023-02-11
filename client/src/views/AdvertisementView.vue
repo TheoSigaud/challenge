@@ -98,16 +98,6 @@ async function getAdvertisement() {
 }
 
 onMounted(async () => {
-  // console.log("mounted");
-  // const id = route.params.id;
-  // console.log(id);
-  // con
-
-  // const response = await fetch(`https://localhost/api/advertisements/${id}`);
-  // const data = await response.json();
-  // state.advertisement = data;
-  // state.loading = false;
-  // console.log("data", data);
   console.log("mounted");
   const token = jsCookie.get("jwt");
   const id = route.params.id;
