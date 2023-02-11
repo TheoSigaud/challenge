@@ -26,7 +26,7 @@ class LoginController extends AbstractController
         $parameters = json_decode($this->requestStack->getCurrentRequest()->getContent(), true);
 
         if(!$user = $this->managerRegistry->getRepository(User::class)->findOneBy(['email' => $parameters['email']])) {
-            throw new AccessDeniedHttpException();
+            return $this->json(['message' => 'Not exist'], 401);
         }
 
         if (!$this->hasher->isPasswordValid($user, $parameters['password'])

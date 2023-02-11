@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230209225202 extends AbstractMigration
+final class Version20230211103248 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -25,11 +25,12 @@ final class Version20230209225202 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE "comments_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "favorites_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "user_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
-        $this->addSql('CREATE TABLE "advertisement" (id INT NOT NULL, owner_id INT DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) DEFAULT NULL, description TEXT DEFAULT NULL, photo TEXT DEFAULT NULL, properties JSON DEFAULT NULL, city VARCHAR(255) DEFAULT NULL, address VARCHAR(255) DEFAULT NULL, zipcode VARCHAR(5) DEFAULT NULL, date_start DATE DEFAULT NULL, date_end DATE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "advertisement" (id INT NOT NULL, owner_id INT DEFAULT NULL, name VARCHAR(255) DEFAULT NULL, type VARCHAR(255) DEFAULT NULL, description TEXT DEFAULT NULL, photo TEXT DEFAULT NULL, properties JSON DEFAULT NULL, city VARCHAR(255) DEFAULT NULL, address VARCHAR(255) DEFAULT NULL, zipcode VARCHAR(5) DEFAULT NULL, date_start DATE DEFAULT NULL, date_end DATE DEFAULT NULL, status BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_C95F6AEE7E3C61F9 ON "advertisement" (owner_id)');
-        $this->addSql('CREATE TABLE "booking" (id INT NOT NULL, advertisement_id INT DEFAULT NULL, client_id INT DEFAULT NULL, date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, status INT NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "booking" (id INT NOT NULL, advertisement_id INT DEFAULT NULL, client_id INT DEFAULT NULL, date_start TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, status INT NOT NULL, date_end DATE NOT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, payment VARCHAR(255) NOT NULL, cancel_user TEXT DEFAULT NULL, cancel_host TEXT DEFAULT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_E00CEDDEA1FBF71B ON "booking" (advertisement_id)');
         $this->addSql('CREATE INDEX IDX_E00CEDDE19EB6921 ON "booking" (client_id)');
+        $this->addSql('COMMENT ON COLUMN "booking".created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE "comments" (id INT NOT NULL, client_id INT DEFAULT NULL, advertisement_id INT DEFAULT NULL, message TEXT NOT NULL, rate DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_5F9E962A19EB6921 ON "comments" (client_id)');
         $this->addSql('CREATE INDEX IDX_5F9E962AA1FBF71B ON "comments" (advertisement_id)');

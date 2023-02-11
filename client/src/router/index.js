@@ -88,7 +88,10 @@ const router = createRouter({
     {
       path: '/checkout',
       name: 'checkout',
-      component: CheckoutView
+      component: CheckoutView,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/admin/listings-users',
@@ -109,7 +112,10 @@ const router = createRouter({
     {
       path: '/booking',
       name: 'booking',
-      component: Booking
+      component: Booking,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: "/:pathMatch(.*)*",

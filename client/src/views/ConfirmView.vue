@@ -33,11 +33,11 @@
   <main>
     <div class="container">
       <div v-if="success">
-        <p class="is-size-3	">Votre compte est maintenant activé !</p>
+        <p class="is-size-3">Votre compte est maintenant activé !</p>
       </div>
 
       <div v-if="error">
-        <p class="is-size-3	">Le lien n'est pas valide !</p>
+        <p class="is-size-3">Le lien n'est pas valide !</p>
       </div>
 
       <div class="is-flex is-justify-content-center">
