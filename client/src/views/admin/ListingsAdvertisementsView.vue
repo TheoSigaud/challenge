@@ -19,7 +19,6 @@ const advertisements = ref([]);
 let token = jsCookie.get('jwt')
 
 const requestAd = new Request(
-  //USER ID AMODIFIER
     "https://localhost/api/advertisements",
     {
       method: "GET",
