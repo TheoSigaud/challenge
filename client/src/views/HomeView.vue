@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref } from "vue";
+import jsCookie from "js-cookie";
 
 const city = ref("");
 const startDate = ref("");
@@ -9,6 +10,7 @@ const data = ref({});
 
 function search() {
   const url = new URL("https://localhost/api/advertisements");
+  const token = jsCookie.get('jwt')
   if (city.value !== "") {
     url.searchParams.set("city", city.value.toLowerCase());
   } else if (startDate._value !== "") {
@@ -18,8 +20,15 @@ function search() {
     let date = new Date(endDate._value);
     url.searchParams.set("endDate", date.toISOString().slice(0, 10));
   }
-  console.log(url.href);
-  fetch(url.href)
+
+  const request = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  fetch(url, request)
     .then((response) => response.json())
     .then((_data) => {
       console.log(_data);
@@ -29,6 +38,7 @@ function search() {
       console.log(data.value);
     })
     .catch((error) => console.error("Error fetching advertisements:", error));
+    
 
   console.log("search", city.value, startDate._value, endDate._value);
 }
@@ -86,7 +96,7 @@ onMounted(async () => {
               class="nav-link"
               :to="{ name: 'advertisement', params: { id: item.id } }"
             >
-              <div class="card">
+              <div class="card advertisement">
                 <div class="card-content">
                   <div class="media">
                     <div class="media-left">
@@ -149,7 +159,7 @@ onMounted(async () => {
   border-radius: 10px 100px / 120px;
 }
 
-.card :hover {
+.advertisement :hover {
   background-color: #00d1b2;
 }
 </style>

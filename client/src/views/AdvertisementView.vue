@@ -75,6 +75,7 @@
 <script setup>
 import { onMounted, reactive } from "vue";
 import { useRoute } from "vue-router";
+import jsCookie from "js-cookie";
 
 const route = useRoute();
 const state = reactive({
@@ -82,15 +83,42 @@ const state = reactive({
   loading: true,
 });
 
-onMounted(async () => {
+async function getAdvertisement() {
   console.log("mounted");
+  const token = jsCookie.get("jwt");
   const id = route.params.id;
-  console.log(id);
-  const response = await fetch(`https://localhost/api/advertisements/${id}`);
+  const response = await fetch(`https://localhost/api/advertisements/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
   const data = await response.json();
   state.advertisement = data;
   state.loading = false;
-  console.log("data", data);
+}
+
+onMounted(async () => {
+  // console.log("mounted");
+  // const id = route.params.id;
+  // console.log(id);
+  // con
+
+  // const response = await fetch(`https://localhost/api/advertisements/${id}`);
+  // const data = await response.json();
+  // state.advertisement = data;
+  // state.loading = false;
+  // console.log("data", data);
+  console.log("mounted");
+  const token = jsCookie.get("jwt");
+  const id = route.params.id;
+  const response = await fetch(`https://localhost/api/advertisements/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  state.advertisement = data;
+  state.loading = false;
 });
 </script>
 
