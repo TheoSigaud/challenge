@@ -38,7 +38,7 @@
         .then((data) => {
           if (data.token) {
             jsCookie.set('jwt', data.token, { expires: 1 })
-            router.push({ name: 'Home' })
+            router.push({ name: 'home' })
           } else if (data.message === 'Not confirmed') {
             loginData.value.error = 'Votre compte n\'a pas été confirmé. Vérifiez vos mails.'
           } else {

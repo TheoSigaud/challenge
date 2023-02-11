@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Advertisement;
 use App\Entity\Booking;
+use App\Entity\User;
+use App\Service\ApiMailerService;
 use DateTime;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Stripe\Stripe;
 use Stripe\Token;
 use Stripe\Charge;
@@ -11,13 +15,18 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[AsController]
 class BookingController extends AbstractController
 {
     public function __construct(
+        private RequestStack    $requestStack,
+        private TokenStorageInterface $tokenStorage,
+        private JWTTokenManagerInterface $JWTManager,
         private ManagerRegistry $managerRegistry,
-        private RequestStack    $requestStack
+        private MailerInterface $mailer,
     )
     {
     }
@@ -55,6 +64,18 @@ class BookingController extends AbstractController
                 return $this->json(['message' => 'Le code de sécurité de la carte est invalide'], 400);
             }
 
+            $token = $this->tokenStorage->getToken();
+
+            if (null === $token) {
+                throw $this->createAccessDeniedException();
+            }
+
+            $dataUser =  $this->JWTManager->decode($this->tokenStorage->getToken());
+
+            $user = $this->managerRegistry->getRepository(User::class)->findOneBy(['email' => $dataUser['email']]);
+            $advertisement = $this->managerRegistry->getRepository(Advertisement::class)->findOneBy(['id' => '1']);
+
+
             Stripe::setApiKey($_ENV['STRIPE_PRIVATE']);
 
             $token = Token::create([
@@ -73,6 +94,27 @@ class BookingController extends AbstractController
                 'source' => $token,
             ]);
 
+            $booking = new Booking();
+            $booking->setStatus(0);
+            $booking->setClient($user);
+            $booking->setAdvertisement($advertisement);
+            $booking->setDateStart(new DateTime());
+            $booking->setDateEnd(new DateTime());
+            $booking->setCreatedAt(new \DateTimeImmutable());
+            $booking->setPayment($charge->id);
+
+
+            $entityManager = $this->managerRegistry->getManager();
+            $entityManager->persist($booking);
+            $entityManager->flush();
+
+            $email = ApiMailerService::send_email(
+                $user->getEmail(),
+                "Votre réservation",
+                'Merci pour votre réservation',
+            );
+
+            $this->mailer->send($email);
 
             return $this->json(['message' => 'success'], 200);
         } catch (\Exception $e) {
