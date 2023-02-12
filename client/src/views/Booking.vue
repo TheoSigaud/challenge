@@ -76,6 +76,7 @@ function sendRequest() {
                 <div class="media-left">
                   <figure class="image is-128x128">
                     <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                    {{item.advertisement.photo[0]}}
                   </figure>
                 </div>
                 <div class="media-content">
@@ -84,6 +85,11 @@ function sendRequest() {
                     {{ item.advertisement.description }}
                   </div>
                 </div>
+              </div>
+
+              <div>
+                <p>Date d'arrivée : {{item.booking.date_start.split('T')[0]}}</p>
+                <p>Date de départ :  {{item.booking.date_end.split('T')[0]}}</p>
               </div>
 
               <div class="is-flex is-justify-content-space-between is-align-items-center">

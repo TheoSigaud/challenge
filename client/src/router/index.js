@@ -20,6 +20,7 @@ import PageNotFound from "@/views/PageNotFound.vue";
 import Booking from "@/views/Booking.vue";
 import Refund from "@/views/Refund.vue";
 import Bookings from "@/views/admin/Bookings.vue";
+import Host from "@/views/admin/Host.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -142,16 +143,24 @@ const router = createRouter({
       }
     },
     {
-      path: "/:pathMatch(.*)*",
-      component: PageNotFound
-    },
-    {
       path: "/admin/create-advertisement",
       name: "admin-create-advertisement",
       component: CreateAdvertisementViewAdmin,
       meta: {
         requiresAuthAdmin: true
       }
+    },
+    {
+      path: "/admin/host",
+      name: "admin-host",
+      component: Host,
+      meta: {
+        requiresAuthAdmin: true
+      }
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      component: PageNotFound
     }
   ]
 })

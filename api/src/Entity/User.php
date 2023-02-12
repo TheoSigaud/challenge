@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
@@ -50,6 +53,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         read: false
     )
 ])]
+
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
+#[ApiResource(operations: [
+    new GetCollection(
+        uriTemplate: '/admin/users-host',)
+])]
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

@@ -105,6 +105,9 @@ function logout() {
           <router-link to="/admin/listings-users" class="navbar-item">
             Utilisateurs
           </router-link>
+          <router-link to="/admin/host" class="navbar-item">
+            Demandes d'hôtes
+          </router-link>
         </div>
 
         <div class="navbar-end">
