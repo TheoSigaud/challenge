@@ -29,8 +29,10 @@ class LoginController extends AbstractController
             return $this->json(['message' => 'Not exist'], 401);
         }
 
-        if (!$this->hasher->isPasswordValid($user, $parameters['password'])
-        || $user->getStatus() === 0) {
+        if (!$this->hasher->isPasswordValid($user, $parameters['password'])) {
+            return $this->json(['message' => 'Error login'], 401);
+        }
+        if ($user->getStatus() !== 1) {
             return $this->json(['message' => 'Not confirmed'], 401);
         }
 

@@ -28,6 +28,9 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: LoginView,
+      meta: {
+        requiresLogin: true
+      }
     },
     {
       path: "/",
@@ -207,6 +210,29 @@ router.beforeEach((to, from, next) => {
             } else {
               next('/login')
             }
+        })
+  }else if (to.meta.requiresLogin) {
+    const token = jsCookie.get('jwt')
+
+    const requestToken = new Request(
+        "https://localhost/api/auth",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+    fetch(requestToken)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            next()
+          }
+        })
+        .then((data) => {
+          next('/')
         })
   }else {
     next()

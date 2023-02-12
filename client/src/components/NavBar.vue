@@ -26,18 +26,19 @@ onMounted(() => {
         }
       })
       .then((data) => {
-
-        if (data.data.roles.includes('ROLE_ADMIN')) {
-          role.value = 'admin'
-        } else {
-          role.value = 'user'
+        if (data !== undefined) {
+          if (data.data.roles.includes('ROLE_ADMIN')) {
+            role.value = 'admin'
+          } else {
+            role.value = 'user'
+          }
         }
       })
 })
 
 function logout() {
   jsCookie.remove("jwt");
-  router.push("/");
+  router.push("/login");
 }
 </script>
 
