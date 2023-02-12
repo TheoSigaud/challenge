@@ -1,6 +1,6 @@
 <script setup>
-import AdvertisementForm from "../components/AdvertisementForm.vue";
-import NavBar from "../components/NavBar.vue";
+import AdvertisementAdminForm from "../../components/AdvertisementAdminForm.vue";
+import NavBar from "../../components/NavBar.vue";
 </script>
 
 <template>
@@ -10,7 +10,7 @@ import NavBar from "../components/NavBar.vue";
       <div class="card">
         <div class="card-content">
           <div class="content">
-            <AdvertisementForm method="PATCH"/>
+            <AdvertisementAdminForm method="PATCH"/>
           </div>
         </div>
       </div>

@@ -93,10 +93,14 @@ const deleteAdvertisement = (id) => {
                   <td>{{ad.status ? 'Actif' : 'Désactivé'}}</td>
                   <td>
                     <a href="#">
-                      <div class="buttons">
-                        <button class="button is-info" @click="router.push({name: 'my-advertisement', query: {id: ad.id}})"><a href="">Voir plus </a></button>
-                        <button v-if="ad.status" class="button is-danger" @click="deleteAdvertisement(ad.id)"><a href="">Supprimer</a></button>
-                      </div>
+                      <template v-if="ad.bookings.every(booking => booking.advertisement.split('/')[3] != ad.id)">
+                        <div class="buttons">
+                          <button class="button is-info" @click="router.push({name: 'my-advertisement', query: {id: ad.id}})"><a href="">Voir plus </a></button>
+                          <button v-if="ad.status" class="button is-danger" @click="deleteAdvertisement(ad.id)"><a href="">Supprimer</a></button>
+                        </div>
+                      </template>
+                      <template v-else>
+                      </template>
                     </a>
                   </td>
                 </tr>
