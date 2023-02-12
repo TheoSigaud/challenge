@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
@@ -15,7 +18,6 @@ use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
-use ApiPlatform\Metadata\GetCollection;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -56,9 +58,15 @@ use Symfony\Component\Validator\Constraints as Assert;
         read: false
     )
     ], routePrefix: '/api')]
+
 #[Patch(routePrefix: '/api')]
 #[Post(routePrefix: '/api')]
 
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
+#[ApiResource(operations: [
+    new GetCollection(
+        uriTemplate: '/admin/users-host',)
+])]
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
