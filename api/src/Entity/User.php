@@ -15,6 +15,7 @@ use ApiPlatform\Metadata\ApiResource;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use ApiPlatform\Metadata\GetCollection;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -22,7 +23,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/api')]
+
+
+#[GetCollection(
+    normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin'
+)]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin')]
 #[ApiResource(operations: [
     new Patch(
         name: 'reset-password',
@@ -49,7 +55,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         controller: ConfirmAccountController::class,
         read: false
     )
-])]
+    ], routePrefix: '/api')]
+
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

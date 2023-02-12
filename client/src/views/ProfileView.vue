@@ -4,6 +4,7 @@ import jwtDecode from 'jwt-decode'
 import jsCookie from 'js-cookie'
 import { useRoute } from 'vue-router'
 import NavBar from '@/components/NavBar.vue'
+import router from '@/router'
 
 const route = useRoute()
 
@@ -19,6 +20,8 @@ const route = useRoute()
     role: null,
     error: null
   })
+
+
   const isAdmin = ref(false)
   const displaySuccess = ref(false)
   const displayChangePwd = ref(false)
@@ -36,6 +39,11 @@ const route = useRoute()
     idUser = jwtDecode(token).id
     isAdmin.value = false
   }else{
+    console.log(route.name)
+    if(route.name == 'profile'){
+      router.push({name: 'login'})
+    }
+
     idUser = route.query.id
     isAdmin.value = true
   }
@@ -77,6 +85,22 @@ const route = useRoute()
             .then((response) => displayChangePwd.value = true)
     }
     const saveProfil = () => {
+
+      const date = new Date(registerData.value.birthday);
+
+      const today = new Date();
+      let age = today.getFullYear() - date.getFullYear();
+      const m = today.getMonth() - date.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+        age--;
+      }
+
+        if (age < 15 || age > 110) {
+          registerData.value.error = 'Vous devez avoir minimum 12 ans.'
+          return
+        }
+
+
       const requestRegister = new Request(
         "https://localhost/api/users/"+idUser,
         {
@@ -107,6 +131,11 @@ const route = useRoute()
               <ul>
                   <li v-bind:class="{ 'is-active': isActive == 'profil' }"><a v-on:click="isActive = 'profil'">Profil</a></li>
               </ul>
+            </div>
+            <div v-if="registerData.error">
+              <div class="notification is-danger is-light">
+                <p>{{ registerData.error }}</p>
+              </div>
             </div>
             <div v-if="displaySuccess">
               <div class="notification is-primary is-light">
