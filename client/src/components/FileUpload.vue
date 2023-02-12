@@ -1,18 +1,20 @@
 <script setup>
-import { ref } from "vue";
+import { ref, toRaw} from "vue";
 const fileNames = ref([]);
+
+const emit = defineEmits(["test"]);
 
 function handleFileChange(e) {
   let files = e.target.files;
-  console.log(files.length);
   for (let i = 0; i < files.length; i++) {
     if (files[i].name.endsWith(".png") || files[i].name.endsWith(".jpg") || files[i].name.endsWith(".jpeg")) {
-      console.log(files[i].name);
       fileNames.value.push(files[i]);
     }else{
       e.target.value = null;
     }
   }
+  // console.log(fileNames.value)
+  emit("onPropsFile", fileNames.value);
 }
 
 </script>

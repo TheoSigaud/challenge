@@ -15,10 +15,15 @@ const { method } = defineProps({
 });
 const id = ref("");
 const idAd = route.query.id
-const contentType = ref("application/ld+json");
-if(route.query.id == undefined){
-  router.push({name: 'my-listings'})
+let isAdmin = false
+
+if(route.query.id != undefined){
+  isAdmin = true
 }
+const contentType = ref("application/ld+json");
+// if(route.query.id == undefined){
+//   router.push({name: 'my-listings'})
+// }
 if(method == "PATCH"){
   contentType.value = "application/merge-patch+json"
   id.value = "/"+route.query.id
@@ -36,7 +41,7 @@ const adData = ref({
   date: null,
   error: null
 });
-const fileNames = ref([]);
+const fileNames = ref({});
 
 const dataProperties = ref({
     nbBedroom: null,
@@ -85,6 +90,21 @@ if(method == "PATCH"){
     .catch((error) => console.log(error))
 }
 
+const fileNameEmit = (e) => {
+  fileNames.value = e
+}
+async function base64() {
+  const images = {};
+  for (let i = 0; i < fileNames.value.length; i++) {
+    images[fileNames.value[i].name] = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(fileNames.value[i]);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+  return images;
+}
 const saveAdvertisement = () => {
   if(adData.value.zipcode == null
       || adData.value.type == null
@@ -92,8 +112,27 @@ const saveAdvertisement = () => {
       || adData.value.city == null
       || adData.value.name == null
       || adData.value.address == null
-      || adData.value.date == null) {
+      || adData.value.date == null 
+      || dataProperties.value.nbBedroom == null 
+      || dataProperties.value.nbBedroom == "" 
+      || dataProperties.value.nbBathroom == null 
+      || dataProperties.value.nbBathroom == ""
+      || dataProperties.value.nbBed == null 
+      || dataProperties.value.nbBed== "") {
         adData.value.error = 'Tous les champs sont obligatoires'
+      return
+    }
+
+    if(adData.value.date[1] == null) {
+      adData.value.error = 'Vous devez sélectionner une date de début et une date de fin'
+
+      return
+    }
+
+    if(dataProperties.value.nbBedroom < 0
+      || dataProperties.value.nbBed < 0
+      || dataProperties.value.nbBathroom < 0) {
+      adData.value.error = 'Vous devez renseigner des nombres positifs'
 
       return
     }
@@ -103,6 +142,9 @@ const saveAdvertisement = () => {
 
     return
   }
+base64().then((data) => {
+  console.log(data)
+  //convert array to json
   const requestAdvertisement = new Request(
     "https://localhost/api/advertisements"+id.value,
     {
@@ -118,6 +160,7 @@ const saveAdvertisement = () => {
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
         owner: "/api/users/"+ idUser,
+        photo: data
       }),
       headers: {
         "Content-Type": contentType.value,
@@ -126,6 +169,7 @@ const saveAdvertisement = () => {
     });
   fetch(requestAdvertisement)
         .then((response) => router.push({name: 'my-listings'}))
+  })
 }
 </script>
 
@@ -143,6 +187,9 @@ const saveAdvertisement = () => {
   </div>
   <form @submit.prevent="saveAdvertisement">
     <div class="columns">
+      <div v-if="route.name == 'admin-create-advertisement'">
+        <!-- TODO -->
+      </div>
       <div class="column">
         <div class="field">
           <label class="label">Type de bien </label>
@@ -203,12 +250,12 @@ const saveAdvertisement = () => {
     </div>
     <div class="columns">
       <div class="column">
-        <Datepicker v-model="adData.date" range />
+        <Datepicker v-model="adData.date" :enable-time-picker="false" placeholder="dd/mm/yyyy - dd/mm/yyyy" range  />
       </div>
     </div>
     <div class="columns">
       <div class="column">
-        <FileUpload v-model:fileNames="fileNames" />
+        <FileUpload v-model:fileNames="fileNames" @onPropsFile="fileNameEmit"/>
       </div>
     </div>
     <h2>Propriété</h2>
