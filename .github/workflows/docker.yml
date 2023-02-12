@@ -6,7 +6,7 @@ on:
       - master
 
 env:
-  DOCKER_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+  DOCKER_AUTH_TOKEN: ${{ secrets.DOCKER_AUTH_TOKEN }}
 
 jobs:
   build:
@@ -23,4 +23,4 @@ jobs:
           push: true
           tags: test-deploy
         env:
-          DOCKER_AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+          DOCKER_AUTH_TOKEN: ${{ secrets.DOCKER_AUTH_TOKEN }}
