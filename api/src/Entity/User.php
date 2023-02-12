@@ -61,6 +61,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[Patch(routePrefix: '/api')]
 #[Post(routePrefix: '/api')]
+#[Get(routePrefix: '/api')]
 
 #[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
 #[ApiResource(operations: [
@@ -134,6 +135,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups('advertisement')]
     private ?int $status = 0;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $message_host = null;
 
     public function __construct()
     {
@@ -402,6 +406,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStatus(int $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getMessageHost(): ?string
+    {
+        return $this->message_host;
+    }
+
+    public function setMessageHost(?string $message_host): self
+    {
+        $this->message_host = $message_host;
 
         return $this;
     }

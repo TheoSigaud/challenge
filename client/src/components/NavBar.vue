@@ -2,19 +2,31 @@
 import {onMounted, ref} from "vue";
 import jsCookie from "js-cookie";
 import router from "@/router";
+import jwtDecode from "jwt-decode";
 
 const token = jsCookie.get("jwt");
 const role = ref(false);
+const status = ref(false);
 const showModal = ref(false);
 const error = ref(null);
 const message = ref('');
 
 onMounted(() => {
+  getDataUser()
+})
+
+function getDataUser() {
+  let id;
+  if (token !== undefined) {
+     id = jwtDecode(token).id
+  }
+
   const requestToken = new Request(
-      "https://localhost/api/auth",
+      "https://localhost/api/users/"+id,
       {
-        method: "POST",
+        method: "GET",
         headers: {
+          "Content-Type": "application/json",
           "Authorization": "Bearer " + token
         }
       });
@@ -26,15 +38,50 @@ onMounted(() => {
         }
       })
       .then((data) => {
+
         if (data !== undefined) {
-          if (data.data.roles.includes('ROLE_ADMIN')) {
+          if (data.roles.includes('ROLE_ADMIN')) {
             role.value = 'admin'
+          } else if (data.roles.includes('ROLE_HOST')){
+            role.value = 'host'
           } else {
             role.value = 'user'
           }
+          status.value = data.status
         }
       })
-})
+}
+
+function sendRequest() {
+  if (message.value === '' ) {
+    error.value = 'Veuillez remplir tous les champs'
+  } else {
+    error.value = null
+    showModal.value = !showModal.value
+
+    const id = jwtDecode(token).id
+
+    const requestReset = new Request(
+        "https://localhost/api/users/"+id,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            status: 2,
+            message_host: message.value
+          }),
+          headers: {
+            "Content-Type": "application/merge-patch+json",
+            "Authorization": "Bearer " + token
+          }
+        });
+    fetch(requestReset)
+        .then((response) => {
+          if (response.status === 200) {
+              getDataUser()
+          }
+        })
+  }
+}
 
 function logout() {
   jsCookie.remove("jwt");
@@ -59,7 +106,7 @@ function logout() {
       </div>
 
       <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start" v-if="role === 'user'">
+        <div class="navbar-start" v-if="role === 'user' || role === 'host'">
           <router-link to="/" class="navbar-item">
             Home
           </router-link>
@@ -68,7 +115,7 @@ function logout() {
             Mes réservations
           </router-link>
 
-          <div class="navbar-item has-dropdown is-hoverable">
+          <div class="navbar-item has-dropdown is-hoverable" v-if="role === 'host'">
             <span class="navbar-link">
               Annonces
             </span>
@@ -86,8 +133,11 @@ function logout() {
             Mon profil
           </router-link>
 
-          <div class="is-flex is-align-items-center">
+          <div class="is-flex is-align-items-center" v-if="role === 'user' && status !== 2">
             <button class="button is-warning is-light" @click="showModal = !showModal">Devenir un hôte</button>
+          </div>
+          <div class="is-flex is-align-items-center" v-else-if="status === 2">
+            <p class="has-text-info mb-0 ml-3">Votre demande d'hôte est en attente</p>
           </div>
         </div>
 
@@ -131,7 +181,7 @@ function logout() {
             <div class="content">
               <h3 class="mb-5">Ecrivez un message pour dire pourquoi vous souhaitez devenir un hôte</h3>
 
-              <form @submit.prevent="sendRequest(false)">
+              <form @submit.prevent="sendRequest()">
                 <textarea v-model="message" class="textarea" placeholder="Votre message" rows="10"></textarea>
 
                 <p v-if="error" class="has-text-centered has-text-danger">{{ error }}</p>

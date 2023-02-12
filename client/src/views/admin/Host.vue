@@ -2,6 +2,7 @@
 import {onMounted, ref} from 'vue'
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
+import jwtDecode from "jwt-decode";
 
 const users = ref([])
 const message = ref(null)
@@ -10,10 +11,10 @@ const token = jsCookie.get('jwt')
 
 
 onMounted(() => {
-  getBookings()
+  getHost()
 })
 
-function getBookings() {
+function getHost() {
   const request = new Request(
       "https://localhost/admin/users-host?status=2",
       {
@@ -31,6 +32,30 @@ function getBookings() {
         users.value = data['hydra:member']
       })
 }
+
+function sendRequest(value = false, id) {
+
+  if (value === true) {
+    const requestReset = new Request(
+        "https://localhost/api/users/" + id,
+        {
+          method: "PATCH",
+          body: JSON.stringify({
+            role: ["ROLE_HOST", "ROLE_USER"]
+          }),
+          headers: {
+            "Content-Type": "application/merge-patch+json",
+            "Authorization": "Bearer " + token
+          }
+        });
+    fetch(requestReset)
+        .then((response) => {
+          if (response.status === 200) {
+            getHost()
+          }
+        })
+  }
+}
 </script>
 
 <template>
@@ -43,6 +68,8 @@ function getBookings() {
           <th>Nom</th>
           <th>Prénom</th>
           <th>Date de naissance</th>
+          <th>Message</th>
+          <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -54,6 +81,13 @@ function getBookings() {
             month: 'long',
             year: 'numeric'
           }) }}</td>
+          <td>
+            {{ item.message_host}}
+          </td>
+          <td>
+            <button class="button is-success is-light mr-3" @click="sendRequest(true, item.id)">Accepter</button>
+            <button class="button is-danger is-light" @click="sendRequest(false, item.id)">Refuser</button>
+          </td>
         </tr>
         </tbody>
       </table>
