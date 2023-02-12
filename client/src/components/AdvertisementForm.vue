@@ -36,7 +36,7 @@ const adData = ref({
   date: null,
   error: null
 });
-const fileNames = ref([]);
+const fileNames = ref({});
 
 const dataProperties = ref({
     nbBedroom: null,
@@ -85,6 +85,21 @@ if(method == "PATCH"){
     .catch((error) => console.log(error))
 }
 
+const fileNameEmit = (e) => {
+  fileNames.value = e
+}
+async function base64() {
+  const images = {};
+  for (let i = 0; i < fileNames.value.length; i++) {
+    images[fileNames.value[i].name] = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(fileNames.value[i]);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+  return images;
+}
 const saveAdvertisement = () => {
   if(adData.value.zipcode == null
       || adData.value.type == null
@@ -94,27 +109,21 @@ const saveAdvertisement = () => {
       || adData.value.address == null
       || adData.value.date == null 
       || dataProperties.value.nbBedroom == null 
-      || dataProperties.value.nbBedroom != "" 
+      || dataProperties.value.nbBedroom == "" 
       || dataProperties.value.nbBathroom == null 
-      || dataProperties.value.nbBathroom != ""
+      || dataProperties.value.nbBathroom == ""
       || dataProperties.value.nbBed == null 
-      || dataProperties.value.nbBed!= ""
-      || dataProperties.value.swimingpool == null 
-      || dataProperties.value.swimingpool != ""
-      || dataProperties.value.kitchen == null 
-      || dataProperties.value.kitchen != ""
-      || dataProperties.value.parking == null 
-      || dataProperties.value.parking != ""
-      || dataProperties.value.airConditioning == null 
-      || dataProperties.value.airConditioning != ""
-      || dataProperties.value.heating == null 
-      || dataProperties.value.heating != "") {
+      || dataProperties.value.nbBed== "") {
         adData.value.error = 'Tous les champs sont obligatoires'
+      return
+    }
+
+    if(adData.value.date[1] == null) {
+      adData.value.error = 'Vous devez sélectionner une date de début et une date de fin'
 
       return
     }
 
-    // check if nbBedroom is a number positive
     if(dataProperties.value.nbBedroom < 0
       || dataProperties.value.nbBed < 0
       || dataProperties.value.nbBathroom < 0) {
@@ -128,6 +137,9 @@ const saveAdvertisement = () => {
 
     return
   }
+base64().then((data) => {
+  console.log(data)
+  //convert array to json
   const requestAdvertisement = new Request(
     "https://localhost/api/advertisements"+id.value,
     {
@@ -143,6 +155,7 @@ const saveAdvertisement = () => {
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
         owner: "/api/users/"+ idUser,
+        photo: data
       }),
       headers: {
         "Content-Type": contentType.value,
@@ -151,6 +164,7 @@ const saveAdvertisement = () => {
     });
   fetch(requestAdvertisement)
         .then((response) => router.push({name: 'my-listings'}))
+  })
 }
 </script>
 
@@ -228,12 +242,12 @@ const saveAdvertisement = () => {
     </div>
     <div class="columns">
       <div class="column">
-        <Datepicker v-model="adData.date" range />
+        <Datepicker v-model="adData.date" range  />
       </div>
     </div>
     <div class="columns">
       <div class="column">
-        <FileUpload v-model:fileNames="fileNames" />
+        <FileUpload v-model:fileNames="fileNames" @onPropsFile="fileNameEmit"/>
       </div>
     </div>
     <h2>Propriété</h2>

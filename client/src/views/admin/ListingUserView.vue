@@ -94,7 +94,10 @@ const requestUser = new Request(
                 <td>
                   <a href="#">
                     <div class="buttons">
-                      <button class="button is-info" @click="router.push({name: 'admin-update-users', query: {id: user.id}})"><a href="">Voir plus </a></button>
+                      <router-link :to="{ path: '/admin/update-user', query: { id: user.id } }" class="button btn--lavender mt-5">
+                        <span>Voir plus</span>
+                      </router-link>
+                      <!-- <button class="button is-info" @click="router.push({name: 'admin-update-users', query: {id: user.id}})"><a href="">Voir plus </a></button> -->
                       <button v-if="!user.roles.includes('ROLE_ADMIN')" class="button is-info" @click="changeAdmin(user.id)"><a href="">Passer administrateur</a></button>
                       <button v-if="user.roles.includes('ROLE_ADMIN')" class="button is-info" @click="unsetAdmin(user.id)"><a href="">Supprimer administrateur</a></button>
                     </div>                    
