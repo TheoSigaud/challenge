@@ -17,6 +17,15 @@
     registerData.value.error = null
     registerData.value.success = null
 
+    const date = new Date(registerData.value.birthday);
+
+    const today = new Date();
+    let age = today.getFullYear() - date.getFullYear();
+    const m = today.getMonth() - date.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+      age--;
+    }
+
     if (registerData.value.email === null
         || registerData.value.password === null
         || registerData.value.confirmPassword === null) {
@@ -29,6 +38,16 @@
       registerData.value.error = 'Les mots de passe ne correspondent pas'
       return
     }
+
+    if (registerData.value.password.length < 8) {
+      registerData.value.error = 'Le mot de passe doit contenir au moins 8 caractères.'
+      return
+    }
+
+    // if (age < 15 || age > 110) {
+    //   registerData.value.error = 'Vous devez avoir minimum 12 ans.'
+    //   return
+    // }
 
     const requestRegister = new Request(
         "https://localhost/api/users",
@@ -56,7 +75,18 @@
             registerData.value.success = 'Votre compte a bien été créé. Vérifiez vos mails pour confirmer votre compte.'
             registerData.value.error = null
           } else {
-            registerData.value.error = 'Les informations saisies sont incorrectes. Il se peut que l\'email soit déjà utilisé.'
+            return response.json()
+          }
+        })
+        .then(data => {
+          if (data.violations) {
+            if (data.violations[0]['propertyPath'] === 'birthday') {
+              registerData.value.error = 'Vous devez avoir minimum 12 ans.'
+            } else {
+              registerData.value.error = 'Les informations saisies sont incorrectes'
+            }
+          }else {
+            registerData.value.error = 'Cet email est déjà utilisé.'
           }
         })
   }
