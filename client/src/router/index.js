@@ -20,6 +20,7 @@ import PageNotFound from "@/views/PageNotFound.vue";
 import Booking from "@/views/Booking.vue";
 import Refund from "@/views/Refund.vue";
 import Bookings from "@/views/admin/Bookings.vue";
+import Host from "@/views/admin/Host.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,6 +29,9 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: LoginView,
+      meta: {
+        requiresLogin: true
+      }
     },
     {
       path: "/",
@@ -139,16 +143,24 @@ const router = createRouter({
       }
     },
     {
-      path: "/:pathMatch(.*)*",
-      component: PageNotFound
-    },
-    {
       path: "/admin/create-advertisement",
       name: "admin-create-advertisement",
       component: CreateAdvertisementViewAdmin,
       meta: {
         requiresAuthAdmin: true
       }
+    },
+    {
+      path: "/admin/host",
+      name: "admin-host",
+      component: Host,
+      meta: {
+        requiresAuthAdmin: true
+      }
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      component: PageNotFound
     }
   ]
 })
@@ -207,6 +219,29 @@ router.beforeEach((to, from, next) => {
             } else {
               next('/login')
             }
+        })
+  }else if (to.meta.requiresLogin) {
+    const token = jsCookie.get('jwt')
+
+    const requestToken = new Request(
+        "https://localhost/api/auth",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+    fetch(requestToken)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            next()
+          }
+        })
+        .then((data) => {
+          next('/')
         })
   }else {
     next()

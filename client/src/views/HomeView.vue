@@ -50,7 +50,7 @@ onMounted(async () => {
 
 <template>
   <div>
-    <NavBar/>
+    <NavBar :key="'home'" />
     <div class="container is-flex is-justify-content-center mb-5">
       <div class="level-item custom-class">
         <div class="field has-addons">

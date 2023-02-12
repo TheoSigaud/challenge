@@ -42,11 +42,11 @@ const changeAdmin =  (idUser) => {
 }
 
 const requestUser = new Request(
-    "https://localhost/api/users",
+    "https://localhost/admin/users",
     {
       method: "GET",
       headers: {
-        "Content-Type": "application/Id+json",
+        "Content-Type": "application/json",
         "Authorization": "Bearer " + token
       }
     });
