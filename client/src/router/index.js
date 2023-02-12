@@ -3,6 +3,8 @@ import HomeView from "../views/HomeView.vue";
 import LoginView from '../views/LoginView.vue'
 import ConfirmAccount from '../views/ConfirmView.vue'
 import CreateAdvertisementView from "../views/CreateAdvertisementView.vue";
+import CreateAdvertisementViewAdmin from "@/views/admin/CreateAdvertisementViewAdmin.vue";
+
 import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
 import MyListingsView from "../views/MyListingsView.vue";
 import AdvertisementView from "../views/AdvertisementView.vue";
@@ -142,7 +144,7 @@ const router = createRouter({
     {
       path: "/admin/create-advertisement",
       name: "admin-create-advertisement",
-      component: CreateAdvertisementView,
+      component: CreateAdvertisementViewAdmin,
       meta: {
         requiresAuthAdmin: true
       }

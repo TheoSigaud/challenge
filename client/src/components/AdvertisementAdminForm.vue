@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import FileUpload from "../components/FileUpload.vue";
+import FileUpload from "./FileUpload.vue";
 import router from '@/router'
 import { useRoute } from 'vue-router'
 import jsCookie from 'js-cookie'
@@ -56,41 +56,6 @@ const dataProperties = ref({
     airConditioning: null,
     heating: null
   })
-
-
-if(method == "PATCH"){
-  const requestUser = new Request(
-    "https://localhost/api/advertisements/"+idAd,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/Id+json",
-        "Authorization": "Bearer " + token
-      }
-    });
-  fetch(requestUser)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data)
-      adData.value.name = data.name
-      adData.value.type = data.type
-      adData.value.description = data.description
-      adData.value.city = data.city
-      adData.value.zipcode = data.zipcode
-      adData.value.address = data.address
-      adData.value.date = [data.dateStart, data.dateEnd]
-      dataProperties.value.nbBedroom = data.properties.nbBedroom
-      dataProperties.value.nbBed = data.properties.nbBed
-      dataProperties.value.nbBathroom = data.properties.nbBathroom
-      dataProperties.value.swimingpool = data.properties.swimingpool
-      dataProperties.value.kitchen = data.properties.kitchen
-      dataProperties.value.parking = data.properties.parking
-      dataProperties.value.airConditioning = data.properties.airConditioning
-      dataProperties.value.heating = data.properties.heating,
-      adData.value.price = data.price
-    })
-    .catch((error) => console.log(error))
-}
 
 const fileNameEmit = (e) => {
   fileNames.value = e
@@ -163,7 +128,7 @@ base64().then((data) => {
         dateStart: adData.value.date[0],
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
-        owner: "/api/users/"+ idUser,
+        owner: "/api/users/"+ adData.value.user,
         photo: data,
         price: adData.value.price,
       }),
@@ -173,12 +138,7 @@ base64().then((data) => {
       }
     });
   fetch(requestAdvertisement)
-        .then((response) => {if(method == "PATCH"){
-          router.push({name: 'listings-advertisements'})
-        }else{
-          router.push({name: 'my-listings'})
-        }
-      })
+        .then((response) => router.push({name: 'listings-advertisements'}))
   })
 }
 
@@ -216,6 +176,23 @@ const requestAd = new Request(
     </div>
   </div>
   <form @submit.prevent="saveAdvertisement">
+    <dinv class="columns">
+      <div class="column">
+        <div class="fiels">
+          <div v-if="route.name == 'admin-create-advertisement'">
+            <div class="column">
+              <div class="field">
+                <label class="label">Utilisateur</label>
+                <select class="input" v-model="adData.user" >
+                  <option value="" disabled>Choisissez un utilisateur</option>
+                  <option v-for="user in users" :key="user.id" :value="user.id">{{user.firstname}} {{ user.lastname }}</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dinv>
     <div class="columns">
       <div class="column">
         <div class="field">

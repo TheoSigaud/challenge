@@ -87,6 +87,9 @@ function logout() {
         <router-link to="/admin/bookings" class="navbar-item">
           Réservations
         </router-link>
+        <router-link to="/admin/listings-advertisements" class="navbar-item">
+          Annonces
+        </router-link>
       </div>
 
       <div class="navbar-end">
