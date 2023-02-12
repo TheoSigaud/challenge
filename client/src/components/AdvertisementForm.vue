@@ -15,6 +15,11 @@ const { method } = defineProps({
 });
 const id = ref("");
 const idAd = route.query.id
+let isAdmin = false
+
+if(route.query.id != undefined){
+  isAdmin = true
+}
 const contentType = ref("application/ld+json");
 // if(route.query.id == undefined){
 //   router.push({name: 'my-listings'})
@@ -182,6 +187,9 @@ base64().then((data) => {
   </div>
   <form @submit.prevent="saveAdvertisement">
     <div class="columns">
+      <div v-if="route.name == 'admin-create-advertisement'">
+        <!-- TODO -->
+      </div>
       <div class="column">
         <div class="field">
           <label class="label">Type de bien </label>
@@ -242,7 +250,7 @@ base64().then((data) => {
     </div>
     <div class="columns">
       <div class="column">
-        <Datepicker v-model="adData.date" range  />
+        <Datepicker v-model="adData.date" :enable-time-picker="false" placeholder="dd/mm/yyyy - dd/mm/yyyy" range  />
       </div>
     </div>
     <div class="columns">

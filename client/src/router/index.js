@@ -129,6 +129,14 @@ const router = createRouter({
     {
       path: "/:pathMatch(.*)*",
       component: PageNotFound
+    },
+    {
+      path: "/admin/create-advertisement",
+      name: "admin-create-advertisement",
+      component: CreateAdvertisementView,
+      meta: {
+        requiresAuthAdmin: true
+      }
     }
   ]
 })
