@@ -16,6 +16,17 @@
   function register() {
     registerData.value.error = null
     registerData.value.success = null
+    console.log(registerData.value)
+
+    const date = new Date(registerData.value.birthday);
+    console.log(date)
+
+    const today = new Date();
+    let age = today.getFullYear() - date.getFullYear();
+    const m = today.getMonth() - date.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < date.getDate())) {
+      age--;
+    }
 
     if (registerData.value.email === null
         || registerData.value.password === null
@@ -27,6 +38,11 @@
 
     if (registerData.value.password !== registerData.value.confirmPassword) {
       registerData.value.error = 'Les mots de passe ne correspondent pas'
+      return
+    }
+
+    if (age < 15 || age > 110) {
+      registerData.value.error = 'Vous devez avoir minimum 12 ans.'
       return
     }
 
