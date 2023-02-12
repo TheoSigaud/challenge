@@ -127,7 +127,7 @@ base64().then((data) => {
         dateStart: adData.value.date[0],
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
-        owner: "/api/users/"+ adData.value.user,
+        owner: "/admin/users/"+ adData.value.user,
         photo: data,
         price: adData.value.price,
       }),
@@ -144,7 +144,7 @@ base64().then((data) => {
 
 const requestAd = new Request(
   
-    "https://localhost/api/users/",
+    "https://localhost/admin/users/",
     {
       method: "GET",
       headers: {

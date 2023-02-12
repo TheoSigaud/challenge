@@ -25,7 +25,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/api')]
+
+
+#[GetCollection(
+    normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin'
+)]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin')]
 #[ApiResource(operations: [
     new Patch(
         name: 'reset-password',
@@ -52,6 +57,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         controller: ConfirmAccountController::class,
         read: false
     )
+    ], routePrefix: '/api')]
+#[Patch(routePrefix: '/api')]
+#[Post(routePrefix: '/api')]
+
+
 ])]
 
 #[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
