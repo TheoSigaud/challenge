@@ -113,7 +113,6 @@ const saveAdvertisement = () => {
   }
 base64().then((data) => {
   console.log(data)
-  //convert array to json
   const requestAdvertisement = new Request(
     "https://localhost/api/advertisements"+id.value,
     {
@@ -160,7 +159,39 @@ const requestAd = new Request(
       console.log(users.value)
     })
     .catch((error) => console.log(error))
-
+    if(method == "PATCH"){
+  const requestUser = new Request(
+    "https://localhost/api/advertisements/"+idAd,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/Id+json",
+        "Authorization": "Bearer " + token
+      }
+    });
+  fetch(requestUser)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data)
+      adData.value.name = data.name
+      adData.value.type = data.type
+      adData.value.description = data.description
+      adData.value.city = data.city
+      adData.value.zipcode = data.zipcode
+      adData.value.address = data.address
+      adData.value.date = [data.dateStart, data.dateEnd]
+      dataProperties.value.nbBedroom = data.properties.nbBedroom
+      dataProperties.value.nbBed = data.properties.nbBed
+      dataProperties.value.nbBathroom = data.properties.nbBathroom
+      dataProperties.value.swimingpool = data.properties.swimingpool
+      dataProperties.value.kitchen = data.properties.kitchen
+      dataProperties.value.parking = data.properties.parking
+      dataProperties.value.airConditioning = data.properties.airConditioning
+      dataProperties.value.heating = data.properties.heating,
+      adData.value.price = data.price
+    })
+    .catch((error) => console.log(error))
+}
 </script>
 
 
@@ -168,7 +199,7 @@ const requestAd = new Request(
   <div class="columns">
     <div class="column">
       <div class="field">
-        <label class="label">Titre de l'annonce</label>
+        <label class="label">Titre de l'annonce aaa</label>
         <div class="control">
           <input class="input" v-model="adData.name" type="text" placeholder="titre de l'annonce">
         </div>
@@ -179,7 +210,7 @@ const requestAd = new Request(
     <dinv class="columns">
       <div class="column">
         <div class="fiels">
-          <div v-if="route.name == 'admin-create-advertisement'">
+          <!-- <div v-if="route.name == 'admin-create-advertisement'"> -->
             <div class="column">
               <div class="field">
                 <label class="label">Utilisateur</label>
@@ -188,7 +219,7 @@ const requestAd = new Request(
                   <option v-for="user in users" :key="user.id" :value="user.id">{{user.firstname}} {{ user.lastname }}</option>
                 </select>
               </div>
-            </div>
+            <!-- </div> -->
           </div>
         </div>
       </div>

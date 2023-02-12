@@ -173,11 +173,8 @@ base64().then((data) => {
       }
     });
   fetch(requestAdvertisement)
-        .then((response) => {if(method == "PATCH"){
-          router.push({name: 'listings-advertisements'})
-        }else{
+        .then((response) => {
           router.push({name: 'my-listings'})
-        }
       })
   })
 }

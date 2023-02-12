@@ -6,6 +6,7 @@ import CreateAdvertisementView from "../views/CreateAdvertisementView.vue";
 import CreateAdvertisementViewAdmin from "@/views/admin/CreateAdvertisementViewAdmin.vue";
 
 import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
+import MyAdvertisementsViewAdmin from '../views/admin/MyAdvertisementsView.vue'
 import MyListingsView from "../views/MyListingsView.vue";
 import AdvertisementView from "../views/AdvertisementView.vue";
 import ListingsAdvertisementsView from "../views/admin/ListingsAdvertisementsView.vue"
@@ -69,7 +70,7 @@ const router = createRouter({
     {
       path: '/admin/modify-advertisement',
       name: 'admin-my-advertisement',
-      component: MyAdvertisementsView,
+      component: MyAdvertisementsViewAdmin,
       meta: {
         requiresAuthAdmin: true
       }
