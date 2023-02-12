@@ -3,16 +3,17 @@
 namespace App\Controller;
 
 use App\Entity\Booking;
+use App\Entity\User;
 use App\Service\ApiMailerService;
 use Doctrine\Persistence\ManagerRegistry;
-use Stripe\Charge;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Stripe\Refund;
 use Stripe\Stripe;
-use Stripe\Token;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[AsController]
 class CancelBookingController extends AbstractController
@@ -21,6 +22,8 @@ class CancelBookingController extends AbstractController
         private RequestStack    $requestStack,
         private ManagerRegistry $managerRegistry,
         private MailerInterface $mailer,
+        private JWTTokenManagerInterface $JWTManager,
+        private TokenStorageInterface $tokenStorage
     )
     {
     }
@@ -37,8 +40,37 @@ class CancelBookingController extends AbstractController
         try {
             $parameters = json_decode($this->requestStack->getCurrentRequest()->getContent(), true);
 
-            if(!$booking = $this->managerRegistry->getRepository(Booking::class)->findOneBy(['id' => $parameters['bookingId']])) {
-                return $this->json(['message' => 'Not exist'], 401);
+            $dataUser =  $this->JWTManager->decode($this->tokenStorage->getToken());
+
+            if (in_array('ROLE_ADMIN', $dataUser['roles'])){
+                if(!$booking = $this->managerRegistry->getRepository(Booking::class)->findOneBy(['id' => $parameters['bookingId']])) {
+                    return $this->json(['message' => 'Not exist'], 401);
+                }
+            }else{
+                $user = $this->managerRegistry->getRepository(User::class)->findOneBy(['email' => $dataUser['email']]);
+
+                if(!$booking = $this->managerRegistry->getRepository(Booking::class)->findOneBy(['id' => $parameters['bookingId'], 'client' => $user])) {
+                    return $this->json(['message' => 'Not exist'], 401);
+                }
+            }
+
+            if(!empty($parameters['valueRefund'])) {
+                if ($parameters['valueRefund'] === 'cancel') {
+                    $booking->setStatus(-2);
+                    $this->managerRegistry->getManager()->flush();
+
+                    $this->refund($booking->getPayment());
+
+                    $email = ApiMailerService::send_email(
+                        $booking->getClient()->getEmail(),
+                        "Annulation acceptée",
+                        'Votre demande d\'annulation a été accepté. le remboursement est en cours.'
+                    );
+
+                    $this->mailer->send($email);
+
+                    return $this->json(['message' => 'success'], 200);
+                }
             }
 
             if ($booking->getStatus() === 0) {
@@ -82,20 +114,68 @@ class CancelBookingController extends AbstractController
 
                 return $this->json(['message' => 'success'], 200);
             } else if ($booking->getStatus() === 1) {
-                $booking->setStatus(2);
-                $booking->setCancelHost($parameters['message']);
-                $this->managerRegistry->getManager()->flush();
+                if ($parameters['valueRefund']){
+                    $booking->setStatus(-1);
+                    $this->managerRegistry->getManager()->flush();
 
-                $email = ApiMailerService::send_email(
-                    $booking->getClient()->getEmail(),
-                    "Annulation refusée",
-                    'Votre demande d\'annulation a été refusée. Elle a été envoyée à un administrateur pour vérification.
+                    $this->refund($booking->getPayment());
+
+                    $email = ApiMailerService::send_email(
+                        $booking->getClient()->getEmail(),
+                        "Annulation acceptée",
+                        'Votre demande d\'annulation a été accepté. le remboursement est en cours.'
+                    );
+
+                    $this->mailer->send($email);
+
+                    return $this->json(['message' => 'success'], 200);
+                }else{
+                    $booking->setStatus(2);
+                    $booking->setCancelHost($parameters['message']);
+                    $this->managerRegistry->getManager()->flush();
+
+                    $email = ApiMailerService::send_email(
+                        $booking->getClient()->getEmail(),
+                        "Annulation refusée",
+                        'Votre demande d\'annulation a été refusée. Elle a été envoyée à un administrateur pour vérification.
                         Message de l\'hôte : ' . $parameters['message'],
-                );
+                    );
 
-                $this->mailer->send($email);
+                    $this->mailer->send($email);
 
-                return $this->json(['message' => 'success'], 200);
+                    return $this->json(['message' => 'success'], 200);
+                }
+            } else if ($booking->getStatus() === 2) {
+                if ($parameters['valueRefund']){
+                    $booking->setStatus(-1);
+                    $this->managerRegistry->getManager()->flush();
+
+                    $this->refund($booking->getPayment());
+
+                    $email = ApiMailerService::send_email(
+                        $booking->getClient()->getEmail(),
+                        "Annulation acceptée",
+                        'Votre demande d\'annulation a été accepté. le remboursement est en cours.'
+                    );
+
+                    $this->mailer->send($email);
+
+                    return $this->json(['message' => 'success'], 200);
+                }else{
+                    $booking->setStatus(3);
+                    $booking->setCancelHost($parameters['message']);
+                    $this->managerRegistry->getManager()->flush();
+
+                    $email = ApiMailerService::send_email(
+                        $booking->getClient()->getEmail(),
+                        "Annulation refusée",
+                        'Votre demande d\'annulation a été refusée par l\'administrateur.'
+                    );
+
+                    $this->mailer->send($email);
+
+                    return $this->json(['message' => 'success'], 200);
+                }
             } else {
                 return $this->json(['message' => 'Error'], 401);
             }

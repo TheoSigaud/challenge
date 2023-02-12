@@ -18,7 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 // #[ApiResource]
-#[ApiResource(routePrefix: '/api')]
+#[ApiResource(normalizationContext: ['groups' => ['owner']], routePrefix: '/api')]
 #[ApiFilter(SearchFilter::class, properties: ['city' => 'exact'])]
 #[ApiFilter(DateFilter::class, properties: ['date_start', 'date_end'])]
 
@@ -29,67 +29,72 @@ class Advertisement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
-    #[Groups('advertisement')]
+    #[Groups(['booking:read', 'advertisement', 'owner'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $type = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $description = null;
 
     #[ORM\Column(nullable: true)]
     #[Groups('advertisement')]
     private array $photo = [];
+    
 
     #[ORM\Column(nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private array $properties = [];
 
     #[ORM\ManyToOne(inversedBy: 'advertisements')]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'advertisement', targetEntity: Comment::class)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'advertisement', targetEntity: Booking::class)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private Collection $bookings;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     #[Assert\Length(max: 255)]
     private ?string $city = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $address = null;
 
     #[ORM\Column(length: 5, nullable: true)]
     #[Assert\Length(max: 5)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $zipcode = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?\DateTimeInterface $date_end = null;
 
     #[ORM\Column]
-    #[Groups('advertisement')]
+    #[Groups('owner')]
+    private ?int $price = null;
+
+    #[ORM\Column]
+    #[Groups(['advertisement', 'owner'])]
     private ?bool $status = true;
 
     public function __construct()
@@ -266,10 +271,9 @@ class Advertisement
 
     public function setZipcode(string $zipcode): self
     {
-        if(preg_match ("~^[0-9]{5}$~",$zipcode)) {
+        if (preg_match("~^[0-9]{5}$~", $zipcode)) {
             $this->zipcode = $zipcode;
-        }
-        else {
+        } else {
             $this->zipcode = "00000";
         }
         return $this;
@@ -295,6 +299,18 @@ class Advertisement
     public function setDateEnd(\DateTimeInterface $date_end): self
     {
         $this->date_end = $date_end;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
 
         return $this;
     }
