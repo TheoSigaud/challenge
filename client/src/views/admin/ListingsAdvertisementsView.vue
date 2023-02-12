@@ -44,6 +44,9 @@ const requestAd = new Request(
         <div class="content">
           <h2>Les annonces</h2>
           <hr>
+          <router-link :to="{ path: '/admin/create-advertisement'}" class="button btn--lavender mt-5">
+            <span>Créer une annonce</span>
+          </router-link>
           <table class="table">
             <thead>
               <tr>

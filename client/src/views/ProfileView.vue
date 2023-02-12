@@ -179,36 +179,6 @@ const route = useRoute()
                       </div>
                     </div>
                   </div>
-                  <!-- <div v-if="isAdmin">
-                    <div class="columns" v-if="registerData.role == 'Administrateur'">
-                      <div class="column">
-                        <div class="field">
-                          <label class="label" for="isAdmin">Administrateur</label>
-                          <div class="control">
-                            <input v-model="registerData.role" class="input" id="isAdmin">
-                            <label class="checkbox">
-                              <input type="checkbox" id="role" checked>
-                                Administrateur 
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="columns" v-if="registerData.role != 'Administrateur'">
-                      <div class="column">
-                        <div class="field">
-                          <label class="label" for="isAdmin">Administrateur</label>
-                          <div class="control">
-                            <input v-model="registerData.role" class="input" id="isAdmin">
-                            <label class="checkbox">
-                              <input type="checkbox" id="role">
-                                Administrateur 
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                    </div>                  
-                  </div> -->
                   <div class="is-flex is-justify-content-center">
                     <button class="button is-primary"  type="submit">Sauvegarder</button>
                   </div>
