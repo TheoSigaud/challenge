@@ -20,8 +20,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource(normalizationContext: ['groups' => ['advertisement']], routePrefix: '/api')]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/api')]
 #[ApiResource(operations: [
     new Patch(
         name: 'reset-password',
@@ -49,8 +50,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
         read: false
     )
 ])]
-#[ApiResource(routePrefix: '/api')]
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -58,12 +57,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?int $id = null;
 
 
     #[ORM\Column(length: 180, unique: true)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -82,7 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $token = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups('advertisement')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 255)]
@@ -91,6 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups('advertisement')]
+    #[Assert\LessThan('-12 years')]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(type: Types::TEXT)]

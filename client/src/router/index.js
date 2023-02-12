@@ -3,7 +3,10 @@ import HomeView from "../views/HomeView.vue";
 import LoginView from '../views/LoginView.vue'
 import ConfirmAccount from '../views/ConfirmView.vue'
 import CreateAdvertisementView from "../views/CreateAdvertisementView.vue";
+import CreateAdvertisementViewAdmin from "@/views/admin/CreateAdvertisementViewAdmin.vue";
+
 import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
+import MyAdvertisementsViewAdmin from '../views/admin/MyAdvertisementsView.vue'
 import MyListingsView from "../views/MyListingsView.vue";
 import AdvertisementView from "../views/AdvertisementView.vue";
 import ListingsAdvertisementsView from "../views/admin/ListingsAdvertisementsView.vue"
@@ -12,7 +15,11 @@ import ProfileView from '../views/ProfileView.vue'
 import ResetPwdView from '../views/ResetPwdView.vue'
 import ResetPasswordView from "@/views/ResetPasswordView.vue";
 import CheckoutView from "@/views/CheckoutView.vue";
+import ListingUserView from "@/views/admin/ListingUserView.vue";
 import PageNotFound from "@/views/PageNotFound.vue";
+import Booking from "@/views/Booking.vue";
+import Refund from "@/views/Refund.vue";
+import Bookings from "@/views/admin/Bookings.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +50,11 @@ const router = createRouter({
       component: MyListingsView,
     },
     {
+      path: '/my-advertisement',
+      name: 'my-advertisement',
+      component: MyAdvertisementsView
+    },
+    {
       path: '/confirm-account',
       name: 'confirm-account',
       component: ConfirmAccount
@@ -50,12 +62,18 @@ const router = createRouter({
     {
       path: '/admin/listings-advertisements',
       name: 'listings-advertisements',
-      component: ListingsAdvertisementsView
+      component: ListingsAdvertisementsView,
+      meta: {
+        requiresAuthAdmin: true
+      }
     },
     {
       path: '/admin/modify-advertisement',
       name: 'admin-my-advertisement',
-      component: MyAdvertisementsView
+      component: MyAdvertisementsViewAdmin,
+      meta: {
+        requiresAuthAdmin: true
+      }
     },
     {
       path: '/profile',
@@ -75,11 +93,62 @@ const router = createRouter({
     {
       path: '/checkout',
       name: 'checkout',
-      component: CheckoutView
+      component: CheckoutView,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/admin/listings-users',
+      name: 'listings-users',
+      component: ListingUserView,
+      meta: {
+        requiresAuthAdmin: true
+      }
+    },
+    {
+      path: '/admin/update-user',
+      name: 'admin-update-users',
+      component: ProfileView, 
+      meta: {
+        requiresAuthAdmin: true
+      }
+    },
+    {
+      path: '/bookings',
+      name: 'bookings',
+      component: Booking,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/refunds',
+      name: 'refunds',
+      component: Refund,
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/admin/bookings',
+      name: 'admin-bookings',
+      component: Bookings,
+      meta: {
+        requiresAuthAdmin: true
+      }
     },
     {
       path: "/:pathMatch(.*)*",
       component: PageNotFound
+    },
+    {
+      path: "/admin/create-advertisement",
+      name: "admin-create-advertisement",
+      component: CreateAdvertisementViewAdmin,
+      meta: {
+        requiresAuthAdmin: true
+      }
     }
   ]
 })

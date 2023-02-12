@@ -2,6 +2,10 @@
 import { ref } from 'vue'
 import jwtDecode from 'jwt-decode'
 import jsCookie from 'js-cookie'
+import { useRoute } from 'vue-router'
+import NavBar from '@/components/NavBar.vue'
+
+const route = useRoute()
 
   const registerData = ref({
     firstname: null,
@@ -12,8 +16,10 @@ import jsCookie from 'js-cookie'
     password: null,
     confirmPassword: null,
     status: null,
+    role: null,
     error: null
   })
+  const isAdmin = ref(false)
   const displaySuccess = ref(false)
   const displayChangePwd = ref(false)
   const changePwd = ref({
@@ -24,7 +30,16 @@ import jsCookie from 'js-cookie'
   })
   const isActive = ref('profil')
   let token = jsCookie.get('jwt')
-  let idUser = jwtDecode(token).id
+
+  let idUser = 0
+  if(route.query.id == null){
+    idUser = jwtDecode(token).id
+    isAdmin.value = false
+  }else{
+    idUser = route.query.id
+    isAdmin.value = true
+  }
+
   const requestUser = new Request(
     "https://localhost/api/users/"+idUser,
     {
@@ -82,89 +97,92 @@ import jsCookie from 'js-cookie'
     }
 </script>
 <template>
-  <div class="container">
-    <div class="card ">
-      <div class="card-content">
-        <div class="content">
-          <div class="tabs is-centered">
-            <ul>
-                <li v-bind:class="{ 'is-active': isActive == 'profil' }"><a v-on:click="isActive = 'profil'">Profil</a></li>
-            </ul>
-          </div>
-          <div v-if="displaySuccess">
-            <div class="notification is-primary is-light">
-              <p>La modification de vos données personnelle c'est déroulé avec succès !</p>
+  <div>
+    <NavBar />
+    <div class="container is-flex is-justify-content-center mb-5">
+      <div class="card ">
+        <div class="card-content">
+          <div class="content">
+            <div class="tabs is-centered">
+              <ul>
+                  <li v-bind:class="{ 'is-active': isActive == 'profil' }"><a v-on:click="isActive = 'profil'">Profil</a></li>
+              </ul>
             </div>
-          </div>
-          <div v-if="displayChangePwd">
-            <div class="notification is-primary is-light">
-              <p>Un Email viens de vous être envoyé afin de modifier votre mot de passe.</p>
-            </div>
-          </div>
-          <div class="tab-contents">
-            <div v-if="isActive == 'profil' ">
-              <div class="content is-active">
-                <form @submit.prevent="saveProfil">
-                  <div class="columns">
-                    <div class="column">
-                      <label class="label">Statut du compte : {{ registerData.status ? "Validé" :"Inactif" }}</label>
-                        
-                    </div>
-                  </div>
-                  <div class="columns">
-                    <div class="column">
-                      <div class="field">
-                        <label class="label">Nom</label>
-                        <div class="control">
-                          <input class="input" v-model="registerData.lastname"  type="text" placeholder="Your name" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="column">
-                      <div class="field">
-                        <label class="label">Prénom</label>
-                        <div class="control">
-                          <input class="input" v-model="registerData.firstname" type="text" placeholder="Your firstname" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="columns">
-                    <div class="column">
-                      <div class="field">
-                        <label class="label">Email</label>
-                        <div class="control">
-                          <input class="input" v-model="registerData.email" type="email" placeholder="email@email.com" disabled/>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="column">
-                      <div class="field">
-                        <label class="label">Date de naissance</label>
-                        <div class="control">
-                          <Datepicker v-model="registerData.birthday" :enable-time-picker="false"></Datepicker>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="columns">
-                    <div class="column">
-                      <div class="field">
-                        <label class="label" for="address">Adresse</label>
-                        <div class="control">
-                          <input v-model="registerData.address" class="input" id="address" type="text" placeholder="111 Rue de la Fontainer 75018 Paris">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="is-flex is-justify-content-center">
-                    <button class="button is-primary"  type="submit">Sauvegarder</button>
-                  </div>
-                </form>
+            <div v-if="displaySuccess">
+              <div class="notification is-primary is-light">
+                <p>La modification des données personnelle c'est déroulé avec succès !</p>
               </div>
             </div>
-          </div>          
-          <hr>
+            <div v-if="displayChangePwd">
+              <div class="notification is-primary is-light">
+                <p>Un Email viens de vous être envoyé afin de modifier votre mot de passe.</p>
+              </div>
+            </div>
+            <div class="tab-contents">
+              <div v-if="isActive == 'profil' ">
+                <div class="content is-active">
+                  <form @submit.prevent="saveProfil">
+                    <div class="columns">
+                      <div class="column">
+                        <label class="label">Statut du compte : {{ registerData.status ? "Validé" :"Inactif" }}</label>
+                          
+                      </div>
+                    </div>
+                    <div class="columns">
+                      <div class="column">
+                        <div class="field">
+                          <label class="label">Nom</label>
+                          <div class="control">
+                            <input class="input" v-model="registerData.lastname"  type="text" placeholder="Your name" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="column">
+                        <div class="field">
+                          <label class="label">Prénom</label>
+                          <div class="control">
+                            <input class="input" v-model="registerData.firstname" type="text" placeholder="Your firstname" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="columns">
+                      <div class="column">
+                        <div class="field">
+                          <label class="label">Email</label>
+                          <div class="control">
+                            <input class="input" v-model="registerData.email" type="email" placeholder="email@email.com" disabled/>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="column">
+                        <div class="field">
+                          <label class="label">Date de naissance</label>
+                          <div class="control">
+                            <Datepicker v-model="registerData.birthday" :enable-time-picker="false"></Datepicker>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="columns">
+                      <div class="column">
+                        <div class="field">
+                          <label class="label" for="address">Adresse</label>
+                          <div class="control">
+                            <input v-model="registerData.address" class="input" id="address" type="text" placeholder="111 Rue de la Fontainer 75018 Paris">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="is-flex is-justify-content-center">
+                      <button class="button is-primary"  type="submit">Sauvegarder</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>          
+            <hr>
+          </div>
         </div>
       </div>
     </div>

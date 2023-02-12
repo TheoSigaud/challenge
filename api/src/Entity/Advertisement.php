@@ -29,64 +29,73 @@ class Advertisement
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
-    #[Groups('owner')]
+    #[Groups(['booking:read', 'advertisement', 'owner'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $type = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('owner')]
-    private ?string $photo = null;
+    #[ORM\Column(nullable: true)]
+    #[Groups('advertisement')]
+    private array $photo = [];
+    
 
     #[ORM\Column(nullable: true)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private array $properties = [];
 
     #[ORM\ManyToOne(inversedBy: 'advertisements')]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private ?User $owner = null;
 
     #[ORM\OneToMany(mappedBy: 'advertisement', targetEntity: Comment::class)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private Collection $comments;
 
     #[ORM\OneToMany(mappedBy: 'advertisement', targetEntity: Booking::class)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private Collection $bookings;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     #[Assert\Length(max: 255)]
     private ?string $city = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Assert\Length(max: 255)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $address = null;
 
     #[ORM\Column(length: 5, nullable: true)]
     #[Assert\Length(max: 5)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private ?string $zipcode = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    #[Groups('owner')]
+    #[Groups(['advertisement', 'owner'])]
     private ?\DateTimeInterface $date_end = null;
+
+    #[ORM\Column]
+    #[Groups('owner')]
+    private ?int $price = null;
+
+    #[ORM\Column]
+    #[Groups(['advertisement', 'owner'])]
+    private ?bool $status = true;
 
     public function __construct()
     {
@@ -135,12 +144,12 @@ class Advertisement
         return $this;
     }
 
-    public function getPhoto(): ?string
+    public function getPhoto(): array
     {
         return $this->photo;
     }
 
-    public function setPhoto(?string $photo): self
+    public function setPhoto(?array $photo): self
     {
         $this->photo = $photo;
 
@@ -262,10 +271,9 @@ class Advertisement
 
     public function setZipcode(string $zipcode): self
     {
-        if(preg_match ("~^[0-9]{5}$~",$zipcode)) {
+        if (preg_match("~^[0-9]{5}$~", $zipcode)) {
             $this->zipcode = $zipcode;
-        }
-        else {
+        } else {
             $this->zipcode = "00000";
         }
         return $this;
@@ -291,6 +299,30 @@ class Advertisement
     public function setDateEnd(\DateTimeInterface $date_end): self
     {
         $this->date_end = $date_end;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(float $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function isStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

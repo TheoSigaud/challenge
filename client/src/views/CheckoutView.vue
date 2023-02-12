@@ -1,5 +1,8 @@
 <script setup>
 import {computed, onMounted, ref, watchEffect} from 'vue'
+import jsCookie from "js-cookie";
+import NavBar from "@/components/NavBar.vue";
+import {useRouter} from "vue-router";
 
 const currentCardBackground = ref(Math.floor(Math.random() * 25 + 1))
 const cardName = ref("")
@@ -17,6 +20,8 @@ const focusElementStyle = ref(null)
 const $index = ref(0)
 const error = ref(null)
 const modeLoading = ref(false)
+const router = useRouter()
+
 
 onMounted(() => {
   cardNumberTemp.value = otherCardMask.value;
@@ -71,9 +76,10 @@ function flipCard(status) {
 function buy() {
   modeLoading.value = true;
   error.value = null;
+  const token = jsCookie.get('jwt')
 
   const requestBuy = new Request(
-      "https://localhost/buy",
+      "https://localhost/api/buy",
       {
         method: "POST",
         body: JSON.stringify({
@@ -84,25 +90,27 @@ function buy() {
           cardCvv: cardCvv.value
         }),
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
         }
       });
 
   fetch(requestBuy)
       .then(response => response.json())
       .then(data => {
-         modeLoading.value = false;
-         if (data.message === "success") {
-           console.log("success");
-         } else {
-           error.value = data.message;
-         }
+        modeLoading.value = false;
+        if (data.message === "success") {
+          router.push({ name: 'bookings' })
+        } else {
+          error.value = data.message;
+        }
       })
 }
 </script>
 
 <template>
-  <main>
+  <div>
+    <NavBar />
     <div class="container">
       <div class="is-flex is-justify-content-center">
         <div class="wrapper">
@@ -133,23 +141,23 @@ function buy() {
                     </div>
                     <label for="idCardNumber" class="card-item__number" ref="idCardNumber">
                       <template v-if="getCardType === 'amex'">
-                     <span v-for="(n, $index) in amexCardMask" :key="$index">
-                      <transition name="slide-fade-up">
-                        <div class="card-item__numberItem">
-                            {{ displayCardNumber[$index] }}
-                        </div>
-                      </transition>
-                    </span>
-                      </template>
-
-                      <template v-else>
-                      <span v-for="(n, $index) in otherCardMask" :key="$index">
+                       <span v-for="(n, $index) in amexCardMask" :key="$index">
                         <transition name="slide-fade-up">
                           <div class="card-item__numberItem">
-                            {{ displayCardNumber[$index] }}
+                              {{ displayCardNumber[$index] }}
                           </div>
                         </transition>
                       </span>
+                      </template>
+
+                      <template v-else>
+                        <span v-for="(n, $index) in otherCardMask" :key="$index">
+                          <transition name="slide-fade-up">
+                            <div class="card-item__numberItem">
+                              {{ displayCardNumber[$index] }}
+                            </div>
+                          </transition>
+                        </span>
                       </template>
                     </label>
                     <div class="card-item__content">
@@ -158,8 +166,8 @@ function buy() {
                         <transition name="slide-fade-up">
                           <div class="card-item__name" v-if="cardName.length" key="1">
                             <transition-group name="slide-fade-right">
-                              <span class="card-item__nameItem" v-for="(n, $index) in cardName.replace(/\s\s+/g, ' ')"
-                                    v-if="$index === $index" v-bind:key="$index + 1">{{ n }}</span>
+                                <span class="card-item__nameItem" v-for="(n, $index) in cardName.replace(/\s\s+/g, ' ')"
+                                      v-if="$index === $index" v-bind:key="$index + 1">{{ n }}</span>
                             </transition-group>
                           </div>
                           <div class="card-item__name" v-else key="2">Nom Complet</div>
@@ -194,9 +202,9 @@ function buy() {
                   <div class="card-item__cvv">
                     <div class="card-item__cvvTitle">CVC</div>
                     <div class="card-item__cvvBand">
-                      <span v-for="(n, $index) in cardCvv" :key="$index">
-                        *
-                      </span>
+                        <span v-for="(n, $index) in cardCvv" :key="$index">
+                          *
+                        </span>
 
                     </div>
                     <div class="card-item__type">
@@ -251,9 +259,10 @@ function buy() {
                   </div>
                 </div>
 
-                <p v-if="error" class="has-text-centered has-text-danger">{{error}}</p>
+                <p v-if="error" class="has-text-centered has-text-danger">{{ error }}</p>
 
-                <button v-bind:class="{'is-loading': modeLoading}" v-bind:disabled="modeLoading" class="card-form__button is-info button" type="submit">
+                <button v-bind:class="{'is-loading': modeLoading}" v-bind:disabled="modeLoading"
+                        class="card-form__button is-info button" type="submit">
                   Payer
                 </button>
               </div>
@@ -262,12 +271,10 @@ function buy() {
         </div>
       </div>
     </div>
-  </main>
+  </div>
 </template>
 
 <style>
-@import url("https://fonts.googleapis.com/css?family=Source+Code+Pro:400,500,600,700|Source+Sans+Pro:400,600,700&display=swap");
-
 body {
   background: #ddeefc;
   font-family: "Source Sans Pro", sans-serif;
@@ -726,7 +733,7 @@ body {
 
 .card-item__date {
   flex-wrap: wrap;
-  font-size: 18px;
+  font-size: 14px;
   margin-left: auto;
   padding: 10px;
   display: inline-flex;
@@ -738,7 +745,7 @@ body {
 
 @media screen and (max-width: 480px) {
   .card-item__date {
-    font-size: 16px;
+    font-size: 13px;
   }
 }
 

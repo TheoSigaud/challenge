@@ -15,14 +15,14 @@ const { method } = defineProps({
 });
 const id = ref("");
 const idAd = route.query.id
-const contentType = ref("application/ld+json");
-if(method == "PATCH"){
-  contentType.value = "application/merge-patch+json"
-  id.value = "/"+route.query.id
-}else{
-  id.value = ""
-  contentType.value = "application/ld+json"
+let isAdmin = false
+const users = ref([]);
+if(route.query.id != undefined){
+  isAdmin = true
 }
+
+let token = jsCookie.get('jwt')
+let idUser = jwtDecode(token).id
 const adData = ref({
   name: null,
   type: null,
@@ -31,9 +31,20 @@ const adData = ref({
   zipcode: null,
   address: null,
   date: null,
+  price: null,
+  user: null,
   error: null
 });
-const fileNames = ref([]);
+const contentType = ref("application/ld+json");
+if(method == "PATCH"){
+  contentType.value = "application/merge-patch+json"
+  id.value = "/"+route.query.id
+}else{
+  id.value = ""
+  contentType.value = "application/ld+json"
+}
+
+const fileNames = ref({});
 
 const dataProperties = ref({
     nbBedroom: null,
@@ -46,8 +57,6 @@ const dataProperties = ref({
     heating: null
   })
 
-let token = jsCookie.get('jwt')
-let idUser = jwtDecode(token).id
 
 if(method == "PATCH"){
   const requestUser = new Request(
@@ -62,6 +71,7 @@ if(method == "PATCH"){
   fetch(requestUser)
     .then((response) => response.json())
     .then((data) => {
+      console.log(data)
       adData.value.name = data.name
       adData.value.type = data.type
       adData.value.description = data.description
@@ -76,11 +86,27 @@ if(method == "PATCH"){
       dataProperties.value.kitchen = data.properties.kitchen
       dataProperties.value.parking = data.properties.parking
       dataProperties.value.airConditioning = data.properties.airConditioning
-      dataProperties.value.heating = data.properties.heating
+      dataProperties.value.heating = data.properties.heating,
+      adData.value.price = data.price
     })
     .catch((error) => console.log(error))
 }
 
+const fileNameEmit = (e) => {
+  fileNames.value = e
+}
+async function base64() {
+  const images = {};
+  for (let i = 0; i < fileNames.value.length; i++) {
+    images[fileNames.value[i].name] = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(fileNames.value[i]);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  }
+  return images;
+}
 const saveAdvertisement = () => {
   if(adData.value.zipcode == null
       || adData.value.type == null
@@ -88,8 +114,29 @@ const saveAdvertisement = () => {
       || adData.value.city == null
       || adData.value.name == null
       || adData.value.address == null
-      || adData.value.date == null) {
+      || adData.value.date == null 
+      || dataProperties.value.nbBedroom == null 
+      || dataProperties.value.nbBedroom == "" 
+      || dataProperties.value.nbBathroom == null 
+      || dataProperties.value.nbBathroom == ""
+      || dataProperties.value.nbBed == null 
+      || dataProperties.value.nbBed== ""
+      || adData.value.price == null) {
         adData.value.error = 'Tous les champs sont obligatoires'
+      return
+    }
+
+    if(adData.value.date[1] == null) {
+      adData.value.error = 'Vous devez sélectionner une date de début et une date de fin'
+
+      return
+    }
+
+    if(dataProperties.value.nbBedroom < 0
+      || dataProperties.value.nbBed < 0
+      || dataProperties.value.nbBathroom < 0
+      || adData.value.price < 0) {
+      adData.value.error = 'Vous devez renseigner des nombres positifs'
 
       return
     }
@@ -99,6 +146,9 @@ const saveAdvertisement = () => {
 
     return
   }
+base64().then((data) => {
+  console.log(data)
+  //convert array to json
   const requestAdvertisement = new Request(
     "https://localhost/api/advertisements"+id.value,
     {
@@ -114,6 +164,8 @@ const saveAdvertisement = () => {
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
         owner: "/api/users/"+ idUser,
+        photo: data,
+        price: adData.value.price,
       }),
       headers: {
         "Content-Type": contentType.value,
@@ -121,8 +173,31 @@ const saveAdvertisement = () => {
       }
     });
   fetch(requestAdvertisement)
-        .then((response) => router.push({name: 'my-listings'}))
+        .then((response) => {
+          router.push({name: 'my-listings'})
+      })
+  })
 }
+
+
+const requestAd = new Request(
+  
+    "https://localhost/api/users/",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/Id+json",
+        "Authorization": "Bearer " + token
+      }
+    });
+  fetch(requestAd)
+    .then((response) => response.json())
+    .then((data) => {
+      data['hydra:member'].forEach(add => users.value.push(add));
+      console.log(users.value)
+    })
+    .catch((error) => console.log(error))
+
 </script>
 
 
@@ -165,6 +240,16 @@ const saveAdvertisement = () => {
         </div>
       </div>
     </div>
+    <div class="column">
+      <div class="columns">
+        <div class="filed">
+          <label class="label">Prix pour une nuit</label>
+            <div class="control">
+              <input  class="input" type="number" v-model="adData.price">
+            </div>
+        </div>
+      </div>
+    </div>
     <div class="columns">
       <div class="column">
         <div class="field">
@@ -199,12 +284,12 @@ const saveAdvertisement = () => {
     </div>
     <div class="columns">
       <div class="column">
-        <Datepicker v-model="adData.date" range />
+        <Datepicker v-model="adData.date" :min-date="new Date()" :enable-time-picker="false" placeholder="dd/mm/yyyy - dd/mm/yyyy" range  />
       </div>
     </div>
     <div class="columns">
       <div class="column">
-        <FileUpload v-model:fileNames="fileNames" />
+        <FileUpload v-model:fileNames="fileNames" @onPropsFile="fileNameEmit"/>
       </div>
     </div>
     <h2>Propriété</h2>
