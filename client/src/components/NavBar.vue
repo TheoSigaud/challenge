@@ -77,6 +77,9 @@ function logout() {
             </router-link>
           </div>
         </div>
+        <router-link to="/profile" class="navbar-item">
+          Mon profil
+        </router-link>
       </div>
 
       <div class="navbar-start" v-else>
@@ -86,6 +89,12 @@ function logout() {
 
         <router-link to="/admin/bookings" class="navbar-item">
           Réservations
+        </router-link>
+        <router-link to="/admin/listings-advertisements" class="navbar-item">
+          Annonces
+        </router-link>
+        <router-link to="/admin/listings-users" class="navbar-item">
+          Utilisateurs
         </router-link>
       </div>
 
