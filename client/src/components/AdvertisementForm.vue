@@ -39,6 +39,7 @@ const adData = ref({
   zipcode: null,
   address: null,
   date: null,
+  price: null,
   error: null
 });
 const fileNames = ref({});
@@ -85,7 +86,8 @@ if(method == "PATCH"){
       dataProperties.value.kitchen = data.properties.kitchen
       dataProperties.value.parking = data.properties.parking
       dataProperties.value.airConditioning = data.properties.airConditioning
-      dataProperties.value.heating = data.properties.heating
+      dataProperties.value.heating = data.properties.heating,
+      adData.value.price = data.price
     })
     .catch((error) => console.log(error))
 }
@@ -118,7 +120,8 @@ const saveAdvertisement = () => {
       || dataProperties.value.nbBathroom == null 
       || dataProperties.value.nbBathroom == ""
       || dataProperties.value.nbBed == null 
-      || dataProperties.value.nbBed== "") {
+      || dataProperties.value.nbBed== ""
+      || adData.value.price == null) {
         adData.value.error = 'Tous les champs sont obligatoires'
       return
     }
@@ -131,7 +134,8 @@ const saveAdvertisement = () => {
 
     if(dataProperties.value.nbBedroom < 0
       || dataProperties.value.nbBed < 0
-      || dataProperties.value.nbBathroom < 0) {
+      || dataProperties.value.nbBathroom < 0
+      || adData.value.price < 0) {
       adData.value.error = 'Vous devez renseigner des nombres positifs'
 
       return
@@ -160,7 +164,8 @@ base64().then((data) => {
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
         owner: "/api/users/"+ idUser,
-        photo: data
+        photo: data,
+        price: adData.value.price
       }),
       headers: {
         "Content-Type": contentType.value,
@@ -216,6 +221,16 @@ base64().then((data) => {
         </div>
       </div>
     </div>
+    <div class="column">
+      <div class="columns">
+        <div class="filed">
+          <label class="label">Prix pour une nuit</label>
+            <div class="control">
+              <input  class="input" type="number" v-model="adData.price">
+            </div>
+        </div>
+      </div>
+    </div>
     <div class="columns">
       <div class="column">
         <div class="field">
@@ -250,7 +265,7 @@ base64().then((data) => {
     </div>
     <div class="columns">
       <div class="column">
-        <Datepicker v-model="adData.date" :enable-time-picker="false" placeholder="dd/mm/yyyy - dd/mm/yyyy" range  />
+        <Datepicker v-model="adData.date" :min-date="new Date()" :enable-time-picker="false" placeholder="dd/mm/yyyy - dd/mm/yyyy" range  />
       </div>
     </div>
     <div class="columns">
