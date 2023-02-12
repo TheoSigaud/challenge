@@ -49,7 +49,7 @@ const route = useRoute()
   }
 
   const requestUser = new Request(
-    "https://localhost/api/users/"+idUser,
+    "https://localhost/admin/users/"+idUser,
     {
       method: "GET",
       headers: {

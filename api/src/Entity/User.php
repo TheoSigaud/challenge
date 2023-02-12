@@ -56,6 +56,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         read: false
     )
     ], routePrefix: '/api')]
+#[Patch(routePrefix: '/api')]
+#[Post(routePrefix: '/api')]
 
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]

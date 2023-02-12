@@ -50,7 +50,7 @@
     // }
 
     const requestRegister = new Request(
-        "https://localhost/api/users",
+        "https://localhost/admin/users",
         {
           method: "POST",
           body: JSON.stringify({
