@@ -42,8 +42,6 @@ function getDataUser() {
         if (data !== undefined) {
           if (data.roles.includes('ROLE_ADMIN')) {
             role.value = 'admin'
-          } else if (data.roles.includes('ROLE_HOST')){
-            role.value = 'host'
           } else {
             role.value = 'user'
           }
@@ -53,12 +51,6 @@ function getDataUser() {
 }
 
 function sendRequest() {
-  if (message.value === '' ) {
-    error.value = 'Veuillez remplir tous les champs'
-  } else {
-    error.value = null
-    showModal.value = !showModal.value
-
     const id = jwtDecode(token).id
 
     const requestReset = new Request(
@@ -66,8 +58,7 @@ function sendRequest() {
         {
           method: "PATCH",
           body: JSON.stringify({
-            status: 2,
-            message_host: message.value
+            status: 2
           }),
           headers: {
             "Content-Type": "application/merge-patch+json",
@@ -80,7 +71,6 @@ function sendRequest() {
               getDataUser()
           }
         })
-  }
 }
 
 function logout() {
@@ -106,7 +96,7 @@ function logout() {
       </div>
 
       <div id="navbarBasicExample" class="navbar-menu">
-        <div class="navbar-start" v-if="role === 'user' || role === 'host'">
+        <div class="navbar-start" v-if="role === 'user'">
           <router-link to="/" class="navbar-item">
             Home
           </router-link>
@@ -115,7 +105,7 @@ function logout() {
             Mes réservations
           </router-link>
 
-          <div class="navbar-item has-dropdown is-hoverable" v-if="role === 'host'">
+          <div class="navbar-item has-dropdown is-hoverable" v-if="status === 3">
             <span class="navbar-link">
               Annonces
             </span>
@@ -133,8 +123,8 @@ function logout() {
             Mon profil
           </router-link>
 
-          <div class="is-flex is-align-items-center" v-if="role === 'user' && status !== 2">
-            <button class="button is-warning is-light" @click="showModal = !showModal">Devenir un hôte</button>
+          <div class="is-flex is-align-items-center" v-if="status === 1">
+            <button class="button is-warning is-light" @click="sendRequest">Devenir un hôte</button>
           </div>
           <div class="is-flex is-align-items-center" v-else-if="status === 2">
             <p class="has-text-info mb-0 ml-3">Votre demande d'hôte est en attente</p>
