@@ -72,14 +72,14 @@ const deleteAdvertisement = (id) => {
             <table class="table">
               <thead>
                 <tr>
-                  <th><abbr title="Id">id</abbr></th>
-                  <th><abbr title="Titre">Titre</abbr></th>
-                  <th><abbr title="Date de début">Date début</abbr></th>
-                  <th><abbr title="Date de fin">Date fin</abbr></th>
-                  <th><abbr title="Ville">Ville</abbr></th>
-                  <th><abbr title="Code postal">Code postal</abbr></th>
-                  <th><abbr title="Statut">Statut</abbr></th>
-                  <th><abbr title="Action">Action</abbr></th>
+                  <th>id</th>
+                  <th>Titre</th>
+                  <th>Date début</th>
+                  <th>Date fin</th>
+                  <th>Ville</th>
+                  <th>Code postal</th>
+                  <th>Statut</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -92,16 +92,12 @@ const deleteAdvertisement = (id) => {
                   <td>{{ad.zipcode}}</td>
                   <td>{{ad.status ? 'Actif' : 'Désactivé'}}</td>
                   <td>
-                    <a href="#">
                       <template v-if="ad.bookings.every(booking => booking.advertisement.split('/')[3] != ad.id)">
                         <div class="buttons">
-                          <button class="button is-info" @click="router.push({name: 'my-advertisement', query: {id: ad.id}})"><a href="">Voir plus </a></button>
-                          <button v-if="ad.status" class="button is-danger" @click="deleteAdvertisement(ad.id)"><a href="">Supprimer</a></button>
+                          <button class="button is-info is-light" @click="router.push({name: 'my-advertisement', query: {id: ad.id}})">Voir plus</button>
+                          <button v-if="ad.status" class="button is-danger is-light" @click="deleteAdvertisement(ad.id)">Supprimer</button>
                         </div>
                       </template>
-                      <template v-else>
-                      </template>
-                    </a>
                   </td>
                 </tr>
               </tbody>
