@@ -31,7 +31,7 @@ function resetPassword() {
 
 <template>
   <div>
-    <NavBar />
+    <NavBar :key="'login'" />
     <div class="container is-flex is-justify-content-center mb-5">
       <div class="card">
         <div class="card-content pb-1">

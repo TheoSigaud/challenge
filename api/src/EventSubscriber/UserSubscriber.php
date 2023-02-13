@@ -39,7 +39,7 @@ use Symfony\Component\Mailer\MailerInterface;
             $hash = $this->hasher->hashPassword($user, $user->getPassword());
             $user->setPassword($hash);
 
-            $token = $this->generateTokenService->generateToken($user->getEmail(), '2021-06-01');
+            $token = $this->generateTokenService->generateToken($user->getEmail(), date("Y-m-d"));
             $user->setToken($token);
 
             $email = ApiMailerService::send_email(

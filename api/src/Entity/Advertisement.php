@@ -45,9 +45,10 @@ class Advertisement
     #[Groups(['advertisement', 'owner', 'bookings'])]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(nullable: true)]
     #[Groups(['advertisement', 'owner', 'bookings'])]
-    private ?string $photo = null;
+    private array $photo = [];
+    
 
     #[ORM\Column(nullable: true)]
     #[Groups(['advertisement', 'owner', 'bookings'])]
@@ -143,12 +144,12 @@ class Advertisement
         return $this;
     }
 
-    public function getPhoto(): ?string
+    public function getPhoto(): array
     {
         return $this->photo;
     }
 
-    public function setPhoto(?string $photo): self
+    public function setPhoto(?array $photo): self
     {
         $this->photo = $photo;
 

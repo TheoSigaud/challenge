@@ -3,7 +3,10 @@ import HomeView from "../views/HomeView.vue";
 import LoginView from '../views/LoginView.vue'
 import ConfirmAccount from '../views/ConfirmView.vue'
 import CreateAdvertisementView from "../views/CreateAdvertisementView.vue";
+import CreateAdvertisementViewAdmin from "@/views/admin/CreateAdvertisementViewAdmin.vue";
+
 import MyAdvertisementsView from '../views/MyAdvertisementsView.vue'
+import MyAdvertisementsViewAdmin from '../views/admin/MyAdvertisementsView.vue'
 import MyListingsView from "../views/MyListingsView.vue";
 import AdvertisementView from "../views/AdvertisementView.vue";
 import ListingsAdvertisementsView from "../views/admin/ListingsAdvertisementsView.vue"
@@ -17,6 +20,7 @@ import PageNotFound from "@/views/PageNotFound.vue";
 import Booking from "@/views/Booking.vue";
 import Refund from "@/views/Refund.vue";
 import Bookings from "@/views/admin/Bookings.vue";
+import Host from "@/views/admin/Host.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +29,9 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: LoginView,
+      meta: {
+        requiresLogin: true
+      }
     },
     {
       path: "/",
@@ -67,7 +74,7 @@ const router = createRouter({
     {
       path: '/admin/modify-advertisement',
       name: 'admin-my-advertisement',
-      component: MyAdvertisementsView,
+      component: MyAdvertisementsViewAdmin,
       meta: {
         requiresAuthAdmin: true
       }
@@ -136,6 +143,22 @@ const router = createRouter({
       }
     },
     {
+      path: "/admin/create-advertisement",
+      name: "admin-create-advertisement",
+      component: CreateAdvertisementViewAdmin,
+      meta: {
+        requiresAuthAdmin: true
+      }
+    },
+    {
+      path: "/admin/host",
+      name: "admin-host",
+      component: Host,
+      meta: {
+        requiresAuthAdmin: true
+      }
+    },
+    {
       path: "/:pathMatch(.*)*",
       component: PageNotFound
     }
@@ -196,6 +219,29 @@ router.beforeEach((to, from, next) => {
             } else {
               next('/login')
             }
+        })
+  }else if (to.meta.requiresLogin) {
+    const token = jsCookie.get('jwt')
+
+    const requestToken = new Request(
+        "https://localhost/api/auth",
+        {
+          method: "POST",
+          headers: {
+            "Authorization": "Bearer " + token
+          }
+        });
+
+    fetch(requestToken)
+        .then((response) => {
+          if (response.status === 200) {
+            return response.json()
+          } else {
+            next()
+          }
+        })
+        .then((data) => {
+          next('/')
         })
   }else {
     next()

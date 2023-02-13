@@ -57,7 +57,7 @@ class Booking
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(['booking:read', 'bookings'])]
+    #[Groups(['booking:read', 'advertisement', 'bookings'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -65,11 +65,11 @@ class Booking
     private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'advertisement'])]
     private ?int $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
-    #[Groups(['booking:read', 'bookings'])]
+    #[Groups(['booking:read', 'advertisement', 'bookings'])]
     private ?Advertisement $advertisement = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]

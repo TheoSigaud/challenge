@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\Post;
@@ -20,8 +23,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
-#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/api')]
+
+
+#[GetCollection(
+    normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin'
+)]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin')]
 #[ApiResource(operations: [
     new Patch(
         name: 'reset-password',
@@ -48,7 +57,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
         controller: ConfirmAccountController::class,
         read: false
     )
+    ], routePrefix: '/api')]
+
+#[Patch(routePrefix: '/api')]
+#[Post(routePrefix: '/api')]
+#[Get(routePrefix: '/api')]
+
+#[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
+#[ApiResource(operations: [
+    new GetCollection(
+        uriTemplate: '/admin/users-host',)
 ])]
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -89,6 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups('advertisement')]
+    #[Assert\LessThan('-12 years')]
     private ?\DateTimeInterface $birthday = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -114,6 +135,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups('advertisement')]
     private ?int $status = 0;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $message_host = null;
 
     public function __construct()
     {
@@ -382,6 +406,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setStatus(int $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getMessageHost(): ?string
+    {
+        return $this->message_host;
+    }
+
+    public function setMessageHost(?string $message_host): self
+    {
+        $this->message_host = $message_host;
 
         return $this;
     }
