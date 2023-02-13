@@ -50,15 +50,19 @@
                     <p class="control">
                       <Datepicker
                         class="input"
-                        v-model="startDate"
+                        v-model="state.startDate"
                         :enable-time-picker="false"
+                        :min-date="new Date()"
+                        :disabled-dates="Array.from(state.disabled)"
                         placeholder="dd/mm/yyyy"
                       ></Datepicker>
                     </p>
                     <p class="control">
                       <Datepicker
                         class="input"
-                        v-model="endDate"
+                        v-model="state.endDate"
+                        :min-date="new Date(state.startDate) + 1"
+                        :max-date="state.maxDate"
                         :enable-time-picker="false"
                         placeholder="dd/mm/yyyy"
                       ></Datepicker>
@@ -67,44 +71,6 @@
                 </div>
                 <div id="payment" class="button is-danger">Let's book !</div>
               </div>
-              <div class="columns">
-                <div class="column is-6">
-                  <p>
-                    <strong>Type de logement : </strong>
-                    {{ state.advertisement.type }}
-                  </p>
-                </div>
-                <div class="column is-6">
-                  <p>
-                    <strong>Prix par nuit: </strong>
-                    {{ state.advertisement.price }} €
-                  </p>
-                </div>
-              </div>
-              <div class="level-item">
-                <div class="field has-addons">
-                  <p class="control">
-                    <Datepicker
-                      class="input"
-                      v-model="state.startDate"
-                      :enable-time-picker="false"
-                      :min-date="new Date()"
-                      :disabled-dates="Array.from(state.disabled)"
-                      placeholder="dd/mm/yyyy"
-                    ></Datepicker>
-                  </p>
-                  <p class="control">
-                    <Datepicker
-                      class="input"
-                      v-model="state.endDate"
-                      :max-date="getMaxDate()"
-                      :enable-time-picker="false"
-                      placeholder="dd/mm/yyyy"
-                    ></Datepicker>
-                  </p>
-                </div>
-              </div>
-              <div id="payment" class="button is-danger">Let's book !</div>
             </div>
           </div>
         </div>
@@ -114,7 +80,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
@@ -122,17 +88,18 @@ import NavBar from "@/components/NavBar.vue";
 const route = useRoute();
 const state = reactive({
   advertisement: {},
+  id: route.params.id,
   loading: true,
   disabled: [],
   startDate: new Date(),
   endDate: null,
+  maxDate: null,
 });
 
 async function getAdvertisement() {
-  console.log("mounted");
   const token = jsCookie.get("jwt");
   const id = route.params.id;
-  const response = await fetch(`https://localhost/api/advertisements/${id}`, {
+  const response = await fetch(`https://localhost/advertisements/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -150,33 +117,54 @@ async function getDisabledDates() {
     const start = new Date(booking.date_start);
     const end = new Date(booking.date_end);
     while (start <= end) {
-      console.log("start", start, end);
       disabled.push(new Date(start));
       start.setDate(start.getDate() + 1);
     }
   });
+
+  const startDate = new Date(state.startDate);
+  disabled.forEach((date) => {
+    if (date < startDate) {
+      disabled.splice(disabled.indexOf(date), 1);
+    }
+  });
+  console.log("disabled", disabled);
   return disabled;
 }
 
-async function getMaxDate() {
-  console.log("state.startDate 222", state.startDate);
-  const disabled = state.disabled;
-  let today = new Date();
+async function getLastAvailableDate() {
+  const disabledDates = state.disabled;
+  let lastAvailableDate = null;
 
-  while (today <= disabled[0]) {
-    today.setDate(today.getDate() + 1);
+  for (let i = 0; i < disabledDates.length; i++) {
+    if (disabledDates[i] > state.startDate) {
+      lastAvailableDate = disabledDates[i];
+      break;
+    }
   }
 
-  console.log("today", today);
-
-  return today;
+  return lastAvailableDate;
 }
+
 onMounted(async () => {
   await getAdvertisement();
-  state.disabled = await getDisabledDates();
-
-  console.log("state.disabled", state.advertisement);
+  state.disabled = await getDisabledDates().then(
+    (disabledDates) => disabledDates
+  );
+  state.maxDate = await getLastAvailableDate().then((resolvedMaxDate) => resolvedMaxDate);
 });
+
+watch(
+  () => state.startDate,
+  async () => {
+    state.disabled = await getDisabledDates().then(
+      (disabledDates) => disabledDates
+    );
+    state.maxDate = await getLastAvailableDate().then(
+      (resolvedMaxDate) => resolvedMaxDate
+    );
+  }
+);
 </script>
 
 <style>
@@ -190,8 +178,7 @@ onMounted(async () => {
   background-color: white;
 }
 .custom {
-  position: relative;
-  top: 45px;
+  top: -100px;
 }
 
 #pictures {

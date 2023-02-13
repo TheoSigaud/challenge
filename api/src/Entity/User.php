@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[GetCollection(
     normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin'
 )]
-#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin')]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']])]
 #[ApiResource(operations: [
     new Patch(
         name: 'reset-password',
@@ -57,18 +57,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         controller: ConfirmAccountController::class,
         read: false
     )
-    ], routePrefix: '/api')]
-
-#[Patch(routePrefix: '/api')]
-#[Post(routePrefix: '/api')]
-#[Get(routePrefix: '/api')]
+    ])]
 
 #[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
 #[ApiResource(operations: [
     new GetCollection(
         uriTemplate: '/admin/users-host',)
 ])]
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

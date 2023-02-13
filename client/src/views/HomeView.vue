@@ -10,7 +10,7 @@ const init = ref(true);
 const data = ref({});
 
 function search() {
-  const url = new URL("https://localhost/api/advertisements");
+  const url = new URL("https://localhost/advertisements");
   const token = jsCookie.get("jwt");
   if (city.value !== "") {
     url.searchParams.set("city", city.value.toLowerCase());
