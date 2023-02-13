@@ -27,11 +27,17 @@ const $index = ref(0)
 const error = ref(null)
 const modeLoading = ref(false)
 const router = useRouter()
+const nights = ref(1)
 
 
 onMounted(() => {
   cardNumberTemp.value = otherCardMask.value;
   document.getElementById("idCardNumber").focus();
+
+  const diffInMilliseconds = new Date(props.startDate.getTime()) - new Date(props.endDate).getTime();
+
+  console.log(diffInMilliseconds / (1000 * 60 * 60 * 24))
+  nights.value = diffInMilliseconds / (1000 * 60 * 60 * 24);
 });
 
 const getCardType = computed(() => {
@@ -93,7 +99,8 @@ function buy() {
           cardName: cardName.value,
           cardMonth: cardMonth.value,
           cardYear: cardYear.value,
-          cardCvv: cardCvv.value
+          cardCvv: cardCvv.value,
+          id: props.id
         }),
         headers: {
           "Content-Type": "application/json",
@@ -223,6 +230,10 @@ function buy() {
             </div>
             <form @submit.prevent="buy">
               <div class="card-form__inner">
+                <div class="is-flex is-justify-content-center">
+                  <p class="title is-3">{{props.price*nights}} € <span class="subtitle is-6">pour {{nights}} nuit(s)</span></p>
+                </div>
+
                 <div class="card-input">
                   <label for="idCardNumber" class="card-input__label">Numéro de la carte</label>
                   <input type="text" id="idCardNumber" class="card-input__input"
