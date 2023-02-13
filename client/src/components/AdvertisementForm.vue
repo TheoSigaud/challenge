@@ -70,6 +70,9 @@ if(method == "PATCH"){
   fetch(requestUser)
     .then((response) => response.json())
     .then((data) => {
+      if(data.owner.id != idUser){
+        router.push({ name: 'home' })
+      }
       console.log(data)
       adData.value.name = data.name
       adData.value.type = data.type
@@ -94,7 +97,9 @@ if(method == "PATCH"){
       dataProperties.value.airConditioning = data.properties.airConditioning
       dataProperties.value.heating = data.properties.heating,
       adData.value.price = data.price,
-      adData.value.user = data.owner.id
+      adData.value.user = data.owner.id,
+      console.log(data.photo)
+      fileNames.value = data.photo
     })
     .catch((error) => console.log(error))
 }
@@ -154,8 +159,10 @@ const saveAdvertisement = () => {
     return
   }
 base64().then((data) => {
-  console.log(data)
-  //convert array to json
+  if(JSON.stringify(data) === '{}'){
+    adData.value.error = "Vous devez ajouter au moins une photo"
+    return
+  }
   const requestAdvertisement = new Request(
     "https://localhost/api/advertisements"+id.value,
     {
