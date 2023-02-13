@@ -71,13 +71,11 @@ const requestAd = new Request(
                   <td>{{ad.city}}</td>
                   <td>{{ad.zipcode}}</td>
                   <td>
-                    <a href="#">
                       <div class="buttons">
                         <router-link :to="{ path: '/admin/modify-advertisement', query: { id: ad.id } }" class="button btn--lavender mt-5">
                           <span>Modifier</span>
                         </router-link>
-                      </div>                    
-                    </a>
+                      </div>
                   </td>
                 </tr>
               </tbody>
