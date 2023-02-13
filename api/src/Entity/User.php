@@ -59,6 +59,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     )
     ])]
 
+#[Patch(routePrefix: '/api')]
+#[Post(routePrefix: '/api')]
+#[Get(routePrefix: '/api')]
+
 #[ApiFilter(SearchFilter::class, properties: ['status' => 'exact'])]
 #[ApiResource(operations: [
     new GetCollection(

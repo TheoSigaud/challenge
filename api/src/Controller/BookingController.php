@@ -76,6 +76,27 @@ class BookingController extends AbstractController
             $advertisement = $this->managerRegistry->getRepository(Advertisement::class)->findOneBy(['id' => '1']);
 
 
+            $startDate = new DateTime();
+            $endDate = new DateTime();
+
+            $query = $this->managerRegistry
+                ->getManager()
+                ->createQuery(
+                    'SELECT b FROM App\Entity\Booking b
+                        WHERE b.status > 0
+                        AND (b.date_start BETWEEN :date_start AND :date_end
+                        OR b.date_end BETWEEN :date_start AND :date_end
+                        OR (b.date_start <= :date_start AND b.date_end >= :date_end))'
+                )
+                ->setParameter('date_start', $startDate)
+                ->setParameter('date_end', $endDate);
+
+            $existingBookings = $query->getResult();
+
+            if (count($existingBookings) > 0) {
+                return $this->json(['message' => 'Ces dates ne sont pas valides'], 500);
+            }
+
             Stripe::setApiKey($_ENV['STRIPE_PRIVATE']);
 
             $token = Token::create([
@@ -118,7 +139,7 @@ class BookingController extends AbstractController
 
             return $this->json(['message' => 'success'], 200);
         } catch (\Exception $e) {
-            return $this->json(['message' => 'Une erreur est survenue'], 500);
+            return $this->json(['message' => $e], 500);
         }
     }
 }
