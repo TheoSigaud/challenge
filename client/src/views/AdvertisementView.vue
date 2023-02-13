@@ -347,8 +347,8 @@ function buy() {
           cardYear: cardYear.value,
           cardCvv: cardCvv.value,
           idAdvertisement: state.id,
-          dateStart: state.startDate,
-          dateEnd: state.endDate
+          dateStart: state.startDate.toISOString().split('T')[0],
+          dateEnd: state.endDate.toISOString().split('T')[0]
         }),
         headers: {
           "Content-Type": "application/json",
