@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import router from '@/router'
 import jsCookie from 'js-cookie'
 import jwtDecode from 'jwt-decode'
@@ -22,7 +22,31 @@ const advertisements = ref([]);
 let token = jsCookie.get('jwt')
 let idUser = jwtDecode(token).id
 console.log(idUser)
-const requestAd = new Request(
+
+const deleteAdvertisement = (id) => {
+  const requestAdvertisement = new Request(
+    "https://localhost/api/advertisements/"+id,
+    {
+      method: "PATCH",
+      body: JSON.stringify({
+        status: false
+      }),
+      headers: {
+        "Content-Type": "application/merge-patch+json",
+        "Authorization": "Bearer " + token
+      }
+    });
+  fetch(requestAdvertisement)
+        .then((response) => {
+          if (response.status === 200) {
+            callUser()
+          }
+        })
+}
+//onUnmounted
+function callUser(){
+  advertisements.value = []
+  const requestAd = new Request(
   
     "https://localhost/api/users/"+idUser,
     {
@@ -41,22 +65,11 @@ const requestAd = new Request(
     .catch((error) => console.log(error))
 
 
-const deleteAdvertisement = (id) => {
-  const requestAdvertisement = new Request(
-    "https://localhost/api/advertisements/"+id,
-    {
-      method: "PATCH",
-      body: JSON.stringify({
-        status: false
-      }),
-      headers: {
-        "Content-Type": "application/merge-patch+json",
-        "Authorization": "Bearer " + token
-      }
-    });
-  fetch(requestAdvertisement)
-        .then((response) => router.push({name: 'my-listings'}))
 }
+onMounted(() => {
+  callUser()
+})
+
 </script>
 
 <template>
