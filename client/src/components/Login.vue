@@ -67,7 +67,7 @@
     <p v-if="loginData.error" class="has-text-centered has-text-danger">{{loginData.error}}</p>
 
     <div class="is-flex is-justify-content-center">
-      <button class="button btn--lavender" type="submit">Se connecter</button>
+      <button id="btn-login" class="button btn--lavender" type="submit">Se connecter</button>
     </div>
   </form>
 </template>

@@ -10,13 +10,11 @@
     password: null,
     confirmPassword: null,
     error: null,
-    success: null,
-    errorAll: null
+    success: null
   });
 
   function register() {
     registerData.value.error = null
-    registerData.value.errorAll = null
     registerData.value.success = null
 
     const date = new Date(registerData.value.birthday);
@@ -46,10 +44,10 @@
       return
     }
 
-    if (age < 15 || age > 110) {
-      registerData.value.error = 'Vous devez avoir minimum 12 ans.'
-      return
-    }
+    // if (age < 15 || age > 110) {
+    //   registerData.value.error = 'Vous devez avoir minimum 12 ans.'
+    //   return
+    // }
 
     const requestRegister = new Request(
         "https://localhost/api/users",
@@ -76,21 +74,19 @@
             });
             registerData.value.success = 'Votre compte a bien été créé. Vérifiez vos mails pour confirmer votre compte.'
             registerData.value.error = null
-            registerData.value.errorAll = null
           } else {
-            registerData.value.errorAll = 'Cet email est déjà utilisé.'
             return response.json()
           }
         })
         .then(data => {
-          if (data && Array.isArray(data.violations) && data.violations.length > 0) {
+          if (data.violations) {
             if (data.violations[0]['propertyPath'] === 'birthday') {
               registerData.value.error = 'Vous devez avoir minimum 12 ans.'
             } else {
               registerData.value.error = 'Les informations saisies sont incorrectes'
             }
           }else {
-            registerData.value.error = registerData.value.errorAll
+            registerData.value.error = 'Cet email est déjà utilisé.'
           }
         })
   }
@@ -155,7 +151,7 @@
     <p v-if="registerData.success" class="has-text-centered has-text-success">{{registerData.success}}</p>
 
     <div v-if="!registerData.success" class="is-flex is-justify-content-center">
-      <button class="button btn--lavender" type="submit">S'inscrire</button>
+      <button class="button btn--lavender" id="btn-register" type="submit">S'inscrire</button>
     </div>
   </form>
 </template>

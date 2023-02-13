@@ -2,22 +2,27 @@
 import {onMounted, ref} from "vue";
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
+import jwtDecode from 'jwt-decode'
+
 
 const city = ref("");
 const startDate = ref("");
 const endDate = ref("");
 const init = ref(true);
 const data = ref({});
+const error = ref("");
 
 function search() {
-  const url = new URL("https://localhost/api/advertisements");
+  const url = new URL("https://localhost/advertisements");
   const token = jsCookie.get("jwt");
   if (city.value !== "") {
     url.searchParams.set("city", city.value.toLowerCase());
-  } else if (startDate._value !== "") {
-    let date = new Date(startDate._value);
-    url.searchParams.set("date_start", date.toISOString().slice(0, 10));
-  } else if (endDate._value !== "") {
+  } else if (startDate.value !== "") {
+    let date = new Date(startDate.value);
+    let date_2 = encodeURIComponent(date.toISOString().split('T')[0]); 
+    console.log(date_2);
+    url.searchParams.set("date_start", encodeURIComponent(date.toISOString().split('T')[0]));
+  } else if (endDate.value !== "") {
     let date = new Date(endDate._value);
     url.searchParams.set("endDate", date.toISOString().slice(0, 10));
   }
@@ -40,11 +45,22 @@ function search() {
       })
       .catch((error) => console.error("Error fetching advertisements:", error));
 
-  console.log("search", city.value, startDate._value, endDate._value);
+  console.log("search", city.value, startDate.value, endDate.value);
 }
 
 onMounted(async () => {
-  search();
+  const requestReset = new Request(
+      "https://localhost/advertisements",
+      {
+        method: "GET",
+      });
+  fetch(requestReset)
+      .then((response) => response.json())
+      .then((_data) => {
+        if (_data["hydra:member"]) {
+          data.value = _data["hydra:member"];
+        }
+      })
 });
 </script>
 
@@ -52,8 +68,9 @@ onMounted(async () => {
   <div>
     <NavBar :key="'home'" />
     <div class="container is-flex is-justify-content-center mb-5">
+      <div>
       <div class="level-item custom-class">
-        <div class="field has-addons">
+        <div class="field has-addons mb-5">
           <p class="control">
             <input
                 v-model="city"
@@ -80,8 +97,7 @@ onMounted(async () => {
           </p>
           <p class="control" style="background-color: #00d1b2">
             <button
-                class="button input"
-                style="background-color: #00d1b2"
+                class="button input is-info is-light"
                 @click="search"
             >
               Rechercher
@@ -89,7 +105,7 @@ onMounted(async () => {
           </p>
         </div>
       </div>
-      <div class="custom-class2">
+      <div class="custom-class2 mt-5">
         <div class="columns">
           <div class="column">
             <div class="columns is-multiline">
@@ -99,36 +115,34 @@ onMounted(async () => {
                     :to="{ name: 'advertisement', params: { id: item.id } }"
                 >
                   <div class="card advertisement">
+                    <div class="card-image">
+                      <figure class="image is-4by3">
+                        <img :src="item.photo[Object.keys(item.photo)[0]]" alt="Placeholder image">
+                      </figure>
+                    </div>
+                    <p>{{item.photo[0]}}</p>
                     <div class="card-content">
                       <div class="media">
-                        <div class="media-left">
-                          <figure class="image">
-                            <img
-                                src="https://bulma.io/images/placeholders/96x96.png"
-                                alt="Placeholder image"
-                            />
-                          </figure>
+                        <div class="media-content">
+                          <p class="title is-4">{{ item.name }}</p>
+                          <p class="subtitle is-6">Posté par : {{ item.owner.firstname }} dzd,{{ item.owner.lastname }}</p>
                         </div>
                       </div>
+
                       <div class="content">
-                        <p class="title is-6">{{ item.name }}</p>
-                        <br/>
-                        <p class="subtitle is-6">
-                          Posté par : {{ item.owner.firstname }}
-                        </p>
-                        <p class="subtitle is-6">
-                          Contact : {{ item.owner.email }}
-                        </p>
+                        <p>{{ item.description }}</p>
+                        <br>
+                        <span>Contact : {{ item.owner.email }}</span>
                       </div>
                     </div>
                   </div>
-                </router-link
-                >
+                </router-link>
               </div>
             </div>
           </div>
         </div>
       </div>
+        </div>
     </div>
   </div>
 </template>
@@ -136,29 +150,9 @@ onMounted(async () => {
 <style scoped>
 .input {
   height: 50px;
-  border-radius: 10px 100px / 120px;
-}
-
-.custom-class {
-  position: absolute;
-  right: 0;
-  left: 0;
-}
-
-.custom-class2 {
-  position: absolute;
-  top: 200px; /* the height of the navbar */
-  right: 0;
-  left: 0;
-  width: 80%;
-  margin: auto;
 }
 
 .control {
   border-radius: 10px 100px / 120px;
-}
-
-.advertisement :hover {
-  background-color: #00d1b2;
 }
 </style>

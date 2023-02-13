@@ -39,6 +39,30 @@ class AdvertisementRepository extends ServiceEntityRepository
         }
     }
 
+    public function save(Advertisement $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
+    public function findAll(): array
+    {
+        return $this->findBy([]);
+    }
+
+    public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null): array
+    {
+        return parent::findBy($criteria, $orderBy, $limit, $offset);
+    }
+
 //    /**
 //     * @return Advertisement[] Returns an array of Advertisement objects
 //     */

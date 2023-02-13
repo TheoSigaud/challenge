@@ -57,7 +57,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         controller: ConfirmAccountController::class,
         read: false
     )
-    ], routePrefix: '/api')]
+    ])]
 
 #[Patch(routePrefix: '/api')]
 #[Post(routePrefix: '/api')]
@@ -68,7 +68,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     new GetCollection(
         uriTemplate: '/admin/users-host',)
 ])]
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

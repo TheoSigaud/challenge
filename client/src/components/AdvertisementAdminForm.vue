@@ -73,6 +73,7 @@ async function base64() {
   return images;
 }
 const saveAdvertisement = () => {
+
   if(adData.value.zipcode == null
       || adData.value.type == null
       || adData.value.description == null
@@ -86,8 +87,14 @@ const saveAdvertisement = () => {
       || dataProperties.value.nbBathroom == ""
       || dataProperties.value.nbBed == null 
       || dataProperties.value.nbBed== ""
-      || adData.value.price == null) {
+      || adData.value.price == null
+      || adData.value.user == null) {
         adData.value.error = 'Tous les champs sont obligatoires'
+      return
+    }
+    if(isNaN(adData.value.price)) {
+      adData.value.error = 'Le prix doit être un nombre'
+
       return
     }
 
@@ -112,9 +119,12 @@ const saveAdvertisement = () => {
     return
   }
 base64().then((data) => {
-  console.log(data)
+  if(JSON.stringify(data) === '{}'){
+    adData.value.error = "Vous devez ajouter au moins une photo"
+    return
+  }
   const requestAdvertisement = new Request(
-    "https://localhost/api/advertisements"+id.value,
+    "https://localhost/advertisements"+id.value,
     {
       method: method,
       body: JSON.stringify({
@@ -127,7 +137,7 @@ base64().then((data) => {
         dateStart: adData.value.date[0],
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
-        owner: "/admin/users/"+ adData.value.user,
+        owner: "/api/users/"+ adData.value.user,
         photo: data,
         price: adData.value.price,
       }),
@@ -156,12 +166,11 @@ const requestAd = new Request(
     .then((response) => response.json())
     .then((data) => {
       data['hydra:member'].forEach(add => users.value.push(add));
-      console.log(users.value)
     })
     .catch((error) => console.log(error))
     if(method == "PATCH"){
   const requestUser = new Request(
-    "https://localhost/api/advertisements/"+idAd,
+    "https://localhost/advertisements/"+idAd,
     {
       method: "GET",
       headers: {
@@ -172,14 +181,20 @@ const requestAd = new Request(
   fetch(requestUser)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data)
       adData.value.name = data.name
       adData.value.type = data.type
       adData.value.description = data.description
       adData.value.city = data.city
       adData.value.zipcode = data.zipcode
       adData.value.address = data.address
-      adData.value.date = [data.dateStart, data.dateEnd]
+
+      let dateStart = new Date(data.date_start)
+      let dateEnd = new Date(data.date_end)
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      const frenchDateEnd = dateEnd.toLocaleDateString('en-EN', options);
+      const frenchDateStart = dateStart.toLocaleDateString('en-EN', options);
+
+      adData.value.date = [new Date(frenchDateEnd), new Date(frenchDateStart)]
       dataProperties.value.nbBedroom = data.properties.nbBedroom
       dataProperties.value.nbBed = data.properties.nbBed
       dataProperties.value.nbBathroom = data.properties.nbBathroom
@@ -188,7 +203,8 @@ const requestAd = new Request(
       dataProperties.value.parking = data.properties.parking
       dataProperties.value.airConditioning = data.properties.airConditioning
       dataProperties.value.heating = data.properties.heating,
-      adData.value.price = data.price
+      adData.value.price = data.price,
+      adData.value.user = data.owner.id
     })
     .catch((error) => console.log(error))
 }
@@ -256,7 +272,7 @@ const requestAd = new Request(
         <div class="filed">
           <label class="label">Prix pour une nuit</label>
             <div class="control">
-              <input  class="input" type="number" v-model="adData.price">
+              <input  class="input" type="number" step="0.01" v-model="adData.price">
             </div>
         </div>
       </div>

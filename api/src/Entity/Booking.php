@@ -15,8 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Table(name: '`booking`')]
-#[ORM\Entity(repositoryClass: BookingRepository::class)]
 #[ApiResource(operations: [
     new Post(
         name: 'buy',
@@ -45,6 +43,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
     )
 ], routePrefix: '/api')]
 
+#[ORM\Table(name: '`booking`')]
+#[ORM\Entity(repositoryClass: BookingRepository::class)]
+
 #[ApiResource(operations: [
     new GetCollection(
         uriTemplate: '/admin/bookings',
@@ -57,11 +58,11 @@ class Booking
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(['booking:read', 'advertisement'])]
+    #[Groups(['booking:read', 'advertisement', 'bookings'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'bookings'])]
     private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column]
@@ -69,14 +70,14 @@ class Booking
     private ?int $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
-    #[Groups(['booking:read', 'advertisement'])]
+    #[Groups(['booking:read', 'advertisement', 'bookings'])]
     private ?Advertisement $advertisement = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?User $client = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'bookings'])]
     private ?\DateTimeInterface $date_end = null;
 
     #[ORM\Column]

@@ -39,7 +39,10 @@ class BookingController extends AbstractController
             if (empty($parameters['cardNumber'])
                 || empty($parameters['cardMonth'])
                 || empty($parameters['cardYear'])
-                || empty($parameters['cardCvv'])) {
+                || empty($parameters['cardCvv'])
+                || empty($parameters['idAdvertisement'])
+                || empty($parameters['dateStart'])
+                || empty($parameters['dateEnd'])) {
                 return $this->json(['message' => 'Les données de la carte sont manquantes'], 400);
             }
 
@@ -73,8 +76,30 @@ class BookingController extends AbstractController
             $dataUser =  $this->JWTManager->decode($this->tokenStorage->getToken());
 
             $user = $this->managerRegistry->getRepository(User::class)->findOneBy(['email' => $dataUser['email']]);
-            $advertisement = $this->managerRegistry->getRepository(Advertisement::class)->findOneBy(['id' => '1']);
+            $advertisement = $this->managerRegistry->getRepository(Advertisement::class)->findOneBy(['id' => strval($parameters['idAdvertisement'])]);
 
+            $date1 = new DateTime($parameters['dateStart']);
+            $date2 = new DateTime($parameters['dateEnd']);
+            $interval = $date1->diff($date2);
+            $nights = $interval->days;
+
+            $query = $this->managerRegistry
+                ->getManager()
+                ->createQuery(
+                    'SELECT b FROM App\Entity\Booking b
+                        WHERE b.status > 0
+                        AND (b.date_start BETWEEN :date_start AND :date_end
+                        OR b.date_end BETWEEN :date_start AND :date_end
+                        OR (b.date_start <= :date_start AND b.date_end >= :date_end))'
+                )
+                ->setParameter('date_start', $parameters['dateStart'])
+                ->setParameter('date_end', $parameters['dateEnd']);
+
+            $existingBookings = $query->getResult();
+
+            if (count($existingBookings) > 0) {
+                return $this->json(['message' => 'Ces dates ne sont pas valides'], 500);
+            }
 
             Stripe::setApiKey($_ENV['STRIPE_PRIVATE']);
 
@@ -89,7 +114,7 @@ class BookingController extends AbstractController
 
 
             $charge = Charge::create([
-                'amount' => 1000,
+                'amount' => $advertisement->getPrice() * $nights * 100,
                 'currency' => 'eur',
                 'source' => $token,
             ]);
@@ -98,8 +123,8 @@ class BookingController extends AbstractController
             $booking->setStatus(0);
             $booking->setClient($user);
             $booking->setAdvertisement($advertisement);
-            $booking->setDateStart(new DateTime());
-            $booking->setDateEnd(new DateTime());
+            $booking->setDateStart(DateTime::createFromFormat('Y-m-d', $parameters['dateStart']));
+            $booking->setDateEnd(DateTime::createFromFormat('Y-m-d', $parameters['dateEnd']));
             $booking->setCreatedAt(new \DateTimeImmutable());
             $booking->setPayment($charge->id);
 
@@ -118,7 +143,7 @@ class BookingController extends AbstractController
 
             return $this->json(['message' => 'success'], 200);
         } catch (\Exception $e) {
-            return $this->json(['message' => 'Une erreur est survenue'], 500);
+            return $this->json(['message' => $e], 500);
         }
     }
 }

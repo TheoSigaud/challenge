@@ -26,6 +26,15 @@ class UserFixtures extends Fixture
             ->setLastname("sidox")
             ->setFirstname("sidox");
 
+            $object_2 = (new User())
+            ->setEmail("rexrider75@gmail.com")
+            ->setRoles(['ROLE_USER'])
+            ->setPassword("testtest")
+            ->setToken(bin2hex(random_bytes(32)))
+            ->setAddress("4 rue de la paix")
+            ->setBirthday(new \DateTime("1990-01-01"))
+            ->setLastname("sidox")
+            ->setFirstname("sidox");
 
 
         $admin = (new User())
@@ -53,6 +62,7 @@ class UserFixtures extends Fixture
 
 
         $manager->persist($object);
+        $manager->persist($object_2);
         $manager->persist($modo);
         $manager->persist($admin);
 

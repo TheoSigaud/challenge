@@ -16,7 +16,6 @@ const { method } = defineProps({
 const id = ref("");
 const idAd = route.query.id
 let isAdmin = false
-const users = ref([]);
 if(route.query.id != undefined){
   isAdmin = true
 }
@@ -60,7 +59,7 @@ const dataProperties = ref({
 
 if(method == "PATCH"){
   const requestUser = new Request(
-    "https://localhost/api/advertisements/"+idAd,
+    "https://localhost/advertisements/"+idAd,
     {
       method: "GET",
       headers: {
@@ -71,14 +70,23 @@ if(method == "PATCH"){
   fetch(requestUser)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data)
+      if(data.owner.id != idUser){
+        router.push({ name: 'home' })
+      }
       adData.value.name = data.name
       adData.value.type = data.type
       adData.value.description = data.description
       adData.value.city = data.city
       adData.value.zipcode = data.zipcode
       adData.value.address = data.address
-      adData.value.date = [data.dateStart, data.dateEnd]
+      
+      let dateStart = new Date(data.date_start)
+      let dateEnd = new Date(data.date_end)
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      const frenchDateEnd = dateEnd.toLocaleDateString('en-EN', options);
+      const frenchDateStart = dateStart.toLocaleDateString('en-EN', options);
+      
+      adData.value.date = [new Date(frenchDateEnd), new Date(frenchDateStart)]
       dataProperties.value.nbBedroom = data.properties.nbBedroom
       dataProperties.value.nbBed = data.properties.nbBed
       dataProperties.value.nbBathroom = data.properties.nbBathroom
@@ -87,7 +95,9 @@ if(method == "PATCH"){
       dataProperties.value.parking = data.properties.parking
       dataProperties.value.airConditioning = data.properties.airConditioning
       dataProperties.value.heating = data.properties.heating,
-      adData.value.price = data.price
+      adData.value.price = data.price,
+      adData.value.user = data.owner.id,
+      fileNames.value = data.photo
     })
     .catch((error) => console.log(error))
 }
@@ -108,6 +118,12 @@ async function base64() {
   return images;
 }
 const saveAdvertisement = () => {
+
+  if(isNaN(adData.value.price)) {
+      adData.value.error = 'Le prix doit être un nombre'
+
+      return
+    }
   if(adData.value.zipcode == null
       || adData.value.type == null
       || adData.value.description == null
@@ -125,7 +141,7 @@ const saveAdvertisement = () => {
         adData.value.error = 'Tous les champs sont obligatoires'
       return
     }
-
+    
     if(adData.value.date[1] == null) {
       adData.value.error = 'Vous devez sélectionner une date de début et une date de fin'
 
@@ -147,8 +163,10 @@ const saveAdvertisement = () => {
     return
   }
 base64().then((data) => {
-  console.log(data)
-  //convert array to json
+  if(JSON.stringify(data) === '{}'){
+    adData.value.error = "Vous devez ajouter au moins une photo"
+    return
+  }
   const requestAdvertisement = new Request(
     "https://localhost/api/advertisements"+id.value,
     {
@@ -163,7 +181,7 @@ base64().then((data) => {
         dateStart: adData.value.date[0],
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
-        owner: "/admin/users/"+ idUser,
+        owner: "/api/users/"+ idUser,
         photo: data,
         price: adData.value.price,
       }),
@@ -178,26 +196,6 @@ base64().then((data) => {
       })
   })
 }
-
-
-const requestAd = new Request(
-  
-    "https://localhost/admin/users/",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/Id+json",
-        "Authorization": "Bearer " + token
-      }
-    });
-  fetch(requestAd)
-    .then((response) => response.json())
-    .then((data) => {
-      data['hydra:member'].forEach(add => users.value.push(add));
-      console.log(users.value)
-    })
-    .catch((error) => console.log(error))
-
 </script>
 
 
@@ -245,7 +243,7 @@ const requestAd = new Request(
         <div class="filed">
           <label class="label">Prix pour une nuit</label>
             <div class="control">
-              <input  class="input" type="number" v-model="adData.price">
+              <input  class="input" type="number" step="0.01" v-model="adData.price">
             </div>
         </div>
       </div>

@@ -33,15 +33,14 @@ function getHost() {
       })
 }
 
-function sendRequest(value = false, id) {
+function sendRequest(value = 1, id) {
 
-  if (value === true) {
     const requestReset = new Request(
         "https://localhost/api/users/" + id,
         {
           method: "PATCH",
           body: JSON.stringify({
-            role: ["ROLE_HOST", "ROLE_USER"]
+            status: value
           }),
           headers: {
             "Content-Type": "application/merge-patch+json",
@@ -54,7 +53,7 @@ function sendRequest(value = false, id) {
             getHost()
           }
         })
-  }
+
 }
 </script>
 
@@ -85,8 +84,8 @@ function sendRequest(value = false, id) {
             {{ item.message_host}}
           </td>
           <td>
-            <button class="button is-success is-light mr-3" @click="sendRequest(true, item.id)">Accepter</button>
-            <button class="button is-danger is-light" @click="sendRequest(false, item.id)">Refuser</button>
+            <button class="button is-success is-light mr-3" @click="sendRequest(3, item.id)">Accepter</button>
+            <button class="button is-danger is-light" @click="sendRequest(1, item.id)">Refuser</button>
           </td>
         </tr>
         </tbody>

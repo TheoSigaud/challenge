@@ -39,7 +39,6 @@ const route = useRoute()
     idUser = jwtDecode(token).id
     isAdmin.value = false
   }else{
-    console.log(route.name)
     if(route.name == 'profile'){
       router.push({name: 'login'})
     }
@@ -49,7 +48,7 @@ const route = useRoute()
   }
 
   const requestUser = new Request(
-    "https://localhost/admin/users/"+idUser,
+    "https://localhost/api/users/"+idUser,
     {
       method: "GET",
       headers: {

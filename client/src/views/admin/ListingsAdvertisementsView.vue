@@ -20,7 +20,7 @@ const advertisements = ref([]);
 let token = jsCookie.get('jwt')
 
 const requestAd = new Request(
-    "https://localhost/api/advertisements",
+    "https://localhost/advertisements",
     {
       method: "GET",
       headers: {
@@ -32,7 +32,6 @@ const requestAd = new Request(
     .then((response) => response.json())
     .then((data) => {
       data["hydra:member"].forEach(add => advertisements.value.push(add));
-      console.log(advertisements.value);
     })
     .catch((error) => console.log(error))
 </script>
@@ -71,13 +70,11 @@ const requestAd = new Request(
                   <td>{{ad.city}}</td>
                   <td>{{ad.zipcode}}</td>
                   <td>
-                    <a href="#">
                       <div class="buttons">
                         <router-link :to="{ path: '/admin/modify-advertisement', query: { id: ad.id } }" class="button btn--lavender mt-5">
                           <span>Modifier</span>
                         </router-link>
-                      </div>                    
-                    </a>
+                      </div>
                   </td>
                 </tr>
               </tbody>
