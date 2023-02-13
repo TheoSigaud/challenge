@@ -92,6 +92,11 @@ const saveAdvertisement = () => {
         adData.value.error = 'Tous les champs sont obligatoires'
       return
     }
+    if(isNaN(adData.value.price)) {
+      adData.value.error = 'Le prix doit être un nombre'
+
+      return
+    }
 
     if(adData.value.date[1] == null) {
       adData.value.error = 'Vous devez sélectionner une date de début et une date de fin'
@@ -267,7 +272,7 @@ const requestAd = new Request(
         <div class="filed">
           <label class="label">Prix pour une nuit</label>
             <div class="control">
-              <input  class="input" type="number" v-model="adData.price">
+              <input  class="input" type="number" step="0.01" v-model="adData.price">
             </div>
         </div>
       </div>

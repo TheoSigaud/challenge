@@ -118,6 +118,12 @@ async function base64() {
   return images;
 }
 const saveAdvertisement = () => {
+
+  if(isNaN(adData.value.price)) {
+      adData.value.error = 'Le prix doit être un nombre'
+
+      return
+    }
   if(adData.value.zipcode == null
       || adData.value.type == null
       || adData.value.description == null
@@ -135,7 +141,7 @@ const saveAdvertisement = () => {
         adData.value.error = 'Tous les champs sont obligatoires'
       return
     }
-
+    
     if(adData.value.date[1] == null) {
       adData.value.error = 'Vous devez sélectionner une date de début et une date de fin'
 
