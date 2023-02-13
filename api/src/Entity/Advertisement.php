@@ -124,7 +124,7 @@ class Advertisement
 
     #[ORM\Column]
     #[Groups(['owner', 'bookings'])]
-    private ?int $price = null;
+    private ?float $price = null;
 
     #[ORM\Column]
     #[Groups(['advertisement', 'owner', 'bookings'])]
@@ -336,7 +336,7 @@ class Advertisement
         return $this;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): ?float
     {
         return $this->price;
     }

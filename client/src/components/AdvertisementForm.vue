@@ -237,7 +237,7 @@ base64().then((data) => {
         <div class="filed">
           <label class="label">Prix pour une nuit</label>
             <div class="control">
-              <input  class="input" type="number" v-model="adData.price">
+              <input  class="input" type="number" step="0.01" v-model="adData.price">
             </div>
         </div>
       </div>
