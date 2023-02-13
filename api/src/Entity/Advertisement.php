@@ -18,9 +18,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 // #[ApiResource]
-#[ApiResource(normalizationContext: ['groups' => ['owner', 'bookings']])]
+#[ApiResource(normalizationContext: ['groups' => ['owner', 'bookings']], routePrefix: '/api')]
 #[ApiFilter(SearchFilter::class, properties: ['city' => 'exact'])]
 #[ApiFilter(DateFilter::class, properties: ['date_start', 'date_end'])]
+#[ApiResource(operations: [
+    new Get()
+])]
 
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]
