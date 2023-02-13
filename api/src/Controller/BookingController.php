@@ -39,7 +39,10 @@ class BookingController extends AbstractController
             if (empty($parameters['cardNumber'])
                 || empty($parameters['cardMonth'])
                 || empty($parameters['cardYear'])
-                || empty($parameters['cardCvv'])) {
+                || empty($parameters['cardCvv'])
+                || empty($parameters['idAdvertisement'])
+                || empty($parameters['dateStart'])
+                || empty($parameters['dateEnd'])) {
                 return $this->json(['message' => 'Les données de la carte sont manquantes'], 400);
             }
 
@@ -73,11 +76,12 @@ class BookingController extends AbstractController
             $dataUser =  $this->JWTManager->decode($this->tokenStorage->getToken());
 
             $user = $this->managerRegistry->getRepository(User::class)->findOneBy(['email' => $dataUser['email']]);
-            $advertisement = $this->managerRegistry->getRepository(Advertisement::class)->findOneBy(['id' => '1']);
+            $advertisement = $this->managerRegistry->getRepository(Advertisement::class)->findOneBy(['id' => strval($parameters['idAdvertisement'])]);
 
-
-            $startDate = new DateTime();
-            $endDate = new DateTime();
+            $date1 = new DateTime($parameters['dateStart']);
+            $date2 = new DateTime($parameters['dateEnd']);
+            $interval = $date1->diff($date2);
+            $nights = $interval->days;
 
             $query = $this->managerRegistry
                 ->getManager()
@@ -88,8 +92,8 @@ class BookingController extends AbstractController
                         OR b.date_end BETWEEN :date_start AND :date_end
                         OR (b.date_start <= :date_start AND b.date_end >= :date_end))'
                 )
-                ->setParameter('date_start', $startDate)
-                ->setParameter('date_end', $endDate);
+                ->setParameter('date_start', $parameters['dateStart'])
+                ->setParameter('date_end', $parameters['dateEnd']);
 
             $existingBookings = $query->getResult();
 
@@ -110,7 +114,7 @@ class BookingController extends AbstractController
 
 
             $charge = Charge::create([
-                'amount' => 1000,
+                'amount' => $advertisement->getPrice() * $nights * 100,
                 'currency' => 'eur',
                 'source' => $token,
             ]);
@@ -119,8 +123,8 @@ class BookingController extends AbstractController
             $booking->setStatus(0);
             $booking->setClient($user);
             $booking->setAdvertisement($advertisement);
-            $booking->setDateStart(new DateTime());
-            $booking->setDateEnd(new DateTime());
+            $booking->setDateStart(DateTime::createFromFormat('Y-m-d', $parameters['dateStart']));
+            $booking->setDateEnd(DateTime::createFromFormat('Y-m-d', $parameters['dateEnd']));
             $booking->setCreatedAt(new \DateTimeImmutable());
             $booking->setPayment($charge->id);
 

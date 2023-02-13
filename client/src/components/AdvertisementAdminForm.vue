@@ -124,7 +124,7 @@ base64().then((data) => {
     return
   }
   const requestAdvertisement = new Request(
-    "https://localhost/api/advertisements"+id.value,
+    "https://localhost/advertisements"+id.value,
     {
       method: method,
       body: JSON.stringify({
