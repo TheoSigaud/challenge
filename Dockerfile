@@ -1,8 +1,6 @@
-# Use an official Alpine Linux image as the base image
-FROM alpine:3.12
-
-# Set the working directory to /app
+# Vue-client Service
+FROM node:latest
 WORKDIR /app
-
-# Define the command to run when the container starts
-CMD [ "echo", "Hello, World!" ]
+COPY ./client/ /app
+RUN npm install && npm run dev
+EXPOSE 8080
