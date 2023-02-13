@@ -73,7 +73,6 @@ if(method == "PATCH"){
       if(data.owner.id != idUser){
         router.push({ name: 'home' })
       }
-      console.log(data)
       adData.value.name = data.name
       adData.value.type = data.type
       adData.value.description = data.description
@@ -98,7 +97,6 @@ if(method == "PATCH"){
       dataProperties.value.heating = data.properties.heating,
       adData.value.price = data.price,
       adData.value.user = data.owner.id,
-      console.log(data.photo)
       fileNames.value = data.photo
     })
     .catch((error) => console.log(error))
