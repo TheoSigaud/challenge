@@ -13,10 +13,12 @@ function search() {
   const token = jsCookie.get("jwt");
   if (city.value !== "") {
     url.searchParams.set("city", city.value.toLowerCase());
-  } else if (startDate._value !== "") {
-    let date = new Date(startDate._value);
-    url.searchParams.set("date_start", date.toISOString().slice(0, 10));
-  } else if (endDate._value !== "") {
+  } else if (startDate.value !== "") {
+    let date = new Date(startDate.value);
+    let date_2 = encodeURIComponent(date.toISOString().split('T')[0]); 
+    console.log(date_2);
+    url.searchParams.set("date_start", encodeURIComponent(date.toISOString().split('T')[0]));
+  } else if (endDate.value !== "") {
     let date = new Date(endDate._value);
     url.searchParams.set("endDate", date.toISOString().slice(0, 10));
   }
@@ -39,7 +41,7 @@ function search() {
     })
     .catch((error) => console.error("Error fetching advertisements:", error));
 
-  console.log("search", city.value, startDate._value, endDate._value);
+  console.log("search", city.value, startDate.value, endDate.value);
 }
 
 onMounted(async () => {

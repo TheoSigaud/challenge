@@ -48,15 +48,18 @@
                   <p class="control">
                     <Datepicker
                       class="input"
-                      v-model="startDate"
+                      v-model="state.startDate"
                       :enable-time-picker="false"
+                      :min-date="new Date()"
+                      :disabled-dates="Array.from(state.disabled)"
                       placeholder="dd/mm/yyyy"
                     ></Datepicker>
                   </p>
                   <p class="control">
                     <Datepicker
                       class="input"
-                      v-model="endDate"
+                      v-model="state.endDate"
+                      :max-date="getMaxDate()"
                       :enable-time-picker="false"
                       placeholder="dd/mm/yyyy"
                     ></Datepicker>
@@ -81,6 +84,9 @@ const route = useRoute();
 const state = reactive({
   advertisement: {},
   loading: true,
+  disabled: [],
+  startDate: new Date(),
+  endDate: null,
 });
 
 async function getAdvertisement() {
@@ -93,22 +99,44 @@ async function getAdvertisement() {
     },
   });
   const data = await response.json();
+  console.log(data);
   state.advertisement = data;
   state.loading = false;
 }
 
-onMounted(async () => {
-  console.log("mounted");
-  const token = jsCookie.get("jwt");
-  const id = route.params.id;
-  const response = await fetch(`https://localhost/api/advertisements/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+async function getDisabledDates() {
+  const bookings = state.advertisement.bookings;
+  const disabled = [];
+  bookings.forEach((booking) => {
+    const start = new Date(booking.date_start);
+    const end = new Date(booking.date_end);
+    while (start <= end) {
+      console.log("start", start, end);
+      disabled.push(new Date(start));
+      start.setDate(start.getDate() + 1);
+    }
   });
-  const data = await response.json();
-  state.advertisement = data;
-  state.loading = false;
+  return disabled;
+}
+
+async function getMaxDate() {
+  console.log("state.startDate 222", state.startDate);
+  const disabled = state.disabled;
+  let today = new Date();
+
+  while (today <= disabled[0]) {
+    today.setDate(today.getDate() + 1);
+  }
+
+  console.log("today", today);
+
+  return today;
+}
+onMounted(async () => {
+  await getAdvertisement();
+  state.disabled = await getDisabledDates();
+
+  console.log("state.disabled", state.advertisement);
 });
 </script>
 

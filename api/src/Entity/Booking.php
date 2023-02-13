@@ -57,11 +57,11 @@ class Booking
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column()]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'bookings'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'bookings'])]
     private ?\DateTimeInterface $date_start = null;
 
     #[ORM\Column]
@@ -69,14 +69,14 @@ class Booking
     private ?int $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'bookings'])]
     private ?Advertisement $advertisement = null;
 
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?User $client = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(['booking:read'])]
+    #[Groups(['booking:read', 'bookings'])]
     private ?\DateTimeInterface $date_end = null;
 
     #[ORM\Column]
