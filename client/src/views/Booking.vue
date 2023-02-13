@@ -100,7 +100,7 @@ function sendRequest() {
               </div>
 
               <div class="is-flex is-justify-content-space-between is-align-items-center">
-                <button class="button is-link is-light">Voir l'annonce</button>
+                <router-link :to="{path: '/advertisement/'+item.advertisement.id}" class="button is-link is-light">Voir l'annonce</router-link>
                 <div v-if="item.booking.status === 0">
                   <button class="button is-warning is-light" @click="showModal = !showModal; bookingId = item.booking.id">
                     Faire une demande d'annulation

@@ -123,8 +123,8 @@ class BookingController extends AbstractController
             $booking->setStatus(0);
             $booking->setClient($user);
             $booking->setAdvertisement($advertisement);
-            $booking->setDateStart($parameters['dateStart']);
-            $booking->setDateEnd($parameters['dateEnd']);
+            $booking->setDateStart(DateTime::createFromFormat('Y-m-d', $parameters['dateStart']));
+            $booking->setDateEnd(DateTime::createFromFormat('Y-m-d', $parameters['dateEnd']));
             $booking->setCreatedAt(new \DateTimeImmutable());
             $booking->setPayment($charge->id);
 
