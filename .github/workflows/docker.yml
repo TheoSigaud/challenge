@@ -16,10 +16,6 @@ jobs:
 
       - name: Test the Docker image
         run: docker build
-        with:
-            context: .
-            tags: "test"
-
 
   build:
     runs-on: ubuntu-latest
