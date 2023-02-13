@@ -5,6 +5,9 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Controller\SearchController;
 use App\Repository\AdvertisementRepository;
 use App\Controller\SearchAdvertisementController;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -21,6 +24,20 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(normalizationContext: ['groups' => ['owner']], routePrefix: '/api')]
 #[ApiFilter(SearchFilter::class, properties: ['city' => 'exact'])]
 #[ApiFilter(DateFilter::class, properties: ['date_start', 'date_end'])]
+
+#[ApiResource(operations: [
+    new GetCollection(
+        name: 'advertisements',
+        uriTemplate: '/advertisements',
+        normalizationContext: ['groups' => ['owner']],
+    ),
+
+    new Get(
+        name: 'search-advertisements',
+        uriTemplate: '/search-advertisements',
+        controller: SearchController::class
+    )
+])]
 
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]

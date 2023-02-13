@@ -8,43 +8,43 @@ const startDate = ref("");
 const endDate = ref("");
 const init = ref(true);
 const data = ref({});
+const error = ref("");
 
 function search() {
-  const url = new URL("https://localhost/api/advertisements");
-  const token = jsCookie.get("jwt");
-  if (city.value !== "") {
-    url.searchParams.set("city", city.value.toLowerCase());
-  } else if (startDate._value !== "") {
-    let date = new Date(startDate._value);
-    url.searchParams.set("date_start", date.toISOString().slice(0, 10));
-  } else if (endDate._value !== "") {
-    let date = new Date(endDate._value);
-    url.searchParams.set("endDate", date.toISOString().slice(0, 10));
+  error.value = "";
+  if (city.value === "" && startDate.value === "" && endDate.value === "") {
+    console.log("error");
+    error.value = "Veuillez remplir tout les champs";
+    return;
   }
 
-  const request = {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
-
-  fetch(url, request)
+  const requestReset = new Request(
+      "https://localhost/search-advertisements/?city=" + city.value + "&startDate=" + startDate.value.toISOString().split('T')[0] + "&endDate=" + endDate.value.toISOString().split('T')[0],
+      {
+        method: "GET",
+      });
+  fetch(requestReset)
       .then((response) => response.json())
       .then((_data) => {
-        console.log(_data);
         if (_data["hydra:member"]) {
           data.value = _data["hydra:member"];
         }
-        console.log(data.value);
       })
-      .catch((error) => console.error("Error fetching advertisements:", error));
-
-  console.log("search", city.value, startDate._value, endDate._value);
 }
 
 onMounted(async () => {
-  search();
+  const requestReset = new Request(
+      "https://localhost/advertisements",
+      {
+        method: "GET",
+      });
+  fetch(requestReset)
+      .then((response) => response.json())
+      .then((_data) => {
+        if (_data["hydra:member"]) {
+          data.value = _data["hydra:member"];
+        }
+      })
 });
 </script>
 
@@ -89,6 +89,8 @@ onMounted(async () => {
           </p>
         </div>
       </div>
+      <p v-if="error" class="text is-danger">{{error}}</p>
+
       <div class="custom-class2">
         <div class="columns">
           <div class="column">
@@ -140,7 +142,7 @@ onMounted(async () => {
 }
 
 .custom-class {
-  position: absolute;
+  /*position: absolute;*/
   right: 0;
   left: 0;
 }
