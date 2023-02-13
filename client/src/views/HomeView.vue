@@ -159,6 +159,6 @@ onMounted(async () => {
 }
 
 .advertisement :hover {
-  background-color: #00d1b2;
+  background-color: #e9f0f0;
 }
 </style>
