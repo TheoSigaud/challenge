@@ -68,8 +68,9 @@ onMounted(async () => {
   <div>
     <NavBar :key="'home'" />
     <div class="container is-flex is-justify-content-center mb-5">
+      <div>
       <div class="level-item custom-class">
-        <div class="field has-addons">
+        <div class="field has-addons mb-5">
           <p class="control">
             <input
                 v-model="city"
@@ -96,8 +97,7 @@ onMounted(async () => {
           </p>
           <p class="control" style="background-color: #00d1b2">
             <button
-                class="button input"
-                style="background-color: #00d1b2"
+                class="button input is-info is-light"
                 @click="search"
             >
               Rechercher
@@ -105,9 +105,7 @@ onMounted(async () => {
           </p>
         </div>
       </div>
-      <p v-if="error" class="text is-danger">{{error}}</p>
-
-      <div class="custom-class2">
+      <div class="custom-class2 mt-5">
         <div class="columns">
           <div class="column">
             <div class="columns is-multiline">
@@ -117,36 +115,34 @@ onMounted(async () => {
                     :to="{ name: 'advertisement', params: { id: item.id } }"
                 >
                   <div class="card advertisement">
+                    <div class="card-image">
+                      <figure class="image is-4by3">
+                        <img :src="item.photo[Object.keys(item.photo)[0]]" alt="Placeholder image">
+                      </figure>
+                    </div>
+                    <p>{{item.photo[0]}}</p>
                     <div class="card-content">
                       <div class="media">
-                        <div class="media-left">
-                          <figure class="image">
-                            <img
-                                src="https://bulma.io/images/placeholders/96x96.png"
-                                alt="Placeholder image"
-                            />
-                          </figure>
+                        <div class="media-content">
+                          <p class="title is-4">{{ item.name }}</p>
+                          <p class="subtitle is-6">Posté par : {{ item.owner.firstname }} dzd,{{ item.owner.lastname }}</p>
                         </div>
                       </div>
+
                       <div class="content">
-                        <p class="title is-6">{{ item.name }}</p>
-                        <br/>
-                        <p class="subtitle is-6">
-                          Posté par : {{ item.owner.firstname }}
-                        </p>
-                        <p class="subtitle is-6">
-                          Contact : {{ item.owner.email }}
-                        </p>
+                        <p>{{ item.description }}</p>
+                        <br>
+                        <span>Contact : {{ item.owner.email }}</span>
                       </div>
                     </div>
                   </div>
-                </router-link
-                >
+                </router-link>
               </div>
             </div>
           </div>
         </div>
       </div>
+        </div>
     </div>
   </div>
 </template>
@@ -154,29 +150,9 @@ onMounted(async () => {
 <style scoped>
 .input {
   height: 50px;
-  border-radius: 10px 100px / 120px;
-}
-
-.custom-class {
-  /*position: absolute;*/
-  right: 0;
-  left: 0;
-}
-
-.custom-class2 {
-  position: absolute;
-  top: 200px; /* the height of the navbar */
-  right: 0;
-  left: 0;
-  width: 80%;
-  margin: auto;
 }
 
 .control {
   border-radius: 10px 100px / 120px;
-}
-
-.advertisement :hover {
-  background-color: #e9f0f0;
 }
 </style>
