@@ -16,14 +16,22 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
 
 // #[ApiResource]
 #[ApiResource(normalizationContext: ['groups' => ['owner', 'bookings']], routePrefix: '/api')]
 #[ApiFilter(SearchFilter::class, properties: ['city' => 'exact'])]
 #[ApiFilter(DateFilter::class, properties: ['date_start', 'date_end'])]
 #[ApiResource(operations: [
-    new Get()
+    new GetCollection(
+        name: 'advertisements',
+        uriTemplate: '/advertisements',
+        normalizationContext: ['groups' => ['owner']],
+    ),
 ])]
+
+#[Get()]
 
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]

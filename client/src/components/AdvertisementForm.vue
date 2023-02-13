@@ -59,7 +59,7 @@ const dataProperties = ref({
 
 if(method == "PATCH"){
   const requestUser = new Request(
-    "https://localhost/api/advertisements/"+idAd,
+    "https://localhost/advertisements/"+idAd,
     {
       method: "GET",
       headers: {
@@ -70,6 +70,9 @@ if(method == "PATCH"){
   fetch(requestUser)
     .then((response) => response.json())
     .then((data) => {
+      if(data.owner.id != idUser){
+        router.push({ name: 'home' })
+      }
       console.log(data)
       adData.value.name = data.name
       adData.value.type = data.type
@@ -77,7 +80,14 @@ if(method == "PATCH"){
       adData.value.city = data.city
       adData.value.zipcode = data.zipcode
       adData.value.address = data.address
-      adData.value.date = [data.dateStart, data.dateEnd]
+      
+      let dateStart = new Date(data.date_start)
+      let dateEnd = new Date(data.date_end)
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      const frenchDateEnd = dateEnd.toLocaleDateString('en-EN', options);
+      const frenchDateStart = dateStart.toLocaleDateString('en-EN', options);
+      
+      adData.value.date = [new Date(frenchDateEnd), new Date(frenchDateStart)]
       dataProperties.value.nbBedroom = data.properties.nbBedroom
       dataProperties.value.nbBed = data.properties.nbBed
       dataProperties.value.nbBathroom = data.properties.nbBathroom
@@ -86,7 +96,10 @@ if(method == "PATCH"){
       dataProperties.value.parking = data.properties.parking
       dataProperties.value.airConditioning = data.properties.airConditioning
       dataProperties.value.heating = data.properties.heating,
-      adData.value.price = data.price
+      adData.value.price = data.price,
+      adData.value.user = data.owner.id,
+      console.log(data.photo)
+      fileNames.value = data.photo
     })
     .catch((error) => console.log(error))
 }
@@ -146,8 +159,10 @@ const saveAdvertisement = () => {
     return
   }
 base64().then((data) => {
-  console.log(data)
-  //convert array to json
+  if(JSON.stringify(data) === '{}'){
+    adData.value.error = "Vous devez ajouter au moins une photo"
+    return
+  }
   const requestAdvertisement = new Request(
     "https://localhost/api/advertisements"+id.value,
     {
