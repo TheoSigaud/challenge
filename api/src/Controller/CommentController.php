@@ -2,13 +2,21 @@
 
 namespace App\Controller;
 
+use App\Entity\Booking;
+use App\Entity\Comment;
+use App\Entity\User;
 use Doctrine\Persistence\ManagerRegistry;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Attribute\AsController;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
+#[AsController]
 class CommentController extends AbstractController
 {
     public function __construct(
@@ -16,20 +24,32 @@ class CommentController extends AbstractController
         private TokenStorageInterface $tokenStorage,
         private JWTTokenManagerInterface $JWTManager,
         private ManagerRegistry $managerRegistry,
-        private MailerInterface $mailer,
-    )
-    {
-    }
+    ){}
 
-    public function __invoke()
+
+    /**
+     * @Route("/comments/test", name="comments", methods={"GET", "POST"})
+     */
+    public function __invoke(Request $request)
     {
-        try {
-            $parameters = json_decode($this->requestStack->getCurrentRequest()->getContent(), true);
-            dd($parameters);
-            return $this->json(['message' => 'success'], 200);
-        } catch (\Exception $e) {
-            return $this->json(['message' => 'Une erreur est survenue'], 500);
+        $userId = $request->query->get('client');
+        $advertisementId = $request->query->get('advertisement');
+
+        $reservation = $this->managerRegistry->getRepository(Booking::class)
+            ->findOneBy([
+                'client' => $userId,
+                'advertisement' => $advertisementId,
+            ]);
+
+        if (!$reservation) {
+            throw new NotFoundHttpException();
         }
+
+        $comment = new Comment();
+//        $comment->setAdvertisement($advertisementId);
+
+        return throw new NotFoundHttpException();
+
     }
 
 }

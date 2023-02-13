@@ -1,6 +1,7 @@
 <script>
 import {ref} from "vue";
 import jsCookie from 'js-cookie';
+import jwtDecode from "jwt-decode";
 
 export default {
   props: ['ad_id'],
@@ -22,11 +23,12 @@ export default {
     const descriptionReview = ref("")
     const rateReview = ref("Note")
     const statusFetch = ref(null)
+    const statusSend = ref(false)
 
     const onSubmit = async () => {
       try {
         const token = jsCookie.get('jwt')
-        console.log(token)
+        const idUser = jwtDecode(token).id;
         const response = await fetch("https://localhost/api/comments", {
           method: "POST",
           headers: {
@@ -34,7 +36,8 @@ export default {
             "Authorization": "Bearer " + token
           },
           body: JSON.stringify({
-            advertisement: "/advertisement/" + props.ad_id,
+            advertisement: "/api/advertisements/" + props.ad_id,
+            client: "/api/users/" + idUser,
             title: titleReview.value,
             message: descriptionReview.value,
             rate: parseFloat(rateReview.value),
@@ -47,8 +50,9 @@ export default {
           throw new Error("An error occurred while submitting the form");
         }
         statusFetch.value = ["Merci pour votre avis", "Avis envoyé, il sera traité par l'administrateur avant sa publication", "success"]
+        statusSend.value = true
       } catch (error) {
-          console.log(error)
+        statusFetch.value = ["Erreur", error, "danger"]
       }
     }
 
@@ -57,7 +61,8 @@ export default {
       descriptionReview,
       rateReview,
       onSubmit,
-      statusFetch
+      statusFetch,
+      statusSend
     }
   }
 
@@ -68,7 +73,7 @@ export default {
                 :title="statusFetch[0]"
                 :message="statusFetch[1]"
                 :type="statusFetch[2]"
-                @hideNotification = "statusFetch = null"
+                @hideNotification="statusFetch = null"
   />
   <form @submit.prevent="onSubmit()">
     <input v-model="titleReview" class="input is-link" type="text" placeholder="Titre">
@@ -83,7 +88,7 @@ export default {
     </div>
 
     <textarea v-model="descriptionReview" class="textarea" placeholder="Ajouter un commentaire"></textarea>
-    <footer class="modal-card-foot">
+    <footer class="modal-card-foot" v-if="statusSend === false">
       <button class="button is-success">
         <ion-icon name="send"></ion-icon>
         Envoyer

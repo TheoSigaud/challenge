@@ -1,7 +1,8 @@
 <script setup>
-import {onMounted, ref} from 'vue'
+import {onMounted, ref, watch} from 'vue'
 import jsCookie from "js-cookie";
 import ReviewForm from "../components/form/reviewForm.vue";
+import jwtDecode from "jwt-decode";
 
 const showModal = ref(false)
 const showModalCreate = ref(false);
@@ -9,10 +10,13 @@ const resultBooking = ref([])
 const bookingId = ref(null)
 const message = ref(null)
 const error = ref(null)
-const token = jsCookie.get('jwt')
 const ad_id = ref("");
 const ad_name = ref("");
 const c_id = ref("");
+const comments = ref([])
+const token = jsCookie.get('jwt')
+const idUser = jwtDecode(token).id;
+const canComment = ref(true);
 
 
 onMounted(() => {
@@ -65,6 +69,36 @@ function sendRequest() {
         })
   }
 }
+
+const requestComments = new Request(
+    "https://localhost/api/comments",
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      }
+    });
+
+const getReview = async () => {
+  try {
+    const response = await fetch(requestComments)
+    const data = await response.json()
+    comments.value = data["hydra:member"].filter(item => item.client === "/api/users/" + idUser && item.advertisement === "/api/advertisements/" + ad_id.value)
+    let bookingComment = resultBooking.value
+    bookingComment = bookingComment.filter(item => item.booking.client.id === idUser && item.advertisement.id === ad_id.value)
+    if (bookingComment && new Date(bookingComment[0].booking.date_end) < new Date() )
+      canComment.value = false
+    else canComment.value = true
+  } catch (err) {
+    error.value = err.message
+  }
+}
+
+watch(() => showModalCreate.value, async () => {
+  await getReview();
+})
+
 </script>
 
 <template>
@@ -143,7 +177,7 @@ function sendRequest() {
         <button class="modal-close is-large" aria-label="close"></button>
       </div>
 
-      <div class="modal" style="display: block;" v-if="showModalCreate">
+      <div class="modal" style="display: block;" v-if="comments.length === 0 && showModalCreate">
         <div class="modal-background"></div>
         <div class="modal-card">
 
@@ -156,6 +190,27 @@ function sendRequest() {
             <reviewForm
                 :ad_id="ad_id"
             />
+          </section>
+
+        </div>
+      </div>
+      <div class="modal" style="display: block;" v-else-if="showModalCreate">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+
+          <header class="modal-card-head">
+            <p class="modal-card-title">Avis <b>{{ ad_name }}</b></p>
+            <button class="delete" aria-label="close" v-on:click="showModalCreate = false"></button>
+          </header>
+
+          <section class="modal-card-body" v-if="canComment === true">
+            <p>Vous avez déjà posté ce commentaire sur cette annonce</p>
+            <p class="notification is-warning" v-for="comment in comments">
+              {{ comment.message }}
+            </p>
+          </section>
+          <section class="modal-card-body" v-else>
+            <p class="notification is-danger">Vous devez avoir réservé cette annonce et la date de fin de réservation doit être passée pour pouvoir poster un commentaire.</p>
           </section>
 
         </div>

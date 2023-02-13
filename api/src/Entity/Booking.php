@@ -70,6 +70,7 @@ class Booking
     #[ORM\ManyToOne(inversedBy: 'bookings')]
     private ?User $client = null;
 
+    #[Groups('booking')]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_end = null;
 
