@@ -75,7 +75,7 @@ function sendRequest() {
               <div class="media">
                 <div class="media-left">
                   <figure class="image is-128x128">
-                    <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image">
+                    <img :src="item.advertisement.photo[Object.keys(item.advertisement.photo)[0]]" alt="Placeholder image">
                   </figure>
                 </div>
                 <div class="media-content">

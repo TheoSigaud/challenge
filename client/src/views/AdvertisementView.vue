@@ -239,7 +239,6 @@ import {computed, onMounted, reactive, ref, watch, watchEffect} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
-import Checkout from "@/components/Checkout.vue";
 
 const route = useRoute();
 const displayCheckout = ref(false);
