@@ -127,7 +127,7 @@ base64().then((data) => {
         dateStart: adData.value.date[0],
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
-        owner: "/admin/users/"+ adData.value.user,
+        owner: "/api/users/"+ adData.value.user,
         photo: data,
         price: adData.value.price,
       }),

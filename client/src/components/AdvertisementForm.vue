@@ -16,7 +16,6 @@ const { method } = defineProps({
 const id = ref("");
 const idAd = route.query.id
 let isAdmin = false
-const users = ref([]);
 if(route.query.id != undefined){
   isAdmin = true
 }
@@ -163,7 +162,7 @@ base64().then((data) => {
         dateStart: adData.value.date[0],
         dateEnd: adData.value.date[1],
         properties: dataProperties.value,
-        owner: "/admin/users/"+ idUser,
+        owner: "/api/users/"+ idUser,
         photo: data,
         price: adData.value.price,
       }),
@@ -178,26 +177,6 @@ base64().then((data) => {
       })
   })
 }
-
-
-const requestAd = new Request(
-  
-    "https://localhost/admin/users/",
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/Id+json",
-        "Authorization": "Bearer " + token
-      }
-    });
-  fetch(requestAd)
-    .then((response) => response.json())
-    .then((data) => {
-      data['hydra:member'].forEach(add => users.value.push(add));
-      console.log(users.value)
-    })
-    .catch((error) => console.log(error))
-
 </script>
 
 
