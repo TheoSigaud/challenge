@@ -50,15 +50,19 @@
                     <p class="control">
                       <Datepicker
                         class="input"
-                        v-model="startDate"
+                        v-model="state.startDate"
                         :enable-time-picker="false"
+                        :min-date="new Date()"
+                        :disabled-dates="Array.from(state.disabled)"
                         placeholder="dd/mm/yyyy"
                       ></Datepicker>
                     </p>
                     <p class="control">
                       <Datepicker
                         class="input"
-                        v-model="endDate"
+                        v-model="state.endDate"
+                        :min-date="new Date(state.startDate) + 1"
+                        :max-date="state.maxDate"
                         :enable-time-picker="false"
                         placeholder="dd/mm/yyyy"
                       ></Datepicker>
@@ -76,7 +80,7 @@
 </template>
 
 <script setup>
-import { onMounted, reactive } from "vue";
+import { onMounted, reactive, watch } from "vue";
 import { useRoute } from "vue-router";
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
@@ -84,36 +88,83 @@ import NavBar from "@/components/NavBar.vue";
 const route = useRoute();
 const state = reactive({
   advertisement: {},
+  id: route.params.id,
   loading: true,
+  disabled: [],
+  startDate: new Date(),
+  endDate: null,
+  maxDate: null,
 });
 
 async function getAdvertisement() {
-  console.log("mounted");
   const token = jsCookie.get("jwt");
   const id = route.params.id;
-  const response = await fetch(`https://localhost/api/advertisements/${id}`, {
+  const response = await fetch(`https://localhost/advertisements/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
   const data = await response.json();
+  console.log(data);
   state.advertisement = data;
   state.loading = false;
 }
 
-onMounted(async () => {
-  console.log("mounted");
-  const token = jsCookie.get("jwt");
-  const id = route.params.id;
-  const response = await fetch(`https://localhost/api/advertisements/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+async function getDisabledDates() {
+  const bookings = state.advertisement.bookings;
+  const disabled = [];
+  bookings.forEach((booking) => {
+    const start = new Date(booking.date_start);
+    const end = new Date(booking.date_end);
+    while (start <= end) {
+      disabled.push(new Date(start));
+      start.setDate(start.getDate() + 1);
+    }
   });
-  const data = await response.json();
-  state.advertisement = data;
-  state.loading = false;
+
+  const startDate = new Date(state.startDate);
+  disabled.forEach((date) => {
+    if (date < startDate) {
+      disabled.splice(disabled.indexOf(date), 1);
+    }
+  });
+  console.log("disabled", disabled);
+  return disabled;
+}
+
+async function getLastAvailableDate() {
+  const disabledDates = state.disabled;
+  let lastAvailableDate = null;
+
+  for (let i = 0; i < disabledDates.length; i++) {
+    if (disabledDates[i] > state.startDate) {
+      lastAvailableDate = disabledDates[i];
+      break;
+    }
+  }
+
+  return lastAvailableDate;
+}
+
+onMounted(async () => {
+  await getAdvertisement();
+  state.disabled = await getDisabledDates().then(
+    (disabledDates) => disabledDates
+  );
+  state.maxDate = await getLastAvailableDate().then((resolvedMaxDate) => resolvedMaxDate);
 });
+
+watch(
+  () => state.startDate,
+  async () => {
+    state.disabled = await getDisabledDates().then(
+      (disabledDates) => disabledDates
+    );
+    state.maxDate = await getLastAvailableDate().then(
+      (resolvedMaxDate) => resolvedMaxDate
+    );
+  }
+);
 </script>
 
 <style>
@@ -127,8 +178,7 @@ onMounted(async () => {
   background-color: white;
 }
 .custom {
-  position: relative;
-  top: 45px;
+  top: -100px;
 }
 
 #pictures {

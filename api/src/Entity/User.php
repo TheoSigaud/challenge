@@ -68,7 +68,6 @@ use Symfony\Component\Validator\Constraints as Assert;
     new GetCollection(
         uriTemplate: '/admin/users-host',)
 ])]
-
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
