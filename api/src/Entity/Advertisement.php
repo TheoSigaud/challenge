@@ -280,7 +280,7 @@ class Advertisement
 
     public function setCity(string $city): self
     {
-        $this->city = $city;
+        $this->city = strtolower($city);
 
         return $this;
     }
