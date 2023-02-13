@@ -73,6 +73,7 @@ async function base64() {
   return images;
 }
 const saveAdvertisement = () => {
+
   if(adData.value.zipcode == null
       || adData.value.type == null
       || adData.value.description == null
@@ -86,7 +87,8 @@ const saveAdvertisement = () => {
       || dataProperties.value.nbBathroom == ""
       || dataProperties.value.nbBed == null 
       || dataProperties.value.nbBed== ""
-      || adData.value.price == null) {
+      || adData.value.price == null
+      || adData.value.user == null) {
         adData.value.error = 'Tous les champs sont obligatoires'
       return
     }
@@ -112,7 +114,10 @@ const saveAdvertisement = () => {
     return
   }
 base64().then((data) => {
-  console.log(data)
+  if(JSON.stringify(data) === '{}'){
+    adData.value.error = "Vous devez ajouter au moins une photo"
+    return
+  }
   const requestAdvertisement = new Request(
     "https://localhost/advertisements"+id.value,
     {
@@ -156,7 +161,6 @@ const requestAd = new Request(
     .then((response) => response.json())
     .then((data) => {
       data['hydra:member'].forEach(add => users.value.push(add));
-      console.log(users.value)
     })
     .catch((error) => console.log(error))
     if(method == "PATCH"){
@@ -172,7 +176,6 @@ const requestAd = new Request(
   fetch(requestUser)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data)
       adData.value.name = data.name
       adData.value.type = data.type
       adData.value.description = data.description
