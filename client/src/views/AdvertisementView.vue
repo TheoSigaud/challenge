@@ -1,91 +1,88 @@
 <template>
   <div>
-    <NavBar />
-    <div class="container custom mb-5">
-      <div v-if="loading">Loading...</div>
-      <div v-else>
+    <NavBar/>
+    <button class="button btn--lavender" @click="displayCheckout = !displayCheckout" v-if="displayCheckout">Retour</button>
+    <div class="container custom mb-5" v-if="!displayCheckout">
+      <div>
         <div class="columns">
           <div class="column is-three-fifths">
-            <div class="row" id="pictures">
-              <figure class="image">
-                <img src="https://bulma.io/images/placeholders/640x360.png" />
-              </figure>
-            </div>
             <div class="card">
-              <div class="card-content pb-8">
-                <h1 class="title">Description</h1>
-                <p>{{ state.advertisement.description }}</p>
-                <h1 class="title">Contact</h1>
-                <p>{{ state.advertisement.owner?.email }}</p>
+              <div class="card-image">
+                <figure class="image is-4by3">
+                  <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+                </figure>
+              </div>
+              <div class="card-content">
+                <div class="media">
+                  <div class="media-content">
+                    <p class="title is-3">{{ state.advertisement.name }}</p>
+                  </div>
+                </div>
+
+                <div class="content">
+                  <p class="title is-5">Ce que propose ce logement</p>
+                  <br>
+                  <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+                </div>
               </div>
             </div>
           </div>
-          <div class="column book-card">
-            <div class="card" style="display: block">
-              <div class="card-content pb-8">
-                <div class="columns">
-                  <div class="column is-8">
-                    <h1 class="title">{{ state.advertisement.name }}</h1>
-                    <p>{{ state.advertisement.location }}</p>
-                    <h1 class="title is-4">Ce que propose ce logement</h1>
-                    <p>{{ state.advertisement?.properties }}</p>
-                  </div>
-                </div>
-                <div class="columns">
-                  <div class="column is-6">
-                    <p>
-                      <strong>Type de logement : </strong>
-                      {{ state.advertisement.type }}
+
+          <div class="column">
+            <div class="card">
+              <div class="card-content">
+                <div class="content">
+                  <div class="mb-5">
+                    <p class="title is-4">{{ state.advertisement.price }} € <span class="subtitle is-6">par nuit</span>
                     </p>
                   </div>
-                  <div class="column is-6">
-                    <p>
-                      <strong>Prix par nuit: </strong>
-                      {{ state.advertisement.price }} €
-                    </p>
-                  </div>
-                </div>
-                <div class="level-item">
+
                   <div class="field has-addons">
-                    <p class="control">
-                      <Datepicker
-                        class="input"
+                    <Datepicker
                         v-model="state.startDate"
                         :enable-time-picker="false"
                         :min-date="new Date()"
                         :disabled-dates="Array.from(state.disabled)"
                         placeholder="dd/mm/yyyy"
-                      ></Datepicker>
-                    </p>
-                    <p class="control">
-                      <Datepicker
-                        class="input"
+                    ></Datepicker>
+                    <Datepicker
                         v-model="state.endDate"
                         :min-date="new Date(state.startDate) + 1"
                         :max-date="state.maxDate"
                         :enable-time-picker="false"
                         placeholder="dd/mm/yyyy"
-                      ></Datepicker>
-                    </p>
+                    ></Datepicker>
+                  </div>
+
+                  <div class="mt-3 is-flex is-jutify-content-center">
+                    <button class="button is-danger" @click="checkValue">Je réserve !</button>
                   </div>
                 </div>
-                <div id="payment" class="button is-danger">Let's book !</div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+
+    <Checkout
+        :price="state.advertisement.price"
+        :dateStart="state.startDate"
+        :dateEnd="state.endDate"
+        :id="state.id"
+        v-else/>
   </div>
 </template>
 
 <script setup>
-import { onMounted, reactive, watch } from "vue";
-import { useRoute } from "vue-router";
+import {onMounted, reactive, ref, watch} from "vue";
+import {useRoute} from "vue-router";
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
+import Checkout from "@/components/Checkout.vue";
 
 const route = useRoute();
+const displayCheckout = ref(false);
 const state = reactive({
   advertisement: {},
   id: route.params.id,
@@ -96,6 +93,14 @@ const state = reactive({
   maxDate: null,
 });
 
+function checkValue() {
+  if (state.startDate && state.endDate && state.advertisement.price && state.id) {
+    displayCheckout.value = true;
+  } else {
+
+  }
+}
+
 async function getAdvertisement() {
   const token = jsCookie.get("jwt");
   const id = route.params.id;
@@ -105,7 +110,6 @@ async function getAdvertisement() {
     },
   });
   const data = await response.json();
-  console.log(data);
   state.advertisement = data;
   state.loading = false;
 }
@@ -128,7 +132,6 @@ async function getDisabledDates() {
       disabled.splice(disabled.indexOf(date), 1);
     }
   });
-  console.log("disabled", disabled);
   return disabled;
 }
 
@@ -149,57 +152,57 @@ async function getLastAvailableDate() {
 onMounted(async () => {
   await getAdvertisement();
   state.disabled = await getDisabledDates().then(
-    (disabledDates) => disabledDates
+      (disabledDates) => disabledDates
   );
   state.maxDate = await getLastAvailableDate().then((resolvedMaxDate) => resolvedMaxDate);
 });
 
 watch(
-  () => state.startDate,
-  async () => {
-    state.disabled = await getDisabledDates().then(
-      (disabledDates) => disabledDates
-    );
-    state.maxDate = await getLastAvailableDate().then(
-      (resolvedMaxDate) => resolvedMaxDate
-    );
-  }
+    () => state.startDate,
+    async () => {
+      state.disabled = await getDisabledDates().then(
+          (disabledDates) => disabledDates
+      );
+      state.maxDate = await getLastAvailableDate().then(
+          (resolvedMaxDate) => resolvedMaxDate
+      );
+    }
 );
 </script>
 
 <style>
-.book-card {
-  position: fixed;
-  top: 100px;
-  right: 0;
-  width: 40%;
-}
-.card :hover {
-  background-color: white;
-}
-.custom {
-  top: -100px;
-}
+/*.book-card {*/
+/*  position: fixed;*/
+/*  top: 100px;*/
+/*  right: 0;*/
+/*  width: 40%;*/
+/*}*/
+/*.card :hover {*/
+/*  background-color: white;*/
+/*}*/
+/*.custom {*/
+/*  top: -100px;*/
+/*}*/
 
-#pictures {
-  display: inline-flex;
-  margin: auto;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-}
+/*#pictures {*/
+/*  display: inline-flex;*/
+/*  margin: auto;*/
+/*  width: 100%;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*}*/
 
-#payment {
-  display: flex;
-  justify-content: center;
-  width: 100;
-}
+/*#payment {*/
+/*  display: flex;*/
+/*  justify-content: center;*/
+/*  width: 100;*/
+/*}*/
 
-#pictures figure {
-  margin: 15px;
-}
+/*#pictures figure {*/
+/*  margin: 15px;*/
+/*}*/
 
-p {
-  margin-bottom: 20px;
-}
+/*p {*/
+/*  margin-bottom: 20px;*/
+/*}*/
 </style>

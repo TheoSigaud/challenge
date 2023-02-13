@@ -114,7 +114,7 @@ const saveAdvertisement = () => {
 base64().then((data) => {
   console.log(data)
   const requestAdvertisement = new Request(
-    "https://localhost/api/advertisements"+id.value,
+    "https://localhost/advertisements"+id.value,
     {
       method: method,
       body: JSON.stringify({

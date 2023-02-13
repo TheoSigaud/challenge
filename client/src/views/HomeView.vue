@@ -101,31 +101,28 @@ onMounted(async () => {
                     :to="{ name: 'advertisement', params: { id: item.id } }"
                 >
                   <div class="card advertisement">
+                    <div class="card-image">
+                      <figure class="image is-4by3">
+                        <img :src="item.photo[Object.keys(item.photo)[0]]" alt="Placeholder image">
+                      </figure>
+                    </div>
+                    <p>{{item.photo[0]}}</p>
                     <div class="card-content">
                       <div class="media">
-                        <div class="media-left">
-                          <figure class="image">
-                            <img
-                                src="https://bulma.io/images/placeholders/96x96.png"
-                                alt="Placeholder image"
-                            />
-                          </figure>
+                        <div class="media-content">
+                          <p class="title is-4">{{ item.name }}</p>
+                          <p class="subtitle is-6">Posté par : {{ item.owner.firstname }} {{ item.owner.lastname }}</p>
                         </div>
                       </div>
+
                       <div class="content">
-                        <p class="title is-6">{{ item.name }}</p>
-                        <br/>
-                        <p class="subtitle is-6">
-                          Posté par : {{ item.owner.firstname }}
-                        </p>
-                        <p class="subtitle is-6">
-                          Contact : {{ item.owner.email }}
-                        </p>
+                        <p>{{ item.description }}</p>
+                        <br>
+                        <span>Contact : {{ item.owner.email }}</span>
                       </div>
                     </div>
                   </div>
-                </router-link
-                >
+                </router-link>
               </div>
             </div>
           </div>
@@ -158,9 +155,5 @@ onMounted(async () => {
 
 .control {
   border-radius: 10px 100px / 120px;
-}
-
-.advertisement :hover {
-  background-color: #e9f0f0;
 }
 </style>

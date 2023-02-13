@@ -1,8 +1,14 @@
 <script setup>
 import {computed, onMounted, ref, watchEffect} from 'vue'
 import jsCookie from "js-cookie";
-import NavBar from "@/components/NavBar.vue";
 import {useRouter} from "vue-router";
+
+const props = defineProps({
+  price: Number,
+  startDate: Date,
+  endDate: Date,
+  id: String,
+})
 
 const currentCardBackground = ref(Math.floor(Math.random() * 25 + 1))
 const cardName = ref("")
@@ -110,7 +116,6 @@ function buy() {
 
 <template>
   <div>
-    <NavBar />
     <div class="container">
       <div class="is-flex is-justify-content-center">
         <div class="wrapper">
