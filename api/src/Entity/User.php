@@ -30,7 +30,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[GetCollection(
     normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin'
 )]
-#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']])]
+#[ApiResource(normalizationContext: ['groups' => ['advertisement', 'owner']], routePrefix: '/admin')]
 #[ApiResource(operations: [
     new Patch(
         name: 'reset-password',

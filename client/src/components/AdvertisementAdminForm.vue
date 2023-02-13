@@ -179,7 +179,16 @@ const requestAd = new Request(
       adData.value.city = data.city
       adData.value.zipcode = data.zipcode
       adData.value.address = data.address
-      adData.value.date = [data.dateStart, data.dateEnd]
+      //parse date to french format
+      let dateStart = new Date(data.dateStart)
+      let dateEnd = new Date(data.dateEnd)
+      console.log(dateStart)
+      console.log(dateEnd)
+      let dateStartParse = dateStart.getDate() + "/" + (dateStart.getMonth() + 1) + "/" + dateStart.getFullYear()
+      let dateEndParse = dateEnd.getDate() + "/" + (dateEnd.getMonth() + 1) + "/" + dateEnd.getFullYear()
+      // console.log(dateStartParse)
+      // console.log(dateEndParse)
+      adData.value.date = [dateStartParse, dateEndParse]
       dataProperties.value.nbBedroom = data.properties.nbBedroom
       dataProperties.value.nbBed = data.properties.nbBed
       dataProperties.value.nbBathroom = data.properties.nbBathroom

@@ -22,7 +22,7 @@ function getDataUser() {
   }
 
   const requestToken = new Request(
-      "https://localhost/users/"+id,
+      "https://localhost/api/users/"+id,
       {
         method: "GET",
         headers: {

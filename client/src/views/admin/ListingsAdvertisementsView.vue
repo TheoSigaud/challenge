@@ -20,7 +20,7 @@ const advertisements = ref([]);
 let token = jsCookie.get('jwt')
 
 const requestAd = new Request(
-    "https://localhost/api/advertisements",
+    "https://localhost/advertisements",
     {
       method: "GET",
       headers: {
