@@ -32,11 +32,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         normalizationContext: ['groups' => ['owner']],
     ),
 
-    // new Get(
-    //     name: 'search-advertisements',
-    //     uriTemplate: '/search-advertisements',
-    //     controller: SearchController::class
-    // )
+    new Get(
+        name: 'search-advertisements',
+        uriTemplate: '/search-advertisements',
+        controller: SearchController::class
+    )
 ])]
 
 #[Get()]

@@ -2,6 +2,8 @@
 import {onMounted, ref} from "vue";
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
+import jwtDecode from 'jwt-decode'
+
 
 const city = ref("");
 const startDate = ref("");
@@ -11,25 +13,39 @@ const data = ref({});
 const error = ref("");
 
 function search() {
-  error.value = "";
-  // if (city.value === "" && startDate.value === "" && endDate.value === "") {
-  //   console.log("error");
-  //   error.value = "Veuillez remplir tout les champs";
-  //   return;
-  // }
+  const url = new URL("https://localhost/advertisements");
+  const token = jsCookie.get("jwt");
+  if (city.value !== "") {
+    url.searchParams.set("city", city.value.toLowerCase());
+  } else if (startDate.value !== "") {
+    let date = new Date(startDate.value);
+    let date_2 = encodeURIComponent(date.toISOString().split('T')[0]); 
+    console.log(date_2);
+    url.searchParams.set("date_start", encodeURIComponent(date.toISOString().split('T')[0]));
+  } else if (endDate.value !== "") {
+    let date = new Date(endDate._value);
+    url.searchParams.set("endDate", date.toISOString().slice(0, 10));
+  }
 
-  const requestReset = new Request(
-      "https://localhost/search-advertisements/?city=" + city.value,
-      {
-        method: "GET",
-      });
-  fetch(requestReset)
+  const request = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  fetch(url, request)
       .then((response) => response.json())
       .then((_data) => {
+        console.log(_data);
         if (_data["hydra:member"]) {
           data.value = _data["hydra:member"];
         }
+        console.log(data.value);
       })
+      .catch((error) => console.error("Error fetching advertisements:", error));
+
+  console.log("search", city.value, startDate.value, endDate.value);
 }
 
 onMounted(async () => {
