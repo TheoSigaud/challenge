@@ -12,14 +12,14 @@ const error = ref("");
 
 function search() {
   error.value = "";
-  if (city.value === "" && startDate.value === "" && endDate.value === "") {
-    console.log("error");
-    error.value = "Veuillez remplir tout les champs";
-    return;
-  }
+  // if (city.value === "" && startDate.value === "" && endDate.value === "") {
+  //   console.log("error");
+  //   error.value = "Veuillez remplir tout les champs";
+  //   return;
+  // }
 
   const requestReset = new Request(
-      "https://localhost/search-advertisements/?city=" + city.value + "&startDate=" + startDate.value.toISOString().split('T')[0] + "&endDate=" + endDate.value.toISOString().split('T')[0],
+      "https://localhost/search-advertisements/?city=" + city.value,
       {
         method: "GET",
       });

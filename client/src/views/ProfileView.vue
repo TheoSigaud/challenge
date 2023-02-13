@@ -39,7 +39,6 @@ const route = useRoute()
     idUser = jwtDecode(token).id
     isAdmin.value = false
   }else{
-    console.log(route.name)
     if(route.name == 'profile'){
       router.push({name: 'login'})
     }
