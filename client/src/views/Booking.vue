@@ -3,6 +3,7 @@ import {onMounted, ref, watch} from 'vue'
 import jsCookie from "js-cookie";
 import ReviewForm from "../components/form/reviewForm.vue";
 import jwtDecode from "jwt-decode";
+import HeartButton from "../components/FavoriteButton.vue";
 
 const showModal = ref(false)
 const showModalCreate = ref(false);
@@ -17,7 +18,10 @@ const comments = ref([])
 const token = jsCookie.get('jwt')
 const idUser = jwtDecode(token).id;
 const canComment = ref(true);
-
+const setFavorite = ref(true);
+const statusFavorites = ref(false);
+const favorites = ref([]);
+const favId = ref(0);
 
 onMounted(() => {
   getBookings()
@@ -99,6 +103,31 @@ watch(() => showModalCreate.value, async () => {
   await getReview();
 })
 
+ function getFavorites() {
+  const request = new Request(
+      "https://localhost/api/favorites",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        }
+      });
+
+   fetch(request)
+      .then(response => response.json())
+      .then(data => {
+        favorites.value = data["hydra:member"].filter(item => item.client === "/api/users/" + idUser && item.advertisementId === "/api/advertisements/" + ad_id.value)
+          // statusFavorites.value = true : statusFavorites.value = false
+        console.log(favorites.value)
+        if(favorites.value.length !== 0) favId.value = favorites.value[0].id
+      })
+}
+
+watch(() => ad_id, async () => {
+  await getFavorites();
+})
+
 </script>
 
 <template>
@@ -120,6 +149,22 @@ watch(() => showModalCreate.value, async () => {
                   {{ item.advertisement.description }}
                 </div>
               </div>
+            </div>
+
+            <div v-if="favId === 0">
+              <HeartButton
+                  :isInFavorites=false
+                  :advertisementId=item.advertisement.id
+                  :idFav=favId.value
+                  @click="ad_id = item.advertisement.id"
+              />
+            </div>
+            <div v-else>
+              <HeartButton
+                  :isInFavorites=true
+                  :advertisementId=item.advertisement.id
+                  @click="ad_id = item.advertisement.id"
+              />
             </div>
 
             <div>

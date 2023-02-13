@@ -6,7 +6,7 @@ use App\Repository\FavoriteRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
 
-#[ApiResource]
+#[ApiResource(routePrefix: '/api')]
 #[ORM\Entity(repositoryClass: FavoriteRepository::class)]
 #[ORM\Table(name: '`favorites`')]
 class Favorite
@@ -17,7 +17,13 @@ class Favorite
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'favorites')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $client = null;
+
+
+    #[ORM\ManyToOne(inversedBy: 'favorites')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Advertisement $ad = null;
 
     public function getId(): ?int
     {
@@ -32,6 +38,18 @@ class Favorite
     public function setClient(?User $client): self
     {
         $this->client = $client;
+
+        return $this;
+    }
+
+    public function getAd(): ?Advertisement
+    {
+        return $this->ad;
+    }
+
+    public function setAd(?Advertisement $ad): self
+    {
+        $this->ad = $ad;
 
         return $this;
     }
