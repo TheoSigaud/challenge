@@ -161,7 +161,7 @@ const requestAd = new Request(
     .catch((error) => console.log(error))
     if(method == "PATCH"){
   const requestUser = new Request(
-    "https://localhost/api/advertisements/"+idAd,
+    "https://localhost/advertisements/"+idAd,
     {
       method: "GET",
       headers: {
@@ -179,16 +179,14 @@ const requestAd = new Request(
       adData.value.city = data.city
       adData.value.zipcode = data.zipcode
       adData.value.address = data.address
-      //parse date to french format
-      let dateStart = new Date(data.dateStart)
-      let dateEnd = new Date(data.dateEnd)
-      console.log(dateStart)
-      console.log(dateEnd)
-      let dateStartParse = dateStart.getDate() + "/" + (dateStart.getMonth() + 1) + "/" + dateStart.getFullYear()
-      let dateEndParse = dateEnd.getDate() + "/" + (dateEnd.getMonth() + 1) + "/" + dateEnd.getFullYear()
-      // console.log(dateStartParse)
-      // console.log(dateEndParse)
-      adData.value.date = [dateStartParse, dateEndParse]
+
+      let dateStart = new Date(data.date_start)
+      let dateEnd = new Date(data.date_end)
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      const frenchDateEnd = dateEnd.toLocaleDateString('en-EN', options);
+      const frenchDateStart = dateStart.toLocaleDateString('en-EN', options);
+
+      adData.value.date = [new Date(frenchDateEnd), new Date(frenchDateStart)]
       dataProperties.value.nbBedroom = data.properties.nbBedroom
       dataProperties.value.nbBed = data.properties.nbBed
       dataProperties.value.nbBathroom = data.properties.nbBathroom
@@ -197,7 +195,8 @@ const requestAd = new Request(
       dataProperties.value.parking = data.properties.parking
       dataProperties.value.airConditioning = data.properties.airConditioning
       dataProperties.value.heating = data.properties.heating,
-      adData.value.price = data.price
+      adData.value.price = data.price,
+      adData.value.user = data.owner.id
     })
     .catch((error) => console.log(error))
 }

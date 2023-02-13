@@ -59,7 +59,7 @@ const dataProperties = ref({
 
 if(method == "PATCH"){
   const requestUser = new Request(
-    "https://localhost/api/advertisements/"+idAd,
+    "https://localhost/advertisements/"+idAd,
     {
       method: "GET",
       headers: {
@@ -77,7 +77,14 @@ if(method == "PATCH"){
       adData.value.city = data.city
       adData.value.zipcode = data.zipcode
       adData.value.address = data.address
-      adData.value.date = [data.dateStart, data.dateEnd]
+      
+      let dateStart = new Date(data.date_start)
+      let dateEnd = new Date(data.date_end)
+      const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+      const frenchDateEnd = dateEnd.toLocaleDateString('en-EN', options);
+      const frenchDateStart = dateStart.toLocaleDateString('en-EN', options);
+      
+      adData.value.date = [new Date(frenchDateEnd), new Date(frenchDateStart)]
       dataProperties.value.nbBedroom = data.properties.nbBedroom
       dataProperties.value.nbBed = data.properties.nbBed
       dataProperties.value.nbBathroom = data.properties.nbBathroom
@@ -86,7 +93,8 @@ if(method == "PATCH"){
       dataProperties.value.parking = data.properties.parking
       dataProperties.value.airConditioning = data.properties.airConditioning
       dataProperties.value.heating = data.properties.heating,
-      adData.value.price = data.price
+      adData.value.price = data.price,
+      adData.value.user = data.owner.id
     })
     .catch((error) => console.log(error))
 }

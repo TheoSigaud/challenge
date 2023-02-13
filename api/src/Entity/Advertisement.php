@@ -37,6 +37,9 @@ use ApiPlatform\Metadata\GetCollection;
     //     controller: SearchController::class
     // )
 ])]
+
+#[Get()]
+
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]
 class Advertisement
