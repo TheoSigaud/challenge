@@ -24,7 +24,6 @@ jobs:
         with:
           context: .
           push: true
-          tags: test-deploy
-          repository: challenge
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/challenge:test-deploy
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKER_AUTH_TOKEN }}
