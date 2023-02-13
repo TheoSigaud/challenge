@@ -19,8 +19,6 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\GetCollection;
 
 // #[ApiResource]
 
@@ -34,11 +32,11 @@ use ApiPlatform\Metadata\GetCollection;
         normalizationContext: ['groups' => ['owner']],
     ),
 
-    // new Get(
-    //     name: 'search-advertisements',
-    //     uriTemplate: '/search-advertisements',
-    //     controller: SearchController::class
-    // )
+    new Get(
+        name: 'search-advertisements',
+        uriTemplate: '/search-advertisements',
+        controller: SearchController::class
+    )
 ])]
 
 #[Get()]
