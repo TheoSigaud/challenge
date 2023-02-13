@@ -2,5 +2,5 @@
 FROM node:latest
 WORKDIR /app
 COPY ./client/ /app
-RUN npm install && npm run dev
+RUN npm install && npm run build
 EXPOSE 8080
