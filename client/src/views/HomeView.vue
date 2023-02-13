@@ -2,12 +2,15 @@
 import {onMounted, ref} from "vue";
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
+import jwtDecode from 'jwt-decode'
+
 
 const city = ref("");
 const startDate = ref("");
 const endDate = ref("");
 const init = ref(true);
 const data = ref({});
+const error = ref("");
 
 function search() {
   const url = new URL("https://localhost/advertisements");
@@ -46,7 +49,18 @@ function search() {
 }
 
 onMounted(async () => {
-  search();
+  const requestReset = new Request(
+      "https://localhost/advertisements",
+      {
+        method: "GET",
+      });
+  fetch(requestReset)
+      .then((response) => response.json())
+      .then((_data) => {
+        if (_data["hydra:member"]) {
+          data.value = _data["hydra:member"];
+        }
+      })
 });
 </script>
 

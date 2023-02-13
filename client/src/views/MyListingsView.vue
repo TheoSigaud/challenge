@@ -21,7 +21,6 @@ const adData = ref({
 const advertisements = ref([]);
 let token = jsCookie.get('jwt')
 let idUser = jwtDecode(token).id
-console.log(idUser)
 
 const deleteAdvertisement = (id) => {
   const requestAdvertisement = new Request(
@@ -59,7 +58,6 @@ function callUser(){
   fetch(requestAd)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data)
       data.advertisements.forEach(add => advertisements.value.push(add));
     })
     .catch((error) => console.log(error))

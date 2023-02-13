@@ -13,7 +13,6 @@ function handleFileChange(e) {
       e.target.value = null;
     }
   }
-  // console.log(fileNames.value)
   emit("onPropsFile", fileNames.value);
 }
 

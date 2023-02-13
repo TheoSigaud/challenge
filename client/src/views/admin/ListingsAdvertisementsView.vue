@@ -32,7 +32,6 @@ const requestAd = new Request(
     .then((response) => response.json())
     .then((data) => {
       data["hydra:member"].forEach(add => advertisements.value.push(add));
-      console.log(advertisements.value);
     })
     .catch((error) => console.log(error))
 </script>

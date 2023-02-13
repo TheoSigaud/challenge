@@ -73,7 +73,6 @@ if(method == "PATCH"){
       if(data.owner.id != idUser){
         router.push({ name: 'home' })
       }
-      console.log(data)
       adData.value.name = data.name
       adData.value.type = data.type
       adData.value.description = data.description
@@ -98,7 +97,6 @@ if(method == "PATCH"){
       dataProperties.value.heating = data.properties.heating,
       adData.value.price = data.price,
       adData.value.user = data.owner.id,
-      console.log(data.photo)
       fileNames.value = data.photo
     })
     .catch((error) => console.log(error))
@@ -120,6 +118,12 @@ async function base64() {
   return images;
 }
 const saveAdvertisement = () => {
+
+  if(isNaN(adData.value.price)) {
+      adData.value.error = 'Le prix doit être un nombre'
+
+      return
+    }
   if(adData.value.zipcode == null
       || adData.value.type == null
       || adData.value.description == null
@@ -137,7 +141,7 @@ const saveAdvertisement = () => {
         adData.value.error = 'Tous les champs sont obligatoires'
       return
     }
-
+    
     if(adData.value.date[1] == null) {
       adData.value.error = 'Vous devez sélectionner une date de début et une date de fin'
 
@@ -239,7 +243,7 @@ base64().then((data) => {
         <div class="filed">
           <label class="label">Prix pour une nuit</label>
             <div class="control">
-              <input  class="input" type="number" v-model="adData.price">
+              <input  class="input" type="number" step="0.01" v-model="adData.price">
             </div>
         </div>
       </div>

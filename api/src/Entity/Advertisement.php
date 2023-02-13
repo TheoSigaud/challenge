@@ -5,6 +5,9 @@ namespace App\Entity;
 use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use App\Controller\SearchController;
 use App\Repository\AdvertisementRepository;
 use App\Controller\SearchAdvertisementController;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -16,8 +19,6 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\GetCollection;
 
 // #[ApiResource]
 
@@ -31,14 +32,28 @@ use ApiPlatform\Metadata\GetCollection;
         normalizationContext: ['groups' => ['owner']],
     ),
 
-    // new Get(
-    //     name: 'search-advertisements',
-    //     uriTemplate: '/search-advertisements',
-    //     controller: SearchController::class
-    // )
+    new Get(
+        name: 'search-advertisements',
+        uriTemplate: '/search-advertisements',
+        controller: SearchController::class
+    )
 ])]
 
 #[Get()]
+
+#[ApiResource(operations: [
+    new GetCollection(
+        name: 'advertisements',
+        uriTemplate: '/advertisements',
+        normalizationContext: ['groups' => ['owner']],
+    ),
+
+    new Get(
+        name: 'search-advertisements',
+        uriTemplate: '/search-advertisements',
+        controller: SearchController::class
+    )
+])]
 
 #[ORM\Entity(repositoryClass: AdvertisementRepository::class)]
 #[ORM\Table(name: '`advertisement`')]
@@ -109,7 +124,7 @@ class Advertisement
 
     #[ORM\Column]
     #[Groups(['owner', 'bookings'])]
-    private ?int $price = null;
+    private ?float $price = null;
 
     #[ORM\Column]
     #[Groups(['advertisement', 'owner', 'bookings'])]
@@ -265,7 +280,7 @@ class Advertisement
 
     public function setCity(string $city): self
     {
-        $this->city = $city;
+        $this->city = strtolower($city);
 
         return $this;
     }
@@ -321,7 +336,7 @@ class Advertisement
         return $this;
     }
 
-    public function getPrice(): ?int
+    public function getPrice(): ?float
     {
         return $this->price;
     }
