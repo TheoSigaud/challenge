@@ -151,7 +151,7 @@
     <p v-if="registerData.success" class="has-text-centered has-text-success">{{registerData.success}}</p>
 
     <div v-if="!registerData.success" class="is-flex is-justify-content-center">
-      <button class="button btn--lavender" type="submit">S'inscrire</button>
+      <button class="button btn--lavender" id="btn-register" type="submit">S'inscrire</button>
     </div>
   </form>
 </template>
