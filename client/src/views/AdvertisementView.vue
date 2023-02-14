@@ -45,18 +45,18 @@
 
                   <div class="field has-addons">
                     <Datepicker
-                        v-model="state.startDate"
-                        :enable-time-picker="false"
-                        :min-date="new Date()"
-                        :disabled-dates="Array.from(state.disabled)"
-                        placeholder="dd/mm/yyyy"
+                      v-model="state.startDate"
+                      :enable-time-picker="false"
+                      :min-date="state.minDate"
+                      :disabled-dates="Array.from(state.disabled)"
+                      placeholder="dd/mm/yyyy"
                     ></Datepicker>
                     <Datepicker
-                        v-model="state.endDate"
-                        :min-date="new Date(state.startDate) + 1"
-                        :max-date="state.maxDate"
-                        :enable-time-picker="false"
-                        placeholder="dd/mm/yyyy"
+                      v-model="state.endDate"
+                      :min-date="new Date(state.startDate) + 1"
+                      :max-date="state.maxDate"
+                      :enable-time-picker="false"
+                      placeholder="dd/mm/yyyy"
                     ></Datepicker>
                   </div>
 
@@ -242,8 +242,8 @@
 </template>
 
 <script setup>
-import {computed, onMounted, reactive, ref, watch, watchEffect} from "vue";
-import {useRoute, useRouter} from "vue-router";
+import { computed, onMounted, reactive, ref, watch, watchEffect } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
 import jwtDecode from "jwt-decode";
@@ -258,6 +258,7 @@ const state = reactive({
   startDate: new Date(),
   endDate: null,
   maxDate: null,
+  minDate: null,
 });
 const currentCardBackground = ref(Math.floor(Math.random() * 25 + 1))
 const cardName = ref("")
@@ -415,8 +416,8 @@ async function getAdvertisement() {
     },
   });
   const data = await response.json();
-  console.log(data);
   state.advertisement = data;
+  state.maxDate = new Date(state.advertisement.date_end);
   state.loading = false;
 }
 
@@ -455,24 +456,43 @@ async function getLastAvailableDate() {
   return lastAvailableDate;
 }
 
+async function getFirstAvailableDate() {
+  const disabledDates = state.disabled;
+  let firstAvailableDate = null;
+
+  for (let i = 0; i < disabledDates.length; i++) {
+    if (disabledDates[i] > state.startDate) {
+      firstAvailableDate = disabledDates[i];
+      break;
+    }
+  }
+
+  return firstAvailableDate;
+}
+
 onMounted(async () => {
   await getAdvertisement();
   state.disabled = await getDisabledDates().then(
-      (disabledDates) => disabledDates
+    (disabledDates) => disabledDates
   );
-  state.maxDate = await getLastAvailableDate().then((resolvedMaxDate) => resolvedMaxDate);
+  state.maxDate = await getLastAvailableDate().then(
+    (resolvedMaxDate) => resolvedMaxDate
+  );
+  state.minDate = await getFirstAvailableDate().then(
+    (resolvedMinDate) => resolvedMinDate
+  );
 });
 
 watch(
-    () => state.startDate,
-    async () => {
-      state.disabled = await getDisabledDates().then(
-          (disabledDates) => disabledDates
-      );
-      state.maxDate = await getLastAvailableDate().then(
-          (resolvedMaxDate) => resolvedMaxDate
-      );
-    }
+  () => state.startDate,
+  async () => {
+    state.disabled = await getDisabledDates().then(
+      (disabledDates) => disabledDates
+    );
+    state.maxDate = await getLastAvailableDate().then(
+      (resolvedMaxDate) => resolvedMaxDate
+    );
+  }
 );
 </script>
 
