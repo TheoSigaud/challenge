@@ -121,7 +121,7 @@ onMounted(async () => {
                       <div class="media">
                         <div class="media-content">
                           <p class="title is-4">{{ item.name }}</p>
-                          <p class="subtitle is-6">Posté par : {{ item.owner.firstname }} dzd,{{ item.owner.lastname }}</p>
+                          <p class="subtitle is-6">Posté par : {{ item.owner.firstname }} {{ item.owner.lastname }}</p>
                         </div>
                       </div>
 
