@@ -124,7 +124,7 @@ base64().then((data) => {
     return
   }
   const requestAdvertisement = new Request(
-    "https://kaitokid.fr/advertisements"+id.value,
+    "https://kaitokid.fr/api/advertisements"+id.value,
     {
       method: method,
       body: JSON.stringify({
