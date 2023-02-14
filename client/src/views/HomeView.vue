@@ -20,7 +20,6 @@ function search() {
   } else if (startDate.value !== "") {
     let date = new Date(startDate.value);
     let date_2 = encodeURIComponent(date.toISOString().split('T')[0]); 
-    console.log(date_2);
     url.searchParams.set("date_start", encodeURIComponent(date.toISOString().split('T')[0]));
   } else if (endDate.value !== "") {
     let date = new Date(endDate._value);
@@ -37,15 +36,12 @@ function search() {
   fetch(url, request)
       .then((response) => response.json())
       .then((_data) => {
-        console.log(_data);
         if (_data["hydra:member"]) {
           data.value = _data["hydra:member"];
         }
-        console.log(data.value);
       })
       .catch((error) => console.error("Error fetching advertisements:", error));
 
-  console.log("search", city.value, startDate.value, endDate.value);
 }
 
 onMounted(async () => {

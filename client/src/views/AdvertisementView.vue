@@ -1,16 +1,18 @@
 <template>
   <div>
     <NavBar/>
-    <button class="button btn--lavender" @click="displayCheckout = !displayCheckout" v-if="displayCheckout">Retour</button>
     <div class="container custom mb-5" v-show="!displayCheckout">
       <div>
         <div class="columns">
           <div class="column is-three-fifths">
             <div class="card">
               <div class="card-image">
-                <figure class="image is-4by3">
-                  <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
+                <figure class="image is-4by3" v-if="state.advertisement.photo">
+                  <img :src="state.advertisement.photo[Object.keys(state.advertisement.photo)[0]]" alt="Placeholder image">
                 </figure>
+              </div>
+              <div v-if="state.advertisement.photo" class="mt-4 is-flex">
+                <img :src="value" v-for="[key, value] in Object.entries(state.advertisement.photo)" :key="key" class="image is-128x128">
               </div>
               <div class="card-content">
                 <div class="media">
@@ -21,8 +23,12 @@
 
                 <div class="content">
                   <p class="title is-5">Ce que propose ce logement</p>
+                    <ul v-if="state.advertisement.properties">
+                      <li v-for="[key, value] in Object.entries(state.advertisement.properties)" :key="key">
+                        {{ key }}: {{ value }}
+                      </li>
+                    </ul>
                   <br>
-                  <time datetime="2016-1-1">11:09 PM - 1 Jan 2016</time>
                 </div>
               </div>
             </div>
@@ -55,7 +61,8 @@
                   </div>
 
                   <div class="mt-3 is-flex is-jutify-content-center">
-                    <button class="button is-danger" @click="showCheckout">Je réserve !</button>
+                    <button v-if="login" class="button is-danger" @click="showCheckout">Je réserve !</button>
+                    <router-link v-if="!login" class="button btn--lavender" to="/login">Se connecter</router-link>
                   </div>
                 </div>
               </div>
@@ -239,6 +246,7 @@ import {computed, onMounted, reactive, ref, watch, watchEffect} from "vue";
 import {useRoute, useRouter} from "vue-router";
 import jsCookie from "js-cookie";
 import NavBar from "@/components/NavBar.vue";
+import jwtDecode from "jwt-decode";
 
 const route = useRoute();
 const displayCheckout = ref(false);
@@ -269,12 +277,44 @@ const error = ref(null)
 const modeLoading = ref(false)
 const router = useRouter()
 const nights = ref(1)
-
+const login = ref(false)
+const token = jsCookie.get("jwt");
 
 onMounted(() => {
   cardNumberTemp.value = otherCardMask.value;
   document.getElementById("idCardNumber").focus();
+  getDataUser()
 });
+
+function getDataUser() {
+  let id;
+  if (token !== undefined) {
+    id = jwtDecode(token).id
+  }
+
+  const requestToken = new Request(
+      "https://kaitokid.fr/api/users/" + id,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token
+        }
+      });
+
+  fetch(requestToken)
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json()
+        }
+      })
+      .then((data) => {
+
+        if (data !== undefined) {
+          login.value = true
+        }
+      })
+}
 
 function showCheckout() {
   const diffInMilliseconds = new Date(state.endDate.getTime()) - new Date(state.startDate).getTime();
@@ -334,7 +374,6 @@ function buy() {
   error.value = null;
   const token = jsCookie.get('jwt')
 
-  console.log(state.id)
   const requestBuy = new Request(
       "https://kaitokid.fr/api/buy",
       {
@@ -376,6 +415,7 @@ async function getAdvertisement() {
     },
   });
   const data = await response.json();
+  console.log(data);
   state.advertisement = data;
   state.loading = false;
 }

@@ -44,10 +44,10 @@
       return
     }
 
-    // if (age < 15 || age > 110) {
-    //   registerData.value.error = 'Vous devez avoir minimum 12 ans.'
-    //   return
-    // }
+    if (age < 15 || age > 110) {
+      registerData.value.error = 'Vous devez avoir minimum 12 ans.'
+      return
+    }
 
     const requestRegister = new Request(
         "https://kaitokid.fr/api/users",
