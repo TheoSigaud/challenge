@@ -15,7 +15,7 @@ onMounted(() => {
   if (token === undefined) {
     router.push({name: 'login'})
   } else {
-    fetch(`https://localhost/confirm-account/${token}`, {
+    fetch(`https://kaitokid.fr/confirm-account/${token}`, {
       method: 'GET',
     })
         .then((response) => response.json())

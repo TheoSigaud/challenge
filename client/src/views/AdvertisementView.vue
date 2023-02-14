@@ -336,7 +336,7 @@ function buy() {
 
   console.log(state.id)
   const requestBuy = new Request(
-      "https://localhost/api/buy",
+      "https://kaitokid.fr/api/buy",
       {
         method: "POST",
         body: JSON.stringify({
@@ -370,7 +370,7 @@ function buy() {
 async function getAdvertisement() {
   const token = jsCookie.get("jwt");
   const id = route.params.id;
-  const response = await fetch(`https://localhost/advertisements/${id}`, {
+  const response = await fetch(`https://kaitokid.fr/advertisements/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

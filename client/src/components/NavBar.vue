@@ -22,7 +22,7 @@ function getDataUser() {
   }
 
   const requestToken = new Request(
-      "https://localhost/api/users/"+id,
+      "https://kaitokid.fr/api/users/"+id,
       {
         method: "GET",
         headers: {
@@ -54,7 +54,7 @@ function sendRequest() {
     const id = jwtDecode(token).id
 
     const requestReset = new Request(
-        "https://localhost/api/users/"+id,
+        "https://kaitokid.fr/api/users/"+id,
         {
           method: "PATCH",
           body: JSON.stringify({

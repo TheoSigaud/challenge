@@ -124,7 +124,7 @@ base64().then((data) => {
     return
   }
   const requestAdvertisement = new Request(
-    "https://localhost/advertisements"+id.value,
+    "https://kaitokid.fr/advertisements"+id.value,
     {
       method: method,
       body: JSON.stringify({
@@ -154,7 +154,7 @@ base64().then((data) => {
 
 const requestAd = new Request(
   
-    "https://localhost/admin/users/",
+    "https://kaitokid.fr/admin/users/",
     {
       method: "GET",
       headers: {
@@ -170,7 +170,7 @@ const requestAd = new Request(
     .catch((error) => console.log(error))
     if(method == "PATCH"){
   const requestUser = new Request(
-    "https://localhost/advertisements/"+idAd,
+    "https://kaitokid.fr/advertisements/"+idAd,
     {
       method: "GET",
       headers: {

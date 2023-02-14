@@ -16,7 +16,7 @@ onMounted(() => {
 
 function getHost() {
   const request = new Request(
-      "https://localhost/admin/users-host?status=2",
+      "https://kaitokid.fr/admin/users-host?status=2",
       {
         method: "GET",
         headers: {
@@ -36,7 +36,7 @@ function getHost() {
 function sendRequest(value = 1, id) {
 
     const requestReset = new Request(
-        "https://localhost/api/users/" + id,
+        "https://kaitokid.fr/api/users/" + id,
         {
           method: "PATCH",
           body: JSON.stringify({

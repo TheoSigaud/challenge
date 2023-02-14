@@ -20,7 +20,7 @@ const advertisements = ref([]);
 let token = jsCookie.get('jwt')
 
 const requestAd = new Request(
-    "https://localhost/advertisements",
+    "https://kaitokid.fr/advertisements",
     {
       method: "GET",
       headers: {

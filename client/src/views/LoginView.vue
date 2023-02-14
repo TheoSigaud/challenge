@@ -10,7 +10,7 @@ const resetEmail = ref(null)
 const resetSuccess = ref(null)
 function resetPassword() {
   const requestReset = new Request(
-      "https://localhost/reset/email",
+      "https://kaitokid.fr/reset/email",
       {
         method: "POST",
         body: JSON.stringify({

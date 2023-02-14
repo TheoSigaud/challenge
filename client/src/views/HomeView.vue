@@ -13,7 +13,7 @@ const data = ref({});
 const error = ref("");
 
 function search() {
-  const url = new URL("https://localhost/advertisements");
+  const url = new URL("https://kaitokid.fr/advertisements");
   const token = jsCookie.get("jwt");
   if (city.value !== "") {
     url.searchParams.set("city", city.value.toLowerCase());
@@ -50,7 +50,7 @@ function search() {
 
 onMounted(async () => {
   const requestReset = new Request(
-      "https://localhost/advertisements",
+      "https://kaitokid.fr/advertisements",
       {
         method: "GET",
       });

@@ -48,7 +48,7 @@ const route = useRoute()
   }
 
   const requestUser = new Request(
-    "https://localhost/api/users/"+idUser,
+    "https://kaitokid.fr/api/users/"+idUser,
     {
       method: "GET",
       headers: {
@@ -70,7 +70,7 @@ const route = useRoute()
 
     const resetPwd = () => {
       const requestRegister = new Request(
-        "https://localhost/reset/password",
+        "https://kaitokid.fr/reset/password",
         {
           method: "PATCH",
           body: JSON.stringify({
@@ -101,7 +101,7 @@ const route = useRoute()
 
 
       const requestRegister = new Request(
-        "https://localhost/api/users/"+idUser,
+        "https://kaitokid.fr/api/users/"+idUser,
         {
           method: "PATCH",
           body: JSON.stringify({

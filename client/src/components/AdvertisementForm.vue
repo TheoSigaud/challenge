@@ -59,7 +59,7 @@ const dataProperties = ref({
 
 if(method == "PATCH"){
   const requestUser = new Request(
-    "https://localhost/advertisements/"+idAd,
+    "https://kaitokid.fr/advertisements/"+idAd,
     {
       method: "GET",
       headers: {
@@ -168,7 +168,7 @@ base64().then((data) => {
     return
   }
   const requestAdvertisement = new Request(
-    "https://localhost/api/advertisements"+id.value,
+    "https://kaitokid.fr/api/advertisements"+id.value,
     {
       method: method,
       body: JSON.stringify({

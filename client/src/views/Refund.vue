@@ -17,7 +17,7 @@ onMounted(() => {
 
 function getRefunds() {
   const request = new Request(
-      "https://localhost/api/get-refunds",
+      "https://kaitokid.fr/api/get-refunds",
       {
         method: "GET",
         headers: {
@@ -44,7 +44,7 @@ function sendRequest(valueRefund = false) {
     }
 
     const requestReset = new Request(
-        "https://localhost/api/cancel-booking",
+        "https://kaitokid.fr/api/cancel-booking",
         {
           method: "POST",
           body: JSON.stringify({

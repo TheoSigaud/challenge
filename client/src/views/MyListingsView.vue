@@ -24,7 +24,7 @@ let idUser = jwtDecode(token).id
 
 const deleteAdvertisement = (id) => {
   const requestAdvertisement = new Request(
-    "https://localhost/api/advertisements/"+id,
+    "https://kaitokid.fr/api/advertisements/"+id,
     {
       method: "PATCH",
       body: JSON.stringify({
@@ -47,7 +47,7 @@ function callUser(){
   advertisements.value = []
   const requestAd = new Request(
   
-    "https://localhost/api/users/"+idUser,
+    "https://kaitokid.fr/api/users/"+idUser,
     {
       method: "GET",
       headers: {

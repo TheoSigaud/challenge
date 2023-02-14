@@ -9,7 +9,7 @@ const users = ref([]);
 
 const unsetAdmin =  (idUser) => {
   const requestRegister = new Request(
-        "https://localhost/api/users/"+idUser,
+        "https://kaitokid.fr/api/users/"+idUser,
         {
           method: "PATCH",
           body: JSON.stringify({
@@ -26,7 +26,7 @@ const unsetAdmin =  (idUser) => {
 
 const changeAdmin =  (idUser) => {
   const requestRegister = new Request(
-        "https://localhost/api/users/"+idUser,
+        "https://kaitokid.fr/api/users/"+idUser,
         {
           method: "PATCH",
           body: JSON.stringify({
@@ -42,7 +42,7 @@ const changeAdmin =  (idUser) => {
 }
 
 const requestUser = new Request(
-    "https://localhost/admin/users",
+    "https://kaitokid.fr/admin/users",
     {
       method: "GET",
       headers: {
